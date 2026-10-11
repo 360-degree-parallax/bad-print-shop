@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0047AB"><meta name="description" content="문장을 클릭하면, 부분적인 열화를 거쳐 새로운 배열과 왜곡으로 문장이 남습니다. 불량 인쇄소."><title>불량 인쇄소</title><link rel="preload" href="assets/DreamHeumulPrint.ttf" as="font" type="font/ttf" crossorigin><link rel="stylesheet" href="style.css"></head><body>
+<header class="topbar"><button id="settingsButton" aria-haspopup="dialog">SETTINGS</button><button id="settleButton" aria-haspopup="dialog">SETTLE</button></header>
+<main class="spread"><article class="book" aria-label="수집할 문장"><div id="prose" class="prose"></div></article><section id="posterScroller" class="print" aria-label="수집한 문장으로 만든 포스터"><div id="posterSurface"><canvas id="poster" width="840" height="1188" tabindex="0" aria-label="문장을 클릭하면 인쇄됩니다. 포스터를 두 번 누르거나 S 키를 누르면 저장합니다."></canvas></div></section></main>
+<dialog id="settingsDialog"><button class="close" aria-label="닫기">×</button><h2>SETTINGS</h2>
+<label class="setting" for="sizeInput"><span>SIZE</span><output id="sizeValue">32px</output><input id="sizeInput" type="range" min="24" max="56" step="8" value="32"></label>
+<label class="setting" for="widthInput"><span>WIDTH</span><output id="widthValue">396px</output><input id="widthInput" type="range" min="240" max="396" value="396"></label>
+<label class="setting" for="intensityInput"><span>DISTORTION</span><output id="intensityValue">55%</output><input id="intensityInput" type="range" min="0" max="100" value="55"></label>
+<p class="settings-note">문장은 앞 문장에 이어 인쇄됩니다.<br>포스터도 아래로 계속 쌓입니다.<br>문장을 길게 누르고, 마음에 드는 순간 놓으세요.</p></dialog>
+<dialog id="note"><button class="close" aria-label="닫기">×</button><p id="noteText"></p></dialog>
+
+<dialog id="receiptDialog"><button class="close" aria-label="닫기">×</button><canvas id="receiptRibbon" aria-label="수집한 문장의 영수증"></canvas><div class="downloads"><button id="savePoster">포스터 저장 ↓</button><button id="saveReceipt">영수증 PNG ↓</button></div></dialog><script src="effects.js"></script><script src="content.js"></script><script src="receipt.js"></script><script src="flow.js"></script><script src="export.js"></script><script src="app.js"></script></body></html>

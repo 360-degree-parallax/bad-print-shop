@@ -1,0 +1,5 @@
+Dream Heumul Print: site-specific derivative of DreamHeumulKR by qhtjr1116.
+Added pixel accents and oe ligature for French and Italian; base glyphs unchanged.
+Original: https://eocnd1116.github.io/qhtjrFont/asset/font/DreamHeumulKR.ttf
+Derivative distributed under SIL Open Font License 1.1.
+See OFL-1.1.txt.
