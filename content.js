@@ -1,62 +1,9155 @@
 'use strict';
-// Contemporary demo paraphrases inspired by Oedipus; each row contains corresponding versions.
-window.BookText=`누가 이 도시의 어둠을 가져왔는가.|Who brought darkness to this city?|Chi ha portato il buio in questa città?|Qui a couvert cette ville de nuit ?
-우리는 빛을 찾다가 서로의 그림자를 밟았다.|We stepped on each other's shadows while looking for light.|Cercando la luce, abbiamo calpestato le nostre ombre.|Nous cherchions la lumière et marchions sur nos ombres.
-범인을 찾으러 온 내가 범인이었다.|I came to find the culprit, and the culprit was me.|Sono venuto a cercare il colpevole. Il colpevole ero io.|Je cherchais le coupable. Le coupable, c'est moi.
-네가 보지 못하는 것은 네 안에 있다.|What you cannot see is within you.|Quello che non vedi si trova dentro di te.|Ce que tu ne vois pas est en toi.
-운명은 언제나 다른 이름으로 돌아온다.|Fate always returns under another name.|Il destino ritorna sempre con un altro nome.|Le destin revient toujours sous un autre nom.
-사랑받은 문장은 천 번의 손을 거친다.|A beloved sentence passes through a thousand hands.|Una frase amata passa per mille mani.|Une phrase que l'on aime passe par mille mains.
-내 것이라고 부르는 모든 것은 어디에서 왔는가.|Where did everything I call mine come from?|Da dove viene tutto quello che chiamo mio?|D'où vient tout ce que j'appelle mien ?
-원본은 사라지고 흔적만 남아 있다.|The original is gone. Only traces remain.|L'originale scompare. Restano soltanto le tracce.|L'original a disparu. Il ne reste que des traces.
-그만 알아도 괜찮다. 이미 충분히 알고 있다.|You may stop searching. You already know enough.|Puoi smettere di cercare. Sai già abbastanza.|Tu peux cesser de chercher. Tu en sais assez.
-나는 처음부터 아무것도 쓰지 않았다.|I never wrote anything of my own.|Non ho mai scritto nulla che fosse soltanto mio.|Je n'ai jamais rien écrit qui soit seulement mien.
-도시의 문 앞에서 사람들은 오래된 질문을 되풀이했다.|At the city gates, people repeated an old question.|Alle porte della città, la gente ripeteva una vecchia domanda.|Aux portes de la ville, on reprenait une vieille question.
-누군가 대답을 알고 있었으나 아무도 먼저 입을 열지 않았다.|Someone knew the answer, but no one spoke first.|Qualcuno conosceva la risposta, ma nessuno parlava per primo.|Quelqu'un savait la réponse, mais personne ne parlait le premier.
-왕은 광장에 서서 자신의 이름을 불렀다.|The king stood in the square and called his own name.|Il re stava nella piazza e chiamava il proprio nome.|Le roi se tenait sur la place et appelait son propre nom.
-그 이름은 이미 다른 사람의 입을 지나온 것이었다.|That name had already passed through other mouths.|Quel nome era già passato per altre bocche.|Ce nom avait déjà traversé d'autres bouches.
-우리는 당신도 우리처럼 모른다는 사실 때문에 기다렸습니다.|We waited because you, too, did not know.|Abbiamo aspettato perché anche tu non sapevi.|Nous attendions parce que toi aussi, tu ne savais pas.
-그렇다면 나는 무엇을 찾아야 하는가.|What, then, am I supposed to seek?|Allora, che cosa devo cercare?|Que dois-je donc chercher ?
-찾아야 할 것은 먼 곳에 있지 않습니다.|What you seek is not far away.|Quello che cerchi non si trova lontano.|Ce que tu cherches n'est pas loin.
-발밑의 먼지와 손에 남은 잉크를 보십시오.|Look at the dust under your feet and the ink on your hands.|Guarda la polvere ai tuoi piedi e l'inchiostro sulle tue mani.|Regarde la poussière sous tes pieds et l'encre sur tes mains.
-누가 처음 이 말을 했는지 기억하는 사람이 없다.|No one remembers who first said these words.|Nessuno ricorda chi ha pronunciato queste parole per primo.|Personne ne se souvient de la première voix.
-내 눈으로 보았지만 눈 또한 다른 이에게 배운 것이었다.|I saw it with my own eyes, but learned to see from others.|Ho visto con i miei occhi, ma ho imparato a vedere dagli altri.|J'ai vu de mes propres yeux, mais d'autres m'ont appris à voir.
-이 도시에는 빌리지 않은 이름이 없다.|Every name in this city is borrowed.|In questa città, ogni nome viene da qualcun altro.|Dans cette ville, chaque nom vient d'un autre.
-문장은 입에서 입으로 옮겨가며 다른 얼굴이 되었다.|Passing from mouth to mouth, the sentence took another face.|Passando di bocca in bocca, la frase prendeva un altro volto.|De bouche en bouche, la phrase prenait un autre visage.
-어떤 사람은 유산이라 불렀고 어떤 사람은 도둑질이라 불렀다.|Some called it inheritance. Others called it theft.|Alcuni lo chiamavano patrimonio. Altri lo chiamavano furto.|Pour les uns, un patrimoine. Pour les autres, un vol.
-코러스는 같은 말을 반복했지만 매번 다른 목소리였다.|The chorus repeated the same words in a different voice each time.|Il coro ripeteva le stesse parole, ogni volta con una voce diversa.|Le chœur reprenait les mêmes mots, chaque fois avec une autre voix.
-당신의 선택과 운명은 한 장의 종이 위에서 만났다.|Your choice and your fate met on a sheet of paper.|La tua scelta e il tuo destino si sono incontrati su un foglio.|Ton choix et ton destin se sont rencontrés sur une feuille.
-나는 그 종이를 내 것이라고 불렀다.|I called that sheet of paper mine.|Ho chiamato mio quel foglio.|J'ai dit que cette feuille était mienne.
-아무도 반박하지 않았다.|No one objected.|Nessuno ha obiettato.|Personne n'a protesté.
-침묵은 동의와 닮았으나 같은 것은 아니었다.|Silence resembled consent, but was not the same.|Il silenzio somigliava al consenso, ma non era la stessa cosa.|Le silence ressemblait au consentement, sans être la même chose.
-밤이 되자 모든 문장은 서로의 그림자 속으로 들어갔다.|At night, every sentence entered another's shadow.|Di notte, ogni frase entrava nell'ombra di un'altra.|La nuit, chaque phrase entrait dans l'ombre d'une autre.
-오래된 책에는 새로 생긴 손자국이 남았다.|Fresh fingerprints remained on the old book.|Sul vecchio libro restavano impronte nuove.|Sur le vieux livre restaient de nouvelles empreintes.
-페이지를 넘길 때마다 누군가의 기억이 지워졌다.|With each turned page, someone's memory faded.|A ogni pagina voltata, un ricordo si cancellava.|Chaque page tournée effaçait un souvenir.
-가장 사랑받은 말이 가장 알아보기 어려운 말이 되었다.|The most beloved words became the hardest to recognize.|Le parole più amate diventavano le più difficili da riconoscere.|Les mots les plus aimés devenaient les plus difficiles à reconnaître.
-당신이 찾던 얼굴은 거울의 반대편에 있지 않았다.|The face you sought was not on the other side of the mirror.|Il volto che cercavi non era dall'altra parte dello specchio.|Le visage que tu cherchais n'était pas de l'autre côté du miroir.
-왕은 마침내 자신에게 질문을 돌려주었다.|At last, the king turned the question upon himself.|Alla fine, il re ha rivolto la domanda a se stesso.|Enfin, le roi a retourné la question contre lui-même.
-이것은 누구의 목소리인가.|Whose voice is this?|Di chi è questa voce?|À qui appartient cette voix ?
-이것은 누구의 손으로 만들어졌는가.|Whose hands made this?|Quali mani hanno fatto questo?|Quelles mains ont fait cela ?
-나를 이루는 것 중 처음부터 내 것이었던 것은 무엇인가.|What part of me was mine from the beginning?|Quale parte di me era mia fin dall'inizio?|Quelle part de moi était mienne depuis le commencement ?
-바람은 대답하지 않고 광장의 먼지를 다른 곳으로 옮겼다.|The wind gave no answer. It carried the dust elsewhere.|Il vento non rispondeva. Portava la polvere altrove.|Le vent ne répondait pas. Il emportait la poussière ailleurs.
-우리는 그 움직임을 새로운 풍경이라고 불렀다.|We called that movement a new landscape.|Abbiamo chiamato quel movimento un nuovo paesaggio.|Nous avons appelé ce mouvement un nouveau paysage.
-새벽이 오자 사람들은 어제의 말을 다시 주워 들었다.|At dawn, people picked up yesterday's words again.|All'alba, la gente raccoglieva di nuovo le parole di ieri.|Au matin, on ramassait les mots de la veille.
-어떤 말은 짧아졌고 어떤 말은 뜻을 잃었다.|Some words grew shorter. Others lost their meaning.|Alcune parole si accorciavano. Altre perdevano il senso.|Certains mots se raccourcissaient. D'autres perdaient leur sens.
-뜻을 잃은 말도 여전히 아름다웠다.|Even words without meaning were still beautiful.|Anche le parole senza senso erano ancora belle.|Les mots sans sens restaient beaux.
-그래서 우리는 그것을 버리지 못했다.|That is why we could not throw them away.|Per questo non riuscivamo a buttarle via.|C'est pourquoi nous ne pouvions pas les jeter.
-한 사람의 끝이 다른 사람에게는 첫 문장이었다.|One person's ending was another's first sentence.|La fine di qualcuno era la prima frase di un altro.|La fin de l'un était la première phrase de l'autre.
-기록은 계속되었고 누구도 마지막 장을 보지 못했다.|The record continued. No one saw the final page.|Il racconto continuava. Nessuno vedeva l'ultima pagina.|Le récit continuait. Personne ne voyait la dernière page.
-당신이 이곳을 지나가는 동안 문장은 다른 모양으로 옮겨간다.|As you pass through here, the sentence takes another shape.|Mentre passi di qui, la frase prende un'altra forma.|Pendant que tu passes ici, la phrase change de forme.
-당신은 읽기만 했다고 생각하지만 선택은 이미 남아 있다.|You think you only read, but your choice is already here.|Pensi di aver soltanto letto, ma la tua scelta resta qui.|Tu crois avoir seulement lu, mais ton choix reste ici.
-이제 왕은 말하지 않는다.|The king no longer speaks.|Il re non parla più.|Le roi ne parle plus.
-그의 침묵을 누군가 자신의 말로 옮긴다.|Someone turns his silence into their own words.|Qualcuno trasforma il suo silenzio in parole proprie.|Quelqu'un fait de son silence ses propres mots.
-우리가 원본이라고 부르는 것은 가장 오래 살아남은 사본일지도 모른다.|What we call the original may be the oldest surviving copy.|Quello che chiamiamo originale potrebbe essere la copia più antica.|Ce que nous appelons original est peut-être la plus ancienne copie.
-스핑크스는 답보다 질문을 오래 간직했다.|The sphinx kept the question longer than the answer.|La sfinge conservava la domanda più a lungo della risposta.|Le sphinx gardait la question plus longtemps que la réponse.
-사람은 아침과 저녁 사이에 얼마나 많은 이름을 빌리는가.|How many names does a person borrow between morning and night?|Quanti nomi prende in prestito una persona tra mattina e sera?|Combien de noms emprunte-t-on du matin au soir ?
-눈을 감아도 이미 본 것은 사라지지 않았다.|Closing my eyes did not erase what I had seen.|Chiudere gli occhi non cancellava quello che avevo visto.|Fermer les yeux n'effaçait pas ce que j'avais vu.
-상처는 기억보다 먼저 몸에 새겨졌다.|The wound was written on the body before it became a memory.|La ferita si scriveva sul corpo prima di diventare un ricordo.|La blessure s'inscrivait sur le corps avant de devenir un souvenir.
-진실은 도착했지만 그것을 맞이할 집은 남아 있지 않았다.|Truth arrived, but no home remained to welcome it.|La verità arrivava, ma non restava una casa per accoglierla.|La vérité arrivait, mais il ne restait aucune maison pour elle.
-아버지의 이름은 타인의 목소리로 나에게 돌아왔다.|My father's name returned to me in a stranger's voice.|Il nome di mio padre tornava nella voce di uno sconosciuto.|Le nom de mon père me revenait dans une voix inconnue.
-지워진 자리에 다음 사람이 자신의 이름을 썼다.|The next person wrote their name in the erased space.|Il prossimo scriveva il proprio nome nello spazio cancellato.|Le suivant inscrivait son nom dans l'espace effacé.
-읽는 사람은 문장을 바꾸고 문장은 읽는 사람을 바꾼다.|The reader changes the sentence, and the sentence changes the reader.|Chi legge cambia la frase, e la frase cambia chi legge.|Le lecteur change la phrase, et la phrase change le lecteur.
-모든 번역에는 돌아갈 수 없는 작은 길이 있다.|Every translation contains a small road with no way back.|Ogni traduzione contiene una piccola strada senza ritorno.|Chaque traduction contient un petit chemin sans retour.
-마지막에 남은 것은 소유권이 아니라 손자국이었다.|What remained was not ownership, but a handprint.|Alla fine restava un'impronta, non il possesso.|À la fin, il restait une empreinte, pas un titre de propriété.`.split('\n').map((row,group)=>row.split('|').map((text,i)=>({text,lang:['ko','en','it','fr'][i],group}))).flat();
+window.BookMeta={
+  "title": "오이디푸스 왕",
+  "author": "소포클레스",
+  "language": "ko",
+  "translation": "이 사이트를 위해 새로 작성한 한국어 중역",
+  "basis": "프랜시스 스토어(Francis Storr)의 1912년 영문 완역",
+  "source": "https://www.gutenberg.org/ebooks/31",
+  "speechTurns": 437,
+  "sentences": 1306
+};
+window.BookText=[
+  {
+    "text": "〈테바이, 오이디푸스 궁전 앞. 여러 나이의 탄원자들이 궁전 문 앞 제단 둘레에 앉아 있다. 제우스의 사제가 이들을 이끈다. 오이디푸스가 나온다.〉",
+    "lang": "ko",
+    "turn": 0,
+    "speaker": "지문",
+    "group": 0
+  },
+  {
+    "text": "오이디푸스: 나의 자녀들이여, 오래된 카드모스의 뒤를 잇는 새 세대여.",
+    "lang": "ko",
+    "turn": 1,
+    "speaker": "오이디푸스",
+    "group": 1
+  },
+  {
+    "text": "어찌하여 양털로 감은 올리브 가지를 들고 이곳에 탄원자로 앉아 있는가?",
+    "lang": "ko",
+    "turn": 1,
+    "speaker": "오이디푸스",
+    "group": 1
+  },
+  {
+    "text": "온 도시를 채운 향의 연기와, 어디에서나 들리는 탄식과 기도는 무엇을 뜻하는가?",
+    "lang": "ko",
+    "turn": 1,
+    "speaker": "오이디푸스",
+    "group": 1
+  },
+  {
+    "text": "이 일을 남에게 전해 듣는 것은 옳지 않기에, 세상에 이름난 왕 오이디푸스인 내가 직접 나왔다.",
+    "lang": "ko",
+    "turn": 1,
+    "speaker": "오이디푸스",
+    "group": 1
+  },
+  {
+    "text": "존경할 만한 백발로 보아 그대가 이 사람들을 대표하는 노인인 듯하니, 그들의 마음과 찾아온 까닭을 말해주게.",
+    "lang": "ko",
+    "turn": 1,
+    "speaker": "오이디푸스",
+    "group": 1
+  },
+  {
+    "text": "어떤 재앙이 두려운가, 아니면 무엇을 구하는가?",
+    "lang": "ko",
+    "turn": 1,
+    "speaker": "오이디푸스",
+    "group": 1
+  },
+  {
+    "text": "내가 그대들을 위해 힘쓰려 한다는 것은 의심하지 말게.",
+    "lang": "ko",
+    "turn": 1,
+    "speaker": "오이디푸스",
+    "group": 1
+  },
+  {
+    "text": "이런 탄원자들을 외면한다면 나는 참으로 무정하고 완고한 사람이겠지.",
+    "lang": "ko",
+    "turn": 1,
+    "speaker": "오이디푸스",
+    "group": 1
+  },
+  {
+    "text": "제우스의 사제: 오이디푸스여, 우리의 군주이자 왕이시여.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "보시다시피 궁전의 제단 둘레에는 이제 막 날갯짓을 배우는 어린아이들과 세월에 등이 굽은 노인들이 함께 모였습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "저처럼 제우스를 섬기는 사제들도 있고, 여기에는 우리 젊은이들의 꽃도 있습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "다른 시민들은 가지에 띠를 두르고 두 광장에 모여 있거나, 팔라스의 두 신전 앞과 이스메노스가 불로 신탁을 내리는 곳에 모여 있습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "왕께서도 보시듯 나라라는 배가 거센 파도에 얻어맞고, 피로 들끓는 바다에 잠겨 더는 머리를 들지 못합니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "익어가는 곡식이 병들고, 풀을 뜯는 소와 양이 병들며, 아이를 낳는 아내들이 고통을 겪습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "타오르는 횃불을 든 역병의 신이 도시에 덮쳐 카드모스의 집을 비우고, 어두운 저승은 우리의 탄식과 눈물로 배를 채웁니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "그러므로 왕이시여, 저와 이 아이들이 왕의 제단에 앉았습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "왕을 또 하나의 신으로 여겨서가 아니라, 일상의 시련과 신들이 보내는 재난 앞에서 인간 가운데 으뜸이라 여기기 때문입니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "카드모스의 도시에 오셔서, 잔혹한 노래의 괴물에게 바치던 공물에서 우리를 해방한 분이 바로 왕 아니십니까?",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "우리에게 답을 들은 것도, 누군가에게 배운 것도 아니었습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "모두가 증언하듯 신의 도움으로 우리에게 새 삶을 주셨습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "이제도 비할 데 없는 왕 오이디푸스여, 탄원하는 우리 모두를 위해 구원의 길을 찾으소서.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "하늘의 목소리가 알려주든, 인간의 지혜로 알아내든 좋습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "경험으로 검증된 조언자는 앞으로 닥칠 일에도 가장 쓸모 있는 방도를 내놓는 법입니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "인간 가운데 으뜸인 분이여, 나라를 다시 일으키소서.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "지난날의 영광을 돌보소서.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "그때의 열성으로 왕은 정당하게 우리 나라의 구원자라 불리셨습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "왕의 다스림을 두고 ‘우리를 일으켰다가 다시 쓰러뜨렸다’고 기록하게 하지 마소서.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "도시를 일으켜 단단한 바위 위에 세우소서.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "왕의 행운이 떠오를 때 우리도 복을 얻었으니, 그 별이 지지 않게 하소서.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "지금처럼 이 땅을 다스리려 하신다면, 텅 빈 나라보다 사람이 사는 나라를 다스리는 편이 낫지 않겠습니까?",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "성벽도 배도, 그것을 지킬 사람이 없다면 아무 소용이 없습니다.",
+    "lang": "ko",
+    "turn": 2,
+    "speaker": "제우스의 사제",
+    "group": 2
+  },
+  {
+    "text": "오이디푸스: 가엾은 자녀들이여.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "그대들이 무엇을 구하며 어떤 곤궁 때문에 왔는지 잘 알고 있다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "모두 병들었다는 것도 안다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "그러나 그대들의 고통이 아무리 크다 한들, 내 고통은 그것을 모두 품고 있다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "한 사람의 슬픔은 그 사람만을 괴롭히지만, 나는 나라와 나 자신과 그대들 모두를 위해 한꺼번에 괴로워한다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "그대들이 몽상에 잠긴 게으른 사람을 깨운 것은 아니다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "이미 많은 눈물을 흘렸고, 지친 생각의 미로를 수없이 헤맸다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "그러다 희망의 실마리 하나를 찾아 따라갔다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "메노이케우스의 아들이자 내 아내의 오라비인 크레온을 델포이의 피토 신전에 보내, 어떤 행위와 말로 나라를 구할 수 있는지 포이보스에게 묻게 했다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "이제 그가 떠난 뒤 흐른 날들을 헤아리며, 왜 이렇게 오래 돌아오지 않는지 의아해하고 있다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "지나치게 긴 지체다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "그러나 그가 돌아오면 신께서 명하신 일을 모두 행하겠다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "그렇게 하지 않는다면 나는 비열한 사람일 것이다.",
+    "lang": "ko",
+    "turn": 3,
+    "speaker": "오이디푸스",
+    "group": 3
+  },
+  {
+    "text": "제우스의 사제: 왕의 말씀과 때가 맞습니다.",
+    "lang": "ko",
+    "turn": 4,
+    "speaker": "제우스의 사제",
+    "group": 4
+  },
+  {
+    "text": "지금 들리는 외침으로 보아 크레온이 도착한 듯합니다.",
+    "lang": "ko",
+    "turn": 4,
+    "speaker": "제우스의 사제",
+    "group": 4
+  },
+  {
+    "text": "오이디푸스: 아폴론 왕이여, 저 기쁜 얼굴이 기쁜 소식의 징조이게 하소서!",
+    "lang": "ko",
+    "turn": 5,
+    "speaker": "오이디푸스",
+    "group": 5
+  },
+  {
+    "text": "제우스의 사제: 반가운 소식일 듯합니다.",
+    "lang": "ko",
+    "turn": 6,
+    "speaker": "제우스의 사제",
+    "group": 6
+  },
+  {
+    "text": "그렇지 않다면 저렇게 열매 맺힌 월계수로 머리를 장식하지 않았을 테니까요.",
+    "lang": "ko",
+    "turn": 6,
+    "speaker": "제우스의 사제",
+    "group": 6
+  },
+  {
+    "text": "오이디푸스: 곧 알게 되겠지.",
+    "lang": "ko",
+    "turn": 7,
+    "speaker": "오이디푸스",
+    "group": 7
+  },
+  {
+    "text": "이제 목소리가 들릴 만큼 가까이 왔으니.",
+    "lang": "ko",
+    "turn": 7,
+    "speaker": "오이디푸스",
+    "group": 7
+  },
+  {
+    "text": "〈크레온이 들어온다.〉",
+    "lang": "ko",
+    "turn": 7,
+    "speaker": "오이디푸스",
+    "group": 7
+  },
+  {
+    "text": "나의 친족이여, 메노이케우스의 아들이여.",
+    "lang": "ko",
+    "turn": 7,
+    "speaker": "오이디푸스",
+    "group": 7
+  },
+  {
+    "text": "신에게서 어떤 말씀을 가져왔는가?",
+    "lang": "ko",
+    "turn": 7,
+    "speaker": "오이디푸스",
+    "group": 7
+  },
+  {
+    "text": "크레온: 좋은 소식입니다.",
+    "lang": "ko",
+    "turn": 8,
+    "speaker": "크레온",
+    "group": 8
+  },
+  {
+    "text": "견딜 수 없는 재앙이라도, 올바른 해결책을 찾으면 결국 좋은 결과를 가져오니까요.",
+    "lang": "ko",
+    "turn": 8,
+    "speaker": "크레온",
+    "group": 8
+  },
+  {
+    "text": "오이디푸스: 신탁이 무엇인가?",
+    "lang": "ko",
+    "turn": 9,
+    "speaker": "오이디푸스",
+    "group": 9
+  },
+  {
+    "text": "지금까지 그대의 말로는 안심해야 할지 두려워해야 할지 알 수가 없군.",
+    "lang": "ko",
+    "turn": 9,
+    "speaker": "오이디푸스",
+    "group": 9
+  },
+  {
+    "text": "크레온: 사람들 앞에서 듣기를 원하시면 곧 말씀드리겠습니다.",
+    "lang": "ko",
+    "turn": 10,
+    "speaker": "크레온",
+    "group": 10
+  },
+  {
+    "text": "아니면 안으로 들어가 둘이서 말씀을 나누어도 됩니다.",
+    "lang": "ko",
+    "turn": 10,
+    "speaker": "크레온",
+    "group": 10
+  },
+  {
+    "text": "오이디푸스: 모두 앞에서 말하게.",
+    "lang": "ko",
+    "turn": 11,
+    "speaker": "오이디푸스",
+    "group": 11
+  },
+  {
+    "text": "내가 지고 있는 짐은 나 자신보다 이 백성들을 위한 것이니.",
+    "lang": "ko",
+    "turn": 11,
+    "speaker": "오이디푸스",
+    "group": 11
+  },
+  {
+    "text": "크레온: 그렇다면 신께서 하신 말씀을 모두 전하겠습니다.",
+    "lang": "ko",
+    "turn": 12,
+    "speaker": "크레온",
+    "group": 12
+  },
+  {
+    "text": "포이보스 왕께서는 이 땅에 스며든 끔찍한 오염을 철저히 몰아내고, 오래된 상처를 더는 품고 살지 말라고 명하셨습니다.",
+    "lang": "ko",
+    "turn": 12,
+    "speaker": "크레온",
+    "group": 12
+  },
+  {
+    "text": "오이디푸스: 어떻게 속죄하라는 것인가?",
+    "lang": "ko",
+    "turn": 13,
+    "speaker": "오이디푸스",
+    "group": 13
+  },
+  {
+    "text": "무엇이 잘못되었는가?",
+    "lang": "ko",
+    "turn": 13,
+    "speaker": "오이디푸스",
+    "group": 13
+  },
+  {
+    "text": "크레온: 범인을 추방하거나, 피를 흘린 죄를 피로 갚으라는 것입니다.",
+    "lang": "ko",
+    "turn": 14,
+    "speaker": "크레온",
+    "group": 14
+  },
+  {
+    "text": "그 피의 더러움이 우리 나라를 침몰시키고 있습니다.",
+    "lang": "ko",
+    "turn": 14,
+    "speaker": "크레온",
+    "group": 14
+  },
+  {
+    "text": "오이디푸스: 신께서 지목하신 악인은 누구인가?",
+    "lang": "ko",
+    "turn": 15,
+    "speaker": "오이디푸스",
+    "group": 15
+  },
+  {
+    "text": "크레온: 왕께서 나라의 키를 잡기 전에, 이 땅의 군주는 라이오스였습니다.",
+    "lang": "ko",
+    "turn": 16,
+    "speaker": "크레온",
+    "group": 16
+  },
+  {
+    "text": "오이디푸스: 그 이야기는 들었지만, 그 사람을 본 적은 없네.",
+    "lang": "ko",
+    "turn": 17,
+    "speaker": "오이디푸스",
+    "group": 17
+  },
+  {
+    "text": "크레온: 그가 죽었습니다.",
+    "lang": "ko",
+    "turn": 18,
+    "speaker": "크레온",
+    "group": 18
+  },
+  {
+    "text": "이제 신의 명령은 분명합니다.",
+    "lang": "ko",
+    "turn": 18,
+    "speaker": "크레온",
+    "group": 18
+  },
+  {
+    "text": "그를 죽인 자들이 누구든 벌하라는 것입니다.",
+    "lang": "ko",
+    "turn": 18,
+    "speaker": "크레온",
+    "group": 18
+  },
+  {
+    "text": "오이디푸스: 그들은 어디에 있는가?",
+    "lang": "ko",
+    "turn": 19,
+    "speaker": "오이디푸스",
+    "group": 19
+  },
+  {
+    "text": "오래전 범죄의 희미하고 먼 흔적을, 넓은 세상의 어디에서 찾으라는 것인가?",
+    "lang": "ko",
+    "turn": 19,
+    "speaker": "오이디푸스",
+    "group": 19
+  },
+  {
+    "text": "크레온: 신께서는 이 땅 안에 있다고 하셨습니다.",
+    "lang": "ko",
+    "turn": 20,
+    "speaker": "크레온",
+    "group": 20
+  },
+  {
+    "text": "찾는 사람은 발견하지만, 손을 놓고 잠드는 사람은 보지 못한다고 하셨습니다.",
+    "lang": "ko",
+    "turn": 20,
+    "speaker": "크레온",
+    "group": 20
+  },
+  {
+    "text": "오이디푸스: 라이오스가 죽음을 맞았을 때 궁전 안에 있었는가, 들에 있었는가, 아니면 길을 가던 중이었는가?",
+    "lang": "ko",
+    "turn": 21,
+    "speaker": "오이디푸스",
+    "group": 21
+  },
+  {
+    "text": "크레온: 외지였습니다.",
+    "lang": "ko",
+    "turn": 22,
+    "speaker": "크레온",
+    "group": 22
+  },
+  {
+    "text": "델포이로 간다고 말하며 떠났으나 돌아오지 않았습니다.",
+    "lang": "ko",
+    "turn": 22,
+    "speaker": "크레온",
+    "group": 22
+  },
+  {
+    "text": "오이디푸스: 따라갈 실마리를 전해줄 동행자도, 다른 소식도 없었는가?",
+    "lang": "ko",
+    "turn": 23,
+    "speaker": "오이디푸스",
+    "group": 23
+  },
+  {
+    "text": "크레온: 한 사람만 살아남았습니다.",
+    "lang": "ko",
+    "turn": 24,
+    "speaker": "크레온",
+    "group": 24
+  },
+  {
+    "text": "목숨을 구하려 도망친 그는, 자기가 본 일 가운데 오직 한 가지만 확실히 말할 수 있었습니다.",
+    "lang": "ko",
+    "turn": 24,
+    "speaker": "크레온",
+    "group": 24
+  },
+  {
+    "text": "오이디푸스: 무엇인가?",
+    "lang": "ko",
+    "turn": 25,
+    "speaker": "오이디푸스",
+    "group": 25
+  },
+  {
+    "text": "작은 희망의 불씨만 있어도, 한 가지 단서가 우리를 멀리 데려갈 수 있네.",
+    "lang": "ko",
+    "turn": 25,
+    "speaker": "오이디푸스",
+    "group": 25
+  },
+  {
+    "text": "크레온: 강도들이었다고 했습니다.",
+    "lang": "ko",
+    "turn": 26,
+    "speaker": "크레온",
+    "group": 26
+  },
+  {
+    "text": "한 사람이 아니라 무리를 이룬 악당들이 왕을 덮쳐 죽였다고 했습니다.",
+    "lang": "ko",
+    "turn": 26,
+    "speaker": "크레온",
+    "group": 26
+  },
+  {
+    "text": "오이디푸스: 테바이에서 매수한 자가 아니라면, 어떤 강도가 감히 그런 대담한 일을 벌였겠는가?",
+    "lang": "ko",
+    "turn": 27,
+    "speaker": "오이디푸스",
+    "group": 27
+  },
+  {
+    "text": "크레온: 그렇게 의심하기는 했습니다.",
+    "lang": "ko",
+    "turn": 28,
+    "speaker": "크레온",
+    "group": 28
+  },
+  {
+    "text": "그러나 뒤이어 닥친 혼란 때문에, 그의 죽음을 갚아줄 사람을 찾지 못했습니다.",
+    "lang": "ko",
+    "turn": 28,
+    "speaker": "크레온",
+    "group": 28
+  },
+  {
+    "text": "오이디푸스: 왕이 그렇게 비참하게 죽었는데도 철저한 조사를 막을 만한 혼란이 무엇이었는가?",
+    "lang": "ko",
+    "turn": 29,
+    "speaker": "오이디푸스",
+    "group": 29
+  },
+  {
+    "text": "크레온: 수수께끼를 내는 스핑크스 때문에, 희미한 과거보다 눈앞의 위기에 매달려야 했습니다.",
+    "lang": "ko",
+    "turn": 30,
+    "speaker": "크레온",
+    "group": 30
+  },
+  {
+    "text": "오이디푸스: 그렇다면 내가 처음부터 다시 시작하여 어둠 속의 일을 밝히겠네.",
+    "lang": "ko",
+    "turn": 31,
+    "speaker": "오이디푸스",
+    "group": 31
+  },
+  {
+    "text": "죽은 이를 염려한 포이보스도, 그대도 옳은 일을 했네.",
+    "lang": "ko",
+    "turn": 31,
+    "speaker": "오이디푸스",
+    "group": 31
+  },
+  {
+    "text": "나 또한 신과 테바이를 위해 이 잘못을 갚는 데 힘을 보태겠다.",
+    "lang": "ko",
+    "turn": 31,
+    "speaker": "오이디푸스",
+    "group": 31
+  },
+  {
+    "text": "내가 피 속의 독을 몰아내려는 것은 먼 친족을 위해서만이 아니라 나 자신을 위해서이기도 하다.",
+    "lang": "ko",
+    "turn": 31,
+    "speaker": "오이디푸스",
+    "group": 31
+  },
+  {
+    "text": "그 왕을 죽인 자가 같은 손으로 나까지 죽이려 할 수 있으니, 그를 바로잡는 일은 나를 지키는 일이기도 하다.",
+    "lang": "ko",
+    "turn": 31,
+    "speaker": "오이디푸스",
+    "group": 31
+  },
+  {
+    "text": "자녀들이여, 일어나라.",
+    "lang": "ko",
+    "turn": 31,
+    "speaker": "오이디푸스",
+    "group": 31
+  },
+  {
+    "text": "제단 계단을 떠나 탄원의 가지를 거두고, 테바이의 시민들을 이곳으로 불러라.",
+    "lang": "ko",
+    "turn": 31,
+    "speaker": "오이디푸스",
+    "group": 31
+  },
+  {
+    "text": "신께서 도우시면 우리는 구원받을 것이고, 실패한다면 무너질 것이다.",
+    "lang": "ko",
+    "turn": 31,
+    "speaker": "오이디푸스",
+    "group": 31
+  },
+  {
+    "text": "〈오이디푸스와 크레온이 퇴장한다.〉",
+    "lang": "ko",
+    "turn": 31,
+    "speaker": "오이디푸스",
+    "group": 31
+  },
+  {
+    "text": "제우스의 사제: 아이들이여, 가자.",
+    "lang": "ko",
+    "turn": 32,
+    "speaker": "제우스의 사제",
+    "group": 32
+  },
+  {
+    "text": "이 너그러운 말씀으로 우리가 빌러 온 일이 이미 이루어졌다.",
+    "lang": "ko",
+    "turn": 32,
+    "speaker": "제우스의 사제",
+    "group": 32
+  },
+  {
+    "text": "이 신탁을 보내신 신께서 우리를 구하시고, 이 역병에서도 해방해주시기를.",
+    "lang": "ko",
+    "turn": 32,
+    "speaker": "제우스의 사제",
+    "group": 32
+  },
+  {
+    "text": "〈사제와 탄원자들이 퇴장한다.〉",
+    "lang": "ko",
+    "turn": 32,
+    "speaker": "제우스의 사제",
+    "group": 32
+  },
+  {
+    "text": "합창대: 〈첫째 정가〉 제우스의 감미로운 목소리여, 금으로 포장된 피토의 신전에서 거룩한 테바이로 날아온 딸이여.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "무엇을 가져오는가?",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "내 영혼이 두려움에 찢기고 떨린다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "델로스의 치유자여, 들으소서!",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "전에 몰랐던 고통을 명하는가, 아니면 돌고 도는 세월 속에서 옛 속죄를 다시 요구하는가?",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "황금빛 희망의 자식인 불멸의 목소리여, 말해주오.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "〈첫째 반정가〉 먼저 아테나를 부른다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "제우스에게서 태어난 여신이여, 지켜주소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "그 자매인 아르테미스여, 우리를 도우소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "광장 한가운데 높은 자리에 앉은 테바이의 주인이여.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "죽음을 나르는 화살의 주인 아폴론이여.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "세 분의 도움으로 우리 도시를 죽음과 파멸에서 구해주소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "옛날 우리가 거의 멸망했을 때 불 같은 역병을 땅에서 몰아내셨듯, 지금도 가까이 오셔서 지켜주소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "〈둘째 정가〉 아, 셀 수 없는 고통이 내 것이다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "우리 무리는 모두 쇠약해지고, 내 영혼은 무기 없이 누워 있다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "땅은 풍성한 열매를 내주지 않고, 여자들은 결실 없는 산고에 울부짖는다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "생명 뒤에 생명이 쓰러져, 날개 달린 새보다, 불의 신이 내달리는 힘보다 빠르게 밤이 저무는 서쪽 해안으로 간다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "〈둘째 반정가〉 죽음이 죽음을 이어 도시 전체가 스러진다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "시신들은 병을 퍼뜨리며 널려 있고, 돌보거나 애도할 이도 없다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "제단 계단 위에서 아내들과 늙은 어머니들이 긴 탄식과 날카로운 비명으로 허공을 찢는다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "그 울음은 기도와 탄원에 섞여 흐른다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "제우스의 황금빛 자식이여, 들으소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "구원하는 얼굴을 드러내소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "〈셋째 정가〉 방패도 칼도 없이 돌아다니지만 전장의 함성 같은 목소리로 뜨거운 숨을 내뿜는 아레스가 물러나게 하소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "항구 없는 트라키아의 바다나 암피트리테의 깊은 물속으로 그를 몰아주소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "밤이 남겨둔 사람마저 아침 해에 맞아 죽습니다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "번개의 무기를 든 아버지 제우스여, 그 벼락으로 그를 쓰러뜨리소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "그를 죽이소서, 제발 죽이소서!",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "〈셋째 반정가〉 뤼케이오스의 왕이여, 팽팽한 황금 활시위에서 날아온 화살이 우리의 수호자가 되게 하소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "아르테미스가 뤼키아의 산을 달리며 번쩍이는 횃불도 함께 오게 하소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "황금 띠로 머리를 감싼 바코스여, 그대의 이름을 지닌 이 땅에서 그대를 부른다.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "마이나데스가 에우오이를 외치는 신이여, 환한 횃불을 들고 오소서.",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "우리가 사랑하는 기쁜 신이여, 신들이 미워하는 저 신을 몰아내소서!",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "〈오이디푸스가 들어온다.〉",
+    "lang": "ko",
+    "turn": 33,
+    "speaker": "합창대",
+    "group": 33
+  },
+  {
+    "text": "오이디푸스: 그대들의 기도는 좋다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "그러나 내 말을 듣고 따르며 처방을 행한다면, 안도와 구원을 얻을 수도 있을 것이다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "나는 이 사건도 그 소문도 처음 듣는 외부인으로서 말한다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "단서도 없이 혼자 어떻게 먼 길을 추적할 수 있겠는가?",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "내가 테바이의 시민이 된 것은 그 일이 있은 뒤였으니, 이제 모든 사람에게 이렇게 선포한다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "테바이 사람들이여, 라브다코스의 아들 라이오스를 누가 죽였는지 아는 사람이 있다면 내 앞에서 숨김없이 말하라.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "자신에게 혐의가 돌아올까 두렵다면, 고백함으로써 목숨을 잃는 벌을 피할 수 있음을 알라.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "그가 받을 가장 무거운 벌은 추방뿐이며, 몸을 해치지 않고 떠나게 하겠다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "범인이 외국에서 온 사람임을 아는 이가 있다면 말하라.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "합당한 보상과 감사가 있을 것이다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "그러나 자신이나 벗을 두려워하여 내 명을 무시하고 침묵한다면, 내가 무엇을 결심했는지 들어라.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "살인자가 누구든 나는 그를 금지한다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "내가 다스리는 이 땅에서 누구도 그를 집에 들이거나 말을 걸지 말라.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "기도와 제사와 정화 의식에 참여시키지 말고 집 밖으로 몰아내라.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "신께서 최근의 신탁으로 밝혀주셨듯, 그가 우리를 더럽히는 자이기 때문이다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "나는 신과 살해된 왕을 대신하여 그들의 일을 지키겠다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "범인에게, 또 범행을 함께한 모든 자에게 저주를 내린다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "비참한 자여, 끝없는 비참 속에서 쇠잔하라!",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "나 자신에게도 말한다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "내가 알고도 그를 내 집에 들인다면, 남에게 내린 저주가 나에게 돌아오기를 빈다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "나와 신과, 하늘의 분노로 황폐해진 우리 땅을 위해 이 명령을 실행하라.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "신의 분명한 명령이 없었더라도, 위대한 사람이며 왕인 이의 살인을 정화하지 않고 범인을 찾아내지 않는 것은 수치다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "이제 나는 그의 왕좌와 침상과 아내를 이어받았다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "그가 자식을 얻으려던 희망을 운명에 빼앗기지 않았다면, 같은 어머니에게서 태어난 아이들로 우리 사이에 더욱 가까운 인연이 맺어졌을 것이다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "그러므로 나는 그를 내 아버지처럼 여기고, 그의 피를 갚기 위해 끝까지 범인을 추적하겠다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "라브다코스와 폴뤼도로스와 카드모스, 그 집안의 첫 조상 아게노르를 잇는 아들의 죽음을 갚겠다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "내 명을 따르지 않는 사람들에게는 신들이 땅의 제철 열매도, 태중의 풍성한 자식도 주지 않기를 빈다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "지금처럼 쇠잔하되, 지금보다 더 큰 타격 속에서 시들기를 빈다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "그러나 나의 일을 지지하는 충성스러운 시민들에게는 우리 편인 정의와 모든 신들이 언제나 은혜로이 함께하기를 빈다.",
+    "lang": "ko",
+    "turn": 34,
+    "speaker": "오이디푸스",
+    "group": 34
+  },
+  {
+    "text": "합창대: 왕께서 요구하시는 맹세를 받아들입니다.",
+    "lang": "ko",
+    "turn": 35,
+    "speaker": "합창대",
+    "group": 35
+  },
+  {
+    "text": "저는 그를 죽이지 않았고, 죽인 사람이 누구인지도 모릅니다.",
+    "lang": "ko",
+    "turn": 35,
+    "speaker": "합창대",
+    "group": 35
+  },
+  {
+    "text": "다만 범인을 찾는 일이라면, 그 수수께끼를 주신 포이보스께서 직접 살인자가 누구인지 알려주시는 것이 좋겠습니다.",
+    "lang": "ko",
+    "turn": 35,
+    "speaker": "합창대",
+    "group": 35
+  },
+  {
+    "text": "오이디푸스: 옳은 말이다.",
+    "lang": "ko",
+    "turn": 36,
+    "speaker": "오이디푸스",
+    "group": 36
+  },
+  {
+    "text": "그러나 어떤 인간도 신의 뜻을 거슬러 말씀하시게 강요할 수는 없다.",
+    "lang": "ko",
+    "turn": 36,
+    "speaker": "오이디푸스",
+    "group": 36
+  },
+  {
+    "text": "합창대: 그렇다면 다음으로 좋다고 생각하는 방도를 말씀드려도 되겠습니까?",
+    "lang": "ko",
+    "turn": 37,
+    "speaker": "합창대",
+    "group": 37
+  },
+  {
+    "text": "오이디푸스: 세 번째로 좋은 방도가 있더라도 함께 말하라.",
+    "lang": "ko",
+    "turn": 38,
+    "speaker": "오이디푸스",
+    "group": 38
+  },
+  {
+    "text": "합창대: 포이보스의 뜻을 바로 보는 인간이 있다면, 예언자 테이레시아스일 것입니다.",
+    "lang": "ko",
+    "turn": 39,
+    "speaker": "합창대",
+    "group": 39
+  },
+  {
+    "text": "그라면 이 일을 조사하는 사람을 빛으로 이끌 수 있습니다.",
+    "lang": "ko",
+    "turn": 39,
+    "speaker": "합창대",
+    "group": 39
+  },
+  {
+    "text": "오이디푸스: 그 일도 게을리하지 않았다.",
+    "lang": "ko",
+    "turn": 40,
+    "speaker": "오이디푸스",
+    "group": 40
+  },
+  {
+    "text": "크레온의 권유를 받아 두 번이나 사람을 보내 불러오게 했다.",
+    "lang": "ko",
+    "turn": 40,
+    "speaker": "오이디푸스",
+    "group": 40
+  },
+  {
+    "text": "그런데도 아직 오지 않는 까닭이 이상하군.",
+    "lang": "ko",
+    "turn": 40,
+    "speaker": "오이디푸스",
+    "group": 40
+  },
+  {
+    "text": "합창대: 오래전의 소문도 떠오릅니다.",
+    "lang": "ko",
+    "turn": 41,
+    "speaker": "합창대",
+    "group": 41
+  },
+  {
+    "text": "그저 떠도는 말이지만요.",
+    "lang": "ko",
+    "turn": 41,
+    "speaker": "합창대",
+    "group": 41
+  },
+  {
+    "text": "오이디푸스: 말해보라.",
+    "lang": "ko",
+    "turn": 42,
+    "speaker": "오이디푸스",
+    "group": 42
+  },
+  {
+    "text": "나는 모든 것을 알고 싶다.",
+    "lang": "ko",
+    "turn": 42,
+    "speaker": "오이디푸스",
+    "group": 42
+  },
+  {
+    "text": "합창대: 길을 가던 사람들에게 죽었다는 말이 있었습니다.",
+    "lang": "ko",
+    "turn": 43,
+    "speaker": "합창대",
+    "group": 43
+  },
+  {
+    "text": "오이디푸스: 나도 들었다.",
+    "lang": "ko",
+    "turn": 44,
+    "speaker": "오이디푸스",
+    "group": 44
+  },
+  {
+    "text": "그러나 그가 죽는 것을 본 사람을 만난 이는 없다.",
+    "lang": "ko",
+    "turn": 44,
+    "speaker": "오이디푸스",
+    "group": 44
+  },
+  {
+    "text": "합창대: 범인이 두려움을 아는 사람이라면, 왕의 저주를 듣고 겁에 질려 달아날 것입니다.",
+    "lang": "ko",
+    "turn": 45,
+    "speaker": "합창대",
+    "group": 45
+  },
+  {
+    "text": "오이디푸스: 행위를 두려워하지 않는 자는 말도 두려워하지 않는다.",
+    "lang": "ko",
+    "turn": 46,
+    "speaker": "오이디푸스",
+    "group": 46
+  },
+  {
+    "text": "합창대: 그러나 그를 밝혀낼 사람이 여기 옵니다.",
+    "lang": "ko",
+    "turn": 47,
+    "speaker": "합창대",
+    "group": 47
+  },
+  {
+    "text": "모든 사람 가운데 진실을 가장 깊이 품고, 신의 영감을 받은 예언자를 마침내 데려옵니다.",
+    "lang": "ko",
+    "turn": 47,
+    "speaker": "합창대",
+    "group": 47
+  },
+  {
+    "text": "〈테이레시아스가 소년의 손에 이끌려 들어온다.〉",
+    "lang": "ko",
+    "turn": 47,
+    "speaker": "합창대",
+    "group": 47
+  },
+  {
+    "text": "오이디푸스: 테이레시아스여, 그대는 모든 것을 아는 예언자다.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "배워서 아는 일과 숨겨진 신비, 하늘 높은 곳의 일과 땅 아래의 일도 안다.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "눈으로 보지는 못해도 우리 도시를 병들게 한 역병을 알고 있을 것이다.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "우리는 그대를 유일한 방패이자 수호자로 의지한다.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "신탁을 구하러 간 사신들이 이미 신의 답을 전했으리라.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "라이오스의 살인자를 찾아 죽이거나 이 땅 밖으로 쫓아내는 것만이 역병을 없애는 길이라고 했다.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "새의 징조든 그대가 아는 어떤 예언이든 아끼지 말고, 그대 자신과 나라와 왕을 구하라.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "흘린 피의 오염에서 우리 모두를 구하라.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "우리는 그대에게 의지한다.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "자신의 모든 힘을 남을 위해 바치는 것이 인간의 가장 높은 목적이다.",
+    "lang": "ko",
+    "turn": 48,
+    "speaker": "오이디푸스",
+    "group": 48
+  },
+  {
+    "text": "테이레시아스: 아, 아!",
+    "lang": "ko",
+    "turn": 49,
+    "speaker": "테이레시아스",
+    "group": 49
+  },
+  {
+    "text": "지혜가 아무 쓸모도 없을 때, 안다는 것은 얼마나 괴로운가.",
+    "lang": "ko",
+    "turn": 49,
+    "speaker": "테이레시아스",
+    "group": 49
+  },
+  {
+    "text": "오래전부터 알던 이 사실을 잊고 있었다.",
+    "lang": "ko",
+    "turn": 49,
+    "speaker": "테이레시아스",
+    "group": 49
+  },
+  {
+    "text": "그렇지 않았다면 여기 오지 않았을 것이다.",
+    "lang": "ko",
+    "turn": 49,
+    "speaker": "테이레시아스",
+    "group": 49
+  },
+  {
+    "text": "오이디푸스: 무엇이 그대를 괴롭히는가?",
+    "lang": "ko",
+    "turn": 50,
+    "speaker": "오이디푸스",
+    "group": 50
+  },
+  {
+    "text": "어째서 그렇게 침울한가?",
+    "lang": "ko",
+    "turn": 50,
+    "speaker": "오이디푸스",
+    "group": 50
+  },
+  {
+    "text": "테이레시아스: 집으로 돌아가게 해주시오.",
+    "lang": "ko",
+    "turn": 51,
+    "speaker": "테이레시아스",
+    "group": 51
+  },
+  {
+    "text": "막지 마시오.",
+    "lang": "ko",
+    "turn": 51,
+    "speaker": "테이레시아스",
+    "group": 51
+  },
+  {
+    "text": "그대는 그대의 짐을, 나는 나의 짐을 지는 것이 가장 좋을 것이오.",
+    "lang": "ko",
+    "turn": 51,
+    "speaker": "테이레시아스",
+    "group": 51
+  },
+  {
+    "text": "오이디푸스: 부끄러운 줄 알라.",
+    "lang": "ko",
+    "turn": 52,
+    "speaker": "오이디푸스",
+    "group": 52
+  },
+  {
+    "text": "테바이를 진정으로 사랑하는 사람이라면 예언의 말을 그렇게 숨기지 않을 것이다.",
+    "lang": "ko",
+    "turn": 52,
+    "speaker": "오이디푸스",
+    "group": 52
+  },
+  {
+    "text": "테이레시아스: 왕이여, 그대의 말은 옳은 길에서 멀리 벗어나 있소.",
+    "lang": "ko",
+    "turn": 53,
+    "speaker": "테이레시아스",
+    "group": 53
+  },
+  {
+    "text": "나 또한 그대처럼 넘어질까 두려워서…….",
+    "lang": "ko",
+    "turn": 53,
+    "speaker": "테이레시아스",
+    "group": 53
+  },
+  {
+    "text": "오이디푸스: 말하라!",
+    "lang": "ko",
+    "turn": 54,
+    "speaker": "오이디푸스",
+    "group": 54
+  },
+  {
+    "text": "알고 있다면 숨기지 말라고 간청한다.",
+    "lang": "ko",
+    "turn": 54,
+    "speaker": "오이디푸스",
+    "group": 54
+  },
+  {
+    "text": "우리는 모두 그대에게 탄원하는 사람들이다.",
+    "lang": "ko",
+    "turn": 54,
+    "speaker": "오이디푸스",
+    "group": 54
+  },
+  {
+    "text": "테이레시아스: 그렇소.",
+    "lang": "ko",
+    "turn": 55,
+    "speaker": "테이레시아스",
+    "group": 55
+  },
+  {
+    "text": "그대들은 모두 어리석소.",
+    "lang": "ko",
+    "turn": 55,
+    "speaker": "테이레시아스",
+    "group": 55
+  },
+  {
+    "text": "그러나 내 입으로 나의 불행, 아니 그대의 불행을 드러내지는 않겠소.",
+    "lang": "ko",
+    "turn": 55,
+    "speaker": "테이레시아스",
+    "group": 55
+  },
+  {
+    "text": "오이디푸스: 무엇이라고?",
+    "lang": "ko",
+    "turn": 56,
+    "speaker": "오이디푸스",
+    "group": 56
+  },
+  {
+    "text": "알고도 말하지 않겠다는 것인가?",
+    "lang": "ko",
+    "turn": 56,
+    "speaker": "오이디푸스",
+    "group": 56
+  },
+  {
+    "text": "우리를 배신하고 나라를 망치려는 것인가?",
+    "lang": "ko",
+    "turn": 56,
+    "speaker": "오이디푸스",
+    "group": 56
+  },
+  {
+    "text": "테이레시아스: 나 자신도 그대도 괴롭히지 않겠소.",
+    "lang": "ko",
+    "turn": 57,
+    "speaker": "테이레시아스",
+    "group": 57
+  },
+  {
+    "text": "들을 수 없는 일을 왜 헛되이 묻는 것이오?",
+    "lang": "ko",
+    "turn": 57,
+    "speaker": "테이레시아스",
+    "group": 57
+  },
+  {
+    "text": "오이디푸스: 괴물 같은 자여!",
+    "lang": "ko",
+    "turn": 58,
+    "speaker": "오이디푸스",
+    "group": 58
+  },
+  {
+    "text": "그 침묵은 돌마저 화나게 하겠구나.",
+    "lang": "ko",
+    "turn": 58,
+    "speaker": "오이디푸스",
+    "group": 58
+  },
+  {
+    "text": "무엇을 해야 혀를 열겠는가?",
+    "lang": "ko",
+    "turn": 58,
+    "speaker": "오이디푸스",
+    "group": 58
+  },
+  {
+    "text": "무엇으로 그 고집스러운 침묵을 녹이고 흔들 수 있겠는가?",
+    "lang": "ko",
+    "turn": 58,
+    "speaker": "오이디푸스",
+    "group": 58
+  },
+  {
+    "text": "테이레시아스: 그대는 내 성정을 탓하면서 그대와 늘 함께하는 자신의 성정은 보지 못하오.",
+    "lang": "ko",
+    "turn": 59,
+    "speaker": "테이레시아스",
+    "group": 59
+  },
+  {
+    "text": "오직 나만 나무라는구려.",
+    "lang": "ko",
+    "turn": 59,
+    "speaker": "테이레시아스",
+    "group": 59
+  },
+  {
+    "text": "오이디푸스: 그대가 나라를 그렇게 오만하게 모욕하는 말을 듣고, 누가 분노를 참을 수 있겠는가?",
+    "lang": "ko",
+    "turn": 60,
+    "speaker": "오이디푸스",
+    "group": 60
+  },
+  {
+    "text": "테이레시아스: 내가 침묵해도 닥칠 일은 닥칠 것이오.",
+    "lang": "ko",
+    "turn": 61,
+    "speaker": "테이레시아스",
+    "group": 61
+  },
+  {
+    "text": "오이디푸스: 반드시 닥칠 일이라면, 내게 말하는 것이 그대의 의무다.",
+    "lang": "ko",
+    "turn": 62,
+    "speaker": "오이디푸스",
+    "group": 62
+  },
+  {
+    "text": "테이레시아스: 더 할 말은 없소.",
+    "lang": "ko",
+    "turn": 63,
+    "speaker": "테이레시아스",
+    "group": 63
+  },
+  {
+    "text": "원하는 만큼 격노하고, 가두어둔 분노를 모두 풀어놓으시오.",
+    "lang": "ko",
+    "turn": 63,
+    "speaker": "테이레시아스",
+    "group": 63
+  },
+  {
+    "text": "오이디푸스: 그래, 나는 화가 났다.",
+    "lang": "ko",
+    "turn": 64,
+    "speaker": "오이디푸스",
+    "group": 64
+  },
+  {
+    "text": "말도 아끼지 않고 생각을 모두 털어놓겠다.",
+    "lang": "ko",
+    "turn": 64,
+    "speaker": "오이디푸스",
+    "group": 64
+  },
+  {
+    "text": "내 생각에는 그대가 범행을 계획했고, 직접 죽이는 일만 빼고 모든 일을 실행했다.",
+    "lang": "ko",
+    "turn": 64,
+    "speaker": "오이디푸스",
+    "group": 64
+  },
+  {
+    "text": "그대가 눈먼 사람이 아니었다면, 피 흘린 일을 혼자 했다고까지 단언했을 것이다.",
+    "lang": "ko",
+    "turn": 64,
+    "speaker": "오이디푸스",
+    "group": 64
+  },
+  {
+    "text": "테이레시아스: 그렇소?",
+    "lang": "ko",
+    "turn": 65,
+    "speaker": "테이레시아스",
+    "group": 65
+  },
+  {
+    "text": "그렇다면 그대가 스스로 내린 포고를 지키시오.",
+    "lang": "ko",
+    "turn": 65,
+    "speaker": "테이레시아스",
+    "group": 65
+  },
+  {
+    "text": "오늘부터 이 사람들에게도 나에게도 말을 걸지 마시오.",
+    "lang": "ko",
+    "turn": 65,
+    "speaker": "테이레시아스",
+    "group": 65
+  },
+  {
+    "text": "그대가 바로 그 사람이오.",
+    "lang": "ko",
+    "turn": 65,
+    "speaker": "테이레시아스",
+    "group": 65
+  },
+  {
+    "text": "저주받은 채 이 땅을 더럽히는 자가 그대요.",
+    "lang": "ko",
+    "turn": 65,
+    "speaker": "테이레시아스",
+    "group": 65
+  },
+  {
+    "text": "오이디푸스: 비열한 중상자여!",
+    "lang": "ko",
+    "turn": 66,
+    "speaker": "오이디푸스",
+    "group": 66
+  },
+  {
+    "text": "그런 모욕을 내뱉고도 예언자라는 이유로 벌을 피할 수 있다고 생각하는가?",
+    "lang": "ko",
+    "turn": 66,
+    "speaker": "오이디푸스",
+    "group": 66
+  },
+  {
+    "text": "테이레시아스: 그렇소.",
+    "lang": "ko",
+    "turn": 67,
+    "speaker": "테이레시아스",
+    "group": 67
+  },
+  {
+    "text": "진실의 힘으로 나는 자유롭소.",
+    "lang": "ko",
+    "turn": 67,
+    "speaker": "테이레시아스",
+    "group": 67
+  },
+  {
+    "text": "오이디푸스: 누가 그대에게 그것을 가르쳤는가?",
+    "lang": "ko",
+    "turn": 68,
+    "speaker": "오이디푸스",
+    "group": 68
+  },
+  {
+    "text": "그대의 예언술은 아닐 테지.",
+    "lang": "ko",
+    "turn": 68,
+    "speaker": "오이디푸스",
+    "group": 68
+  },
+  {
+    "text": "테이레시아스: 그대요.",
+    "lang": "ko",
+    "turn": 69,
+    "speaker": "테이레시아스",
+    "group": 69
+  },
+  {
+    "text": "말하고 싶지 않은 나를 몰아붙였으니까.",
+    "lang": "ko",
+    "turn": 69,
+    "speaker": "테이레시아스",
+    "group": 69
+  },
+  {
+    "text": "오이디푸스: 무슨 말인가?",
+    "lang": "ko",
+    "turn": 70,
+    "speaker": "오이디푸스",
+    "group": 70
+  },
+  {
+    "text": "다시 말해서 내 의심을 풀어라.",
+    "lang": "ko",
+    "turn": 70,
+    "speaker": "오이디푸스",
+    "group": 70
+  },
+  {
+    "text": "테이레시아스: 뜻을 알아듣지 못했소, 아니면 더 말하도록 자극하려는 것이오?",
+    "lang": "ko",
+    "turn": 71,
+    "speaker": "테이레시아스",
+    "group": 71
+  },
+  {
+    "text": "오이디푸스: 뜻을 반쯤밖에 이해하지 못했다.",
+    "lang": "ko",
+    "turn": 72,
+    "speaker": "오이디푸스",
+    "group": 72
+  },
+  {
+    "text": "다시 말하라.",
+    "lang": "ko",
+    "turn": 72,
+    "speaker": "오이디푸스",
+    "group": 72
+  },
+  {
+    "text": "테이레시아스: 그대가 찾고 있는 살인자는 그대 자신이라고 말했소.",
+    "lang": "ko",
+    "turn": 73,
+    "speaker": "테이레시아스",
+    "group": 73
+  },
+  {
+    "text": "오이디푸스: 그토록 심한 모함을 두 번이나 반복한 것을 후회하게 될 것이다.",
+    "lang": "ko",
+    "turn": 74,
+    "speaker": "오이디푸스",
+    "group": 74
+  },
+  {
+    "text": "테이레시아스: 그대의 분노를 더 크게 만들 말을 해야겠소?",
+    "lang": "ko",
+    "turn": 75,
+    "speaker": "테이레시아스",
+    "group": 75
+  },
+  {
+    "text": "오이디푸스: 하고 싶은 말은 모두 하라.",
+    "lang": "ko",
+    "turn": 76,
+    "speaker": "오이디푸스",
+    "group": 76
+  },
+  {
+    "text": "헛된 숨만 낭비할 뿐이다.",
+    "lang": "ko",
+    "turn": 76,
+    "speaker": "오이디푸스",
+    "group": 76
+  },
+  {
+    "text": "테이레시아스: 그대는 가장 가까운 혈육과 수치스러운 관계로 살면서도, 자신의 부끄러움을 모르고 있다고 말하겠소.",
+    "lang": "ko",
+    "turn": 77,
+    "speaker": "테이레시아스",
+    "group": 77
+  },
+  {
+    "text": "오이디푸스: 그렇게 혀를 놀리고도 영원히 무사하리라 생각하는가?",
+    "lang": "ko",
+    "turn": 78,
+    "speaker": "오이디푸스",
+    "group": 78
+  },
+  {
+    "text": "테이레시아스: 진실의 힘이 조금이라도 효력이 있다면 그렇소.",
+    "lang": "ko",
+    "turn": 79,
+    "speaker": "테이레시아스",
+    "group": 79
+  },
+  {
+    "text": "오이디푸스: 다른 사람에게는 그렇겠지만 그대에게는 아니다.",
+    "lang": "ko",
+    "turn": 80,
+    "speaker": "오이디푸스",
+    "group": 80
+  },
+  {
+    "text": "그대는 귀도, 정신도, 눈도, 모든 것이 멀었다.",
+    "lang": "ko",
+    "turn": 80,
+    "speaker": "오이디푸스",
+    "group": 80
+  },
+  {
+    "text": "테이레시아스: 가엾은 어리석은 사람이여.",
+    "lang": "ko",
+    "turn": 81,
+    "speaker": "테이레시아스",
+    "group": 81
+  },
+  {
+    "text": "지금 나에게 던지는 조롱을, 여기 있는 사람들이 머지않아 모두 그대에게 돌려줄 것이오.",
+    "lang": "ko",
+    "turn": 81,
+    "speaker": "테이레시아스",
+    "group": 81
+  },
+  {
+    "text": "오이디푸스: 끝없는 밤의 자식인 그대는 나에게도, 햇빛을 보는 어떤 사람에게도 힘을 행사할 수 없다.",
+    "lang": "ko",
+    "turn": 82,
+    "speaker": "오이디푸스",
+    "group": 82
+  },
+  {
+    "text": "테이레시아스: 그렇소.",
+    "lang": "ko",
+    "turn": 83,
+    "speaker": "테이레시아스",
+    "group": 83
+  },
+  {
+    "text": "그대를 무너뜨리는 것이 내 운명은 아니오.",
+    "lang": "ko",
+    "turn": 83,
+    "speaker": "테이레시아스",
+    "group": 83
+  },
+  {
+    "text": "신에게 속한 일은 아폴론에게 맡기겠소.",
+    "lang": "ko",
+    "turn": 83,
+    "speaker": "테이레시아스",
+    "group": 83
+  },
+  {
+    "text": "오이디푸스: 이것은 크레온의 음모인가, 그대 자신의 음모인가?",
+    "lang": "ko",
+    "turn": 84,
+    "speaker": "오이디푸스",
+    "group": 84
+  },
+  {
+    "text": "테이레시아스: 크레온이 아니라 그대 자신이 그대의 파멸이오.",
+    "lang": "ko",
+    "turn": 85,
+    "speaker": "테이레시아스",
+    "group": 85
+  },
+  {
+    "text": "오이디푸스: 아, 재물과 권력, 삶의 싸움터에서 다른 재주에 속아 넘어가는 재주여!",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "그 뒤에는 얼마나 많은 악의와 질투가 따라오는가!",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "보라.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "나는 왕관을 구한 적이 없다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "나라가 선물로 내게 준 이 왕관 때문에, 믿었던 가까운 벗 크레온이 나를 몰아내려고 숨어 기다리고 있었다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "그래서 이 광대, 속임수를 부리는 사기꾼, 이 교활한 거지 사제를 매수했다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "이익에는 눈이 밝고, 정작 자신의 예언술에는 돌처럼 눈먼 자다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "말해보라.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "그대는 언제 예언자임을 증명했는가?",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "수수께끼를 내는 스핑크스가 여기 있었을 때 왜 이 백성을 구할 말을 하지 못했는가?",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "그 수수께끼는 아무렇게나 짐작하여 풀 일이 아니라 예언자의 기술을 요구했다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "그런데도 그대에게는 그 기술이 없었다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "새도 하늘의 징조도 그대를 돕지 않았다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "그러나 아무것도 모르는 오이디푸스인 내가 와서, 새의 징조를 배우지 않고 오직 타고난 지혜로 그 괴물의 입을 막았다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "그대는 바로 그 나를 무너뜨리고, 내 자리에 크레온과 함께 올라서려 한다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "그대와 그대의 공모자는 희생양을 몰아내려는 이 음모를 곧 후회할 것이다.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "그 오만에 어떤 벌이 마땅한지 아직 배우지 않은 것을, 그대의 백발에 감사하라.",
+    "lang": "ko",
+    "turn": 86,
+    "speaker": "오이디푸스",
+    "group": 86
+  },
+  {
+    "text": "합창대: 오이디푸스여, 저희가 보기에는 예언자도 왕도 분노한 말을 했습니다.",
+    "lang": "ko",
+    "turn": 87,
+    "speaker": "합창대",
+    "group": 87
+  },
+  {
+    "text": "지금은 다툴 때가 아니라, 신탁을 어떻게 가장 잘 이루어낼지 의논할 때입니다.",
+    "lang": "ko",
+    "turn": 87,
+    "speaker": "합창대",
+    "group": 87
+  },
+  {
+    "text": "테이레시아스: 그대가 왕이어도 내게는 적어도 대답할 자유가 있소.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "그 점에서는 그대와 동등하오.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "나는 록시아스 외에는 누구도 주인으로 모시지 않으며, 그 신을 섬기오.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "크레온의 사람으로 이름을 올린 적은 없소.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "내 눈먼 것을 서슴없이 조롱했으니 이렇게 대답하겠소.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "그대에게는 눈이 있지만, 어떤 불행에 빠졌는지도, 어디에서 사는지도, 누구와 함께 사는지도 보지 못하오.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "그대의 혈통을 아시오?",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "아니, 모르오.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "그대는 자신도 모르게 살아 있는 혈육과 죽은 혈육 모두의 원수가 되었소.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "아버지와 어머니의 저주가 뒤쫓아와 양날의 칼처럼 그대를 우리 땅 밖으로 몰아낼 것이오.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "지금 밝게 보는 그 눈에는 그 뒤로 끝없는 밤이 깃들 것이오.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "그대의 쓰디쓴 비명이 닿지 않을 곳이 어디 있겠소?",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "자신의 혼인이 어떤 노래에 실려, 순풍을 타고 집에 도착한 듯했으나 실은 안전한 항구가 아니었다는 사실을 알게 될 때, 키타이론의 어느 바위가 그 울음을 되받아 울리지 않겠소?",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "그대가 짐작조차 하지 못하는 재앙의 물결이 그대와 그 자녀들을 같은 줄에 놓을 것이오.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "그러니 크레온과 내 말을 조롱하시오.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "인간 가운데 누구도 그대보다 심한 타격을 받지는 않을 것이오.",
+    "lang": "ko",
+    "turn": 88,
+    "speaker": "테이레시아스",
+    "group": 88
+  },
+  {
+    "text": "오이디푸스: 이자의 오만을 견뎌야 한단 말인가?",
+    "lang": "ko",
+    "turn": 89,
+    "speaker": "오이디푸스",
+    "group": 89
+  },
+  {
+    "text": "저주받을 자여!",
+    "lang": "ko",
+    "turn": 89,
+    "speaker": "오이디푸스",
+    "group": 89
+  },
+  {
+    "text": "여기서 나가라.",
+    "lang": "ko",
+    "turn": 89,
+    "speaker": "오이디푸스",
+    "group": 89
+  },
+  {
+    "text": "물러가라!",
+    "lang": "ko",
+    "turn": 89,
+    "speaker": "오이디푸스",
+    "group": 89
+  },
+  {
+    "text": "떠나라!",
+    "lang": "ko",
+    "turn": 89,
+    "speaker": "오이디푸스",
+    "group": 89
+  },
+  {
+    "text": "다시는 내 문턱을 넘지 마라.",
+    "lang": "ko",
+    "turn": 89,
+    "speaker": "오이디푸스",
+    "group": 89
+  },
+  {
+    "text": "테이레시아스: 그대가 부르지 않았다면 오지도 않았을 것이오.",
+    "lang": "ko",
+    "turn": 90,
+    "speaker": "테이레시아스",
+    "group": 90
+  },
+  {
+    "text": "오이디푸스: 그런 어리석은 말을 할 줄 알았다면, 여기 불려오려면 오래 기다려야 했을 것이다.",
+    "lang": "ko",
+    "turn": 91,
+    "speaker": "오이디푸스",
+    "group": 91
+  },
+  {
+    "text": "테이레시아스: 나는 그대 눈에는 어리석은 사람이오.",
+    "lang": "ko",
+    "turn": 92,
+    "speaker": "테이레시아스",
+    "group": 92
+  },
+  {
+    "text": "그러나 그대를 낳은 부모의 눈에는 현명한 사람이었소.",
+    "lang": "ko",
+    "turn": 92,
+    "speaker": "테이레시아스",
+    "group": 92
+  },
+  {
+    "text": "오이디푸스: 무슨 말인가?",
+    "lang": "ko",
+    "turn": 93,
+    "speaker": "오이디푸스",
+    "group": 93
+  },
+  {
+    "text": "‘부모’라고?",
+    "lang": "ko",
+    "turn": 93,
+    "speaker": "오이디푸스",
+    "group": 93
+  },
+  {
+    "text": "누가 나를 낳았는가?",
+    "lang": "ko",
+    "turn": 93,
+    "speaker": "오이디푸스",
+    "group": 93
+  },
+  {
+    "text": "말하라!",
+    "lang": "ko",
+    "turn": 93,
+    "speaker": "오이디푸스",
+    "group": 93
+  },
+  {
+    "text": "테이레시아스: 오늘은 그대가 태어나는 날이자, 그대의 무덤이 되는 날이오.",
+    "lang": "ko",
+    "turn": 94,
+    "speaker": "테이레시아스",
+    "group": 94
+  },
+  {
+    "text": "오이디푸스: 그대는 수수께끼와 어두운 말로 이야기하기를 좋아하는군.",
+    "lang": "ko",
+    "turn": 95,
+    "speaker": "오이디푸스",
+    "group": 95
+  },
+  {
+    "text": "테이레시아스: 수수께끼를 푸는 데 그대만큼 능한 사람이 어디 있소?",
+    "lang": "ko",
+    "turn": 96,
+    "speaker": "테이레시아스",
+    "group": 96
+  },
+  {
+    "text": "오이디푸스: 나의 위대함이 있는 바로 그 일을 조롱하는구나.",
+    "lang": "ko",
+    "turn": 97,
+    "speaker": "오이디푸스",
+    "group": 97
+  },
+  {
+    "text": "테이레시아스: 그 위대함이 그대의 파멸이 되었다오.",
+    "lang": "ko",
+    "turn": 98,
+    "speaker": "테이레시아스",
+    "group": 98
+  },
+  {
+    "text": "오이디푸스: 나라를 구했다면 상관없다.",
+    "lang": "ko",
+    "turn": 99,
+    "speaker": "오이디푸스",
+    "group": 99
+  },
+  {
+    "text": "테이레시아스: 이제 떠날 시간이오.",
+    "lang": "ko",
+    "turn": 100,
+    "speaker": "테이레시아스",
+    "group": 100
+  },
+  {
+    "text": "얘야, 나를 집으로 데려가다오.",
+    "lang": "ko",
+    "turn": 100,
+    "speaker": "테이레시아스",
+    "group": 100
+  },
+  {
+    "text": "오이디푸스: 그래, 빨리 데려가라.",
+    "lang": "ko",
+    "turn": 101,
+    "speaker": "오이디푸스",
+    "group": 101
+  },
+  {
+    "text": "그가 여기 있으면 나를 괴롭히고 가로막는다.",
+    "lang": "ko",
+    "turn": 101,
+    "speaker": "오이디푸스",
+    "group": 101
+  },
+  {
+    "text": "사라지고 나면 더는 나를 괴롭히지 못하겠지.",
+    "lang": "ko",
+    "turn": 101,
+    "speaker": "오이디푸스",
+    "group": 101
+  },
+  {
+    "text": "테이레시아스: 가겠소.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "그러나 내가 온 까닭을 먼저 말하겠소.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "그대는 나를 해칠 수 없으므로 그 찌푸린 얼굴을 두려워하지 않소.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "들으시오.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "그대가 오랫동안 위협과 포고로 붙잡으려 했던 자, 라이오스를 죽인 비참한 자는 바로 여기에 있소.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "지금은 이 땅의 외국인으로 통하지만, 곧 테바이 태생임이 드러날 것이오.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "그러나 그 운명이 기쁨을 주지는 않을 것이오.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "눈을 보다가 눈이 멀고, 자주색 왕의 옷 대신 거지의 옷을 입고, 지팡이에 기대어 낯선 땅으로 더듬어 갈 것이오.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "자기 집에 사는 자녀들의 형제이자 아버지로 밝혀지고, 자신을 낳은 여자의 아들이자 남편으로 밝혀질 것이오.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "아버지와 아내를 함께한 자이자 아버지의 살인자로 드러날 것이오.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "안으로 들어가 이 말을 생각해보시오.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "내가 틀렸다고 밝혀진다면, 그 뒤로는 내게 지혜도 예언술도 없다고 말하시오.",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "〈테이레시아스와 오이디푸스가 퇴장한다.〉",
+    "lang": "ko",
+    "turn": 102,
+    "speaker": "테이레시아스",
+    "group": 102
+  },
+  {
+    "text": "합창대: 〈첫째 정가〉 피토의 바위 신전에서 불멸의 목소리가 지목한 그는 누구인가?",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "차마 말할 수 없는 피의 악행을 저지른 자는 누구인가?",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "그는 폭풍처럼 빠른 말보다 빠른 발로 달아나야 한다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "아버지의 번개로 무장한 아폴론이 그의 발뒤꿈치를 쫓으며, 운명의 신들도 사냥개처럼 따라붙기 때문이다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "〈첫째 반정가〉 방금 파르나소스의 눈 덮인 정상에서 명령이 번쩍였다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "‘가까운 곳과 먼 곳에서, 아직 밝혀지지 않은 이 살인의 범인을 찾으라!’",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "그는 이제 사나운 황소처럼 숲의 덤불과 산의 나무 사이를 헤맨다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "그러나 자기 머리 위를 맴돌며 언제나 곁에 있는 운명에서 헛되이 달아나려 한다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "세상의 중심에 있는 신전에서 나온 신의 목소리가, 복수하는 포이보스의 힘으로 계속 그를 쫓는다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "〈둘째 정가〉 위대한 예언자의 말에 몹시 혼란스럽다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "참인가, 거짓인가?",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "알 수 없어서 두려움에 혀를 묶는다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "막연한 의심에 흔들리니 현재도 미래도 분명하지 않다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "라브다코스의 집안과 우리의 군주인 폴뤼보스의 아들 사이에, 먼 옛날이나 가까운 날에 다툼이 있었다고는 알지 못한다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "증거가 없는데 어떻게 왕의 좋은 이름에 도전하겠는가?",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "밝혀지지 않은 부끄러운 행위를 두고, 어떻게 피의 원한에 가담하겠는가?",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "〈둘째 반정가〉 제우스와 아폴론은 모든 것을 아시며, 그 지식에서 숨겨지는 것은 없다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "그들은 신이다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "인간이 다른 인간보다 지혜로울 수는 있다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "그러나 인간인 예언자가 나보다 더 많이 안다는 것은 어디에서 증명되었는가?",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "확실한 징조도 없이 어떻게 그를 탓하겠는가?",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "날개 달린 노래의 괴물이 왔을 때, 그는 모두가 보는 앞에서 시험을 견디고 우리 나라를 구했다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "금을 불로 검증하듯 증명된 그였다.",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "이제 오이디푸스에게 죄가 씌워졌다고 어떻게 동의하겠는가?",
+    "lang": "ko",
+    "turn": 103,
+    "speaker": "합창대",
+    "group": 103
+  },
+  {
+    "text": "크레온: 벗들이여, 동포들이여.",
+    "lang": "ko",
+    "turn": 104,
+    "speaker": "크레온",
+    "group": 104
+  },
+  {
+    "text": "오이디푸스 왕이 내게 몹시 무거운 혐의를 씌웠다는 말을 듣고, 항의하려 여러분에게 왔소.",
+    "lang": "ko",
+    "turn": 104,
+    "speaker": "크레온",
+    "group": 104
+  },
+  {
+    "text": "이 위기 속에서 내가 말이나 행동으로 조금이라도 그를 해쳤다고 왕이 생각한다면, 그런 나쁜 평판을 지고 삶을 이어가고 싶지 않소.",
+    "lang": "ko",
+    "turn": 104,
+    "speaker": "크레온",
+    "group": 104
+  },
+  {
+    "text": "이 모함은 한 가지 흠만 지적하는 것이 아니라 내 이름 전체를 파괴하오.",
+    "lang": "ko",
+    "turn": 104,
+    "speaker": "크레온",
+    "group": 104
+  },
+  {
+    "text": "온 도시가, 또 벗인 여러분이 나를 나라와 친구들에게 충실하지 않은 사람으로 부른다면 더욱 그러하오.",
+    "lang": "ko",
+    "turn": 104,
+    "speaker": "크레온",
+    "group": 104
+  },
+  {
+    "text": "합창대: 그 비난은 숙고한 말이 아니라, 화가 나서 성급히 내뱉은 말이었을지도 모릅니다.",
+    "lang": "ko",
+    "turn": 105,
+    "speaker": "합창대",
+    "group": 105
+  },
+  {
+    "text": "크레온: 내가 예언자를 시켜 거짓 혐의를 말하게 했다고 누가 감히 주장했소?",
+    "lang": "ko",
+    "turn": 106,
+    "speaker": "크레온",
+    "group": 106
+  },
+  {
+    "text": "합창대: 그런 말은 나왔습니다.",
+    "lang": "ko",
+    "turn": 107,
+    "speaker": "합창대",
+    "group": 107
+  },
+  {
+    "text": "어떤 뜻으로 했는지는 모르겠습니다.",
+    "lang": "ko",
+    "turn": 107,
+    "speaker": "합창대",
+    "group": 107
+  },
+  {
+    "text": "크레온: 그 끔찍한 혐의를 내게 씌웠을 때 왕의 정신과 판단이 흐려져 있었던 것 아니오?",
+    "lang": "ko",
+    "turn": 108,
+    "speaker": "크레온",
+    "group": 108
+  },
+  {
+    "text": "합창대: 모르겠습니다.",
+    "lang": "ko",
+    "turn": 109,
+    "speaker": "합창대",
+    "group": 109
+  },
+  {
+    "text": "군주의 행위를 제가 다 알 수는 없습니다.",
+    "lang": "ko",
+    "turn": 109,
+    "speaker": "합창대",
+    "group": 109
+  },
+  {
+    "text": "그러나 보십시오, 직접 대답하실 왕께서 오십니다.",
+    "lang": "ko",
+    "turn": 109,
+    "speaker": "합창대",
+    "group": 109
+  },
+  {
+    "text": "〈오이디푸스가 들어온다.〉",
+    "lang": "ko",
+    "turn": 109,
+    "speaker": "합창대",
+    "group": 109
+  },
+  {
+    "text": "오이디푸스: 그대가 여기서 무엇을 하는가?",
+    "lang": "ko",
+    "turn": 110,
+    "speaker": "오이디푸스",
+    "group": 110
+  },
+  {
+    "text": "나를 죽이고 내 왕관을 훔치려는 뻔뻔한 악당이 내 문 앞까지 다가올 생각을 하는가?",
+    "lang": "ko",
+    "turn": 110,
+    "speaker": "오이디푸스",
+    "group": 110
+  },
+  {
+    "text": "대답하라.",
+    "lang": "ko",
+    "turn": 110,
+    "speaker": "오이디푸스",
+    "group": 110
+  },
+  {
+    "text": "내가 겁쟁이거나 어리석다고 판단해서 이런 일을 벌였는가?",
+    "lang": "ko",
+    "turn": 110,
+    "speaker": "오이디푸스",
+    "group": 110
+  },
+  {
+    "text": "어둠 속에서 다가오는 뱀을 알아보지 못할 만큼 내가 순진해 보였는가?",
+    "lang": "ko",
+    "turn": 110,
+    "speaker": "오이디푸스",
+    "group": 110
+  },
+  {
+    "text": "아니면 알아보아도 처단하지 못할 만큼 약해 보였는가?",
+    "lang": "ko",
+    "turn": 110,
+    "speaker": "오이디푸스",
+    "group": 110
+  },
+  {
+    "text": "지지자도 친구도 없이 왕관을 얻으려는 그대야말로 어리석다.",
+    "lang": "ko",
+    "turn": 110,
+    "speaker": "오이디푸스",
+    "group": 110
+  },
+  {
+    "text": "그것은 추종자와 재물로 얻어야 하는 보상이니까.",
+    "lang": "ko",
+    "turn": 110,
+    "speaker": "오이디푸스",
+    "group": 110
+  },
+  {
+    "text": "크레온: 내 말을 들으시오.",
+    "lang": "ko",
+    "turn": 111,
+    "speaker": "크레온",
+    "group": 111
+  },
+  {
+    "text": "그대가 말했으니 이제 내가 대답할 차례요.",
+    "lang": "ko",
+    "turn": 111,
+    "speaker": "크레온",
+    "group": 111
+  },
+  {
+    "text": "듣고 나서 판단하시오.",
+    "lang": "ko",
+    "turn": 111,
+    "speaker": "크레온",
+    "group": 111
+  },
+  {
+    "text": "오이디푸스: 그대의 혀는 매끄럽지만, 나는 그대에게 배우는 데 둔하다.",
+    "lang": "ko",
+    "turn": 112,
+    "speaker": "오이디푸스",
+    "group": 112
+  },
+  {
+    "text": "그대의 독한 미움을 너무 잘 아니까.",
+    "lang": "ko",
+    "turn": 112,
+    "speaker": "오이디푸스",
+    "group": 112
+  },
+  {
+    "text": "크레온: 먼저 바로 그 점을 따져보고 싶소.",
+    "lang": "ko",
+    "turn": 113,
+    "speaker": "크레온",
+    "group": 113
+  },
+  {
+    "text": "오이디푸스: 그대가 악당이 아니라는 말은 하지 마라.",
+    "lang": "ko",
+    "turn": 114,
+    "speaker": "오이디푸스",
+    "group": 114
+  },
+  {
+    "text": "크레온: 이성에게 배우려 하지 않는 고집을 덕으로 여긴다면, 그대는 크게 잘못 생각하오.",
+    "lang": "ko",
+    "turn": 115,
+    "speaker": "크레온",
+    "group": 115
+  },
+  {
+    "text": "오이디푸스: 친족을 해치고도 벌을 받지 않을 수 있다고 생각한다면, 그대는 크게 잘못 생각한다.",
+    "lang": "ko",
+    "turn": 116,
+    "speaker": "오이디푸스",
+    "group": 116
+  },
+  {
+    "text": "크레온: 그 점은 옳게 판단했소.",
+    "lang": "ko",
+    "turn": 117,
+    "speaker": "크레온",
+    "group": 117
+  },
+  {
+    "text": "그러나 그대가 주장하는 해악이 무엇인지 말해주시오.",
+    "lang": "ko",
+    "turn": 117,
+    "speaker": "크레온",
+    "group": 117
+  },
+  {
+    "text": "오이디푸스: 그 예언자를 부르라고 내게 권한 것은 그대였는가, 아니었는가?",
+    "lang": "ko",
+    "turn": 118,
+    "speaker": "오이디푸스",
+    "group": 118
+  },
+  {
+    "text": "크레온: 그랬소.",
+    "lang": "ko",
+    "turn": 119,
+    "speaker": "크레온",
+    "group": 119
+  },
+  {
+    "text": "지금도 그 권유를 철회하지 않소.",
+    "lang": "ko",
+    "turn": 119,
+    "speaker": "크레온",
+    "group": 119
+  },
+  {
+    "text": "오이디푸스: 라이오스가…… 그 일이 있은 지 얼마나 되었는지 말해보라.",
+    "lang": "ko",
+    "turn": 120,
+    "speaker": "오이디푸스",
+    "group": 120
+  },
+  {
+    "text": "크레온: 라이오스가 무엇을 했을 때 말이오?",
+    "lang": "ko",
+    "turn": 121,
+    "speaker": "크레온",
+    "group": 121
+  },
+  {
+    "text": "그대의 뜻을 모르겠소.",
+    "lang": "ko",
+    "turn": 121,
+    "speaker": "크레온",
+    "group": 121
+  },
+  {
+    "text": "오이디푸스: 폭력적인 손에 목숨을 빼앗겼을 때 말이다.",
+    "lang": "ko",
+    "turn": 122,
+    "speaker": "오이디푸스",
+    "group": 122
+  },
+  {
+    "text": "크레온: 아득한 과거요.",
+    "lang": "ko",
+    "turn": 123,
+    "speaker": "크레온",
+    "group": 123
+  },
+  {
+    "text": "여러 해가 지났소.",
+    "lang": "ko",
+    "turn": 123,
+    "speaker": "크레온",
+    "group": 123
+  },
+  {
+    "text": "오이디푸스: 그때도 같은 예언자가 예언술을 행했는가?",
+    "lang": "ko",
+    "turn": 124,
+    "speaker": "오이디푸스",
+    "group": 124
+  },
+  {
+    "text": "크레온: 그렇소.",
+    "lang": "ko",
+    "turn": 125,
+    "speaker": "크레온",
+    "group": 125
+  },
+  {
+    "text": "지금처럼 능숙했고, 명성도 못지않았소.",
+    "lang": "ko",
+    "turn": 125,
+    "speaker": "크레온",
+    "group": 125
+  },
+  {
+    "text": "오이디푸스: 그때 그가 나를 지목한 일이 있는가?",
+    "lang": "ko",
+    "turn": 126,
+    "speaker": "오이디푸스",
+    "group": 126
+  },
+  {
+    "text": "크레온: 내가 아는 한 없소.",
+    "lang": "ko",
+    "turn": 127,
+    "speaker": "크레온",
+    "group": 127
+  },
+  {
+    "text": "내가 있는 자리에서는 없었소.",
+    "lang": "ko",
+    "turn": 127,
+    "speaker": "크레온",
+    "group": 127
+  },
+  {
+    "text": "오이디푸스: 그렇다면 수색과 조사는 이루어지지 않았는가?",
+    "lang": "ko",
+    "turn": 128,
+    "speaker": "오이디푸스",
+    "group": 128
+  },
+  {
+    "text": "크레온: 철저히 조사했지만 아무것도 알아내지 못했소.",
+    "lang": "ko",
+    "turn": 129,
+    "speaker": "크레온",
+    "group": 129
+  },
+  {
+    "text": "오이디푸스: 그 예언자는 왜 그때 이 이야기를 하지 않았는가?",
+    "lang": "ko",
+    "turn": 130,
+    "speaker": "오이디푸스",
+    "group": 130
+  },
+  {
+    "text": "크레온: 모르오.",
+    "lang": "ko",
+    "turn": 131,
+    "speaker": "크레온",
+    "group": 131
+  },
+  {
+    "text": "모르기 때문에 말하지 않는 것이오.",
+    "lang": "ko",
+    "turn": 131,
+    "speaker": "크레온",
+    "group": 131
+  },
+  {
+    "text": "오이디푸스: 이것만큼은 그대도 알 것이고, 분명히 말할 수 있을 것이다.",
+    "lang": "ko",
+    "turn": 132,
+    "speaker": "오이디푸스",
+    "group": 132
+  },
+  {
+    "text": "크레온: 무슨 말이오?",
+    "lang": "ko",
+    "turn": 133,
+    "speaker": "크레온",
+    "group": 133
+  },
+  {
+    "text": "내가 아는 것은 모두 밝히겠소.",
+    "lang": "ko",
+    "turn": 133,
+    "speaker": "크레온",
+    "group": 133
+  },
+  {
+    "text": "오이디푸스: 그대가 시키지 않았다면 예언자가 내게 라이오스의 죽음을 씌우지는 않았을 것이다.",
+    "lang": "ko",
+    "turn": 134,
+    "speaker": "오이디푸스",
+    "group": 134
+  },
+  {
+    "text": "크레온: 그가 그렇게 말했다면 그대가 가장 잘 알 것이오.",
+    "lang": "ko",
+    "turn": 135,
+    "speaker": "크레온",
+    "group": 135
+  },
+  {
+    "text": "그러나 이번에는 나도 그대에게 질문하겠소.",
+    "lang": "ko",
+    "turn": 135,
+    "speaker": "크레온",
+    "group": 135
+  },
+  {
+    "text": "오이디푸스: 질문하라.",
+    "lang": "ko",
+    "turn": 136,
+    "speaker": "오이디푸스",
+    "group": 136
+  },
+  {
+    "text": "할 수 있다면 내가 살인자임을 증명해보라.",
+    "lang": "ko",
+    "turn": 136,
+    "speaker": "오이디푸스",
+    "group": 136
+  },
+  {
+    "text": "크레온: 그렇다면 묻겠소.",
+    "lang": "ko",
+    "turn": 137,
+    "speaker": "크레온",
+    "group": 137
+  },
+  {
+    "text": "그대는 내 누이와 결혼했소?",
+    "lang": "ko",
+    "turn": 137,
+    "speaker": "크레온",
+    "group": 137
+  },
+  {
+    "text": "오이디푸스: 그렇게 분명한 사실을 부정할 수는 없지.",
+    "lang": "ko",
+    "turn": 138,
+    "speaker": "오이디푸스",
+    "group": 138
+  },
+  {
+    "text": "크레온: 그녀는 그대의 왕비로서 왕권을 함께 누리오?",
+    "lang": "ko",
+    "turn": 139,
+    "speaker": "크레온",
+    "group": 139
+  },
+  {
+    "text": "오이디푸스: 그녀가 원하는 것을 나는 모두 기꺼이 들어준다.",
+    "lang": "ko",
+    "turn": 140,
+    "speaker": "오이디푸스",
+    "group": 140
+  },
+  {
+    "text": "크레온: 그리고 나도 두 사람과 함께 세 사람의 권력을 나누고 있소?",
+    "lang": "ko",
+    "turn": 141,
+    "speaker": "크레온",
+    "group": 141
+  },
+  {
+    "text": "오이디푸스: 그렇다.",
+    "lang": "ko",
+    "turn": 142,
+    "speaker": "오이디푸스",
+    "group": 142
+  },
+  {
+    "text": "바로 그것이 그대가 거짓된 친구임을 증명한다.",
+    "lang": "ko",
+    "turn": 142,
+    "speaker": "오이디푸스",
+    "group": 142
+  },
+  {
+    "text": "크레온: 그렇지 않소.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "내가 나 자신과 이치로 따지듯 그대도 생각해보시오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "먼저 묻겠소.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "같은 권력을 가질 수 있다면, 어느 인간이 안전하고 평온한 삶 대신 두려움으로 가득 찬 불안한 왕의 삶을 택하겠소?",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "나는 왕이라는 이름을 탐내는 성정이 아니오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "왕과 같은 일을 할 수 있으면 그것으로 좋소.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "생각이 온전한 사람이라면 누구나 그렇게 여길 것이오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "지금은 그대를 통해 내게 필요한 것을 모두 얻으며 아무것도 두려워하지 않소.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "그러나 왕이 된다면 내 뜻과 어긋나는 일을 해야 할 때가 많을 것이오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "그렇다면 어째서 왕이라는 칭호가 끝없는 영향력의 달콤함보다 내게 더 매력적이겠소?",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "실체를 손에 쥐고도 그림자를 움켜잡을 만큼 어리석지는 않소.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "지금은 모두가 내게 행운을 빌고 잘되기를 바라오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "그대에게 은혜를 얻으려는 탄원자들은 모두 내 귀에 말을 전하려 하오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "왜 더 나은 것을 버리고 더 나쁜 것을 택하겠소?",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "그것은 미친 짓이고, 나는 미치지 않았소.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "그런 야심에 유혹된 적도 없으며, 그런 음모에 가담하지도 않을 것이오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "의심스럽다면 먼저 델포이로 가시오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "내가 신의 답을 사실대로 전했는지 확인하시오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "그런 다음 내가 예언자와 함께 음모를 꾸몄는지 조사하시오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "사실로 밝혀진다면 사형을 선고하시오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "그대의 표만이 아니라, 나와 그대 두 사람의 표로 선고하시오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "그러나 단순한 의심만으로 해명의 길도 없이 나를 단죄하지 마시오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "무턱대고 악인을 선하다 하거나 선인을 악하다 하는 것은 옳지 않소.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "진실한 벗을 버리는 것은, 사람이 가장 귀하게 여기는 자기 생명을 버리는 것과 같소.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "시간이 지나면 진실을 알게 될 것이오.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "정의로운 사람을 드러내는 것은 오직 시간이지만, 악인은 하루에도 알아볼 수 있으니까.",
+    "lang": "ko",
+    "turn": 143,
+    "speaker": "크레온",
+    "group": 143
+  },
+  {
+    "text": "합창대: 신중하게 걸어가는 사람이라면 그의 말이 옳다고 느낄 것입니다.",
+    "lang": "ko",
+    "turn": 144,
+    "speaker": "합창대",
+    "group": 144
+  },
+  {
+    "text": "서둘러 내리는 판단은 확실하지 않습니다.",
+    "lang": "ko",
+    "turn": 144,
+    "speaker": "합창대",
+    "group": 144
+  },
+  {
+    "text": "오이디푸스: 몰래 음모를 꾸미는 자가 빠르게 다가오면, 나도 빠르게 대응해야 한다.",
+    "lang": "ko",
+    "turn": 145,
+    "speaker": "오이디푸스",
+    "group": 145
+  },
+  {
+    "text": "수동적으로 공격을 기다린다면 그에게는 확실한 승리가, 내게는 확실한 패배가 된다.",
+    "lang": "ko",
+    "turn": 145,
+    "speaker": "오이디푸스",
+    "group": 145
+  },
+  {
+    "text": "크레온: 그러면 그대의 뜻은 무엇이오?",
+    "lang": "ko",
+    "turn": 146,
+    "speaker": "크레온",
+    "group": 146
+  },
+  {
+    "text": "나를 이 땅에서 추방하려는 것이오?",
+    "lang": "ko",
+    "turn": 146,
+    "speaker": "크레온",
+    "group": 146
+  },
+  {
+    "text": "오이디푸스: 추방이 아니라 죽이겠다.",
+    "lang": "ko",
+    "turn": 147,
+    "speaker": "오이디푸스",
+    "group": 147
+  },
+  {
+    "text": "사람들이 질투가 어떤 대가를 거두는지 보게 하겠다.",
+    "lang": "ko",
+    "turn": 147,
+    "speaker": "오이디푸스",
+    "group": 147
+  },
+  {
+    "text": "크레온: 그대는 뜻을 꺾지도, 나를 믿지도 않으려 하는군.",
+    "lang": "ko",
+    "turn": 148,
+    "speaker": "크레온",
+    "group": 148
+  },
+  {
+    "text": "오이디푸스: 그대 같은 자를 믿는 사람은 어리석은 자뿐이다.",
+    "lang": "ko",
+    "turn": 149,
+    "speaker": "오이디푸스",
+    "group": 149
+  },
+  {
+    "text": "크레온: 그대는 현명하지 않소.",
+    "lang": "ko",
+    "turn": 150,
+    "speaker": "크레온",
+    "group": 150
+  },
+  {
+    "text": "오이디푸스: 적어도 나 자신을 위해서는 현명하다.",
+    "lang": "ko",
+    "turn": 151,
+    "speaker": "오이디푸스",
+    "group": 151
+  },
+  {
+    "text": "크레온: 나를 위해서도 그래야 하지 않소?",
+    "lang": "ko",
+    "turn": 152,
+    "speaker": "크레온",
+    "group": 152
+  },
+  {
+    "text": "오이디푸스: 그런 악당을 위해 왜 그래야 하는가?",
+    "lang": "ko",
+    "turn": 153,
+    "speaker": "오이디푸스",
+    "group": 153
+  },
+  {
+    "text": "크레온: 그대의 판단이 잘못되었다면 어찌하겠소?",
+    "lang": "ko",
+    "turn": 154,
+    "speaker": "크레온",
+    "group": 154
+  },
+  {
+    "text": "오이디푸스: 그래도 왕은 다스려야 한다.",
+    "lang": "ko",
+    "turn": 155,
+    "speaker": "오이디푸스",
+    "group": 155
+  },
+  {
+    "text": "크레온: 그릇되게 다스린다면 그래서는 안 되오.",
+    "lang": "ko",
+    "turn": 156,
+    "speaker": "크레온",
+    "group": 156
+  },
+  {
+    "text": "오이디푸스: 테바이 시민들이여, 저자의 말을 들어보라!",
+    "lang": "ko",
+    "turn": 157,
+    "speaker": "오이디푸스",
+    "group": 157
+  },
+  {
+    "text": "크레온: 그대의 테바이 시민들이오?",
+    "lang": "ko",
+    "turn": 158,
+    "speaker": "크레온",
+    "group": 158
+  },
+  {
+    "text": "나도 테바이 사람이 아니오?",
+    "lang": "ko",
+    "turn": 158,
+    "speaker": "크레온",
+    "group": 158
+  },
+  {
+    "text": "합창대: 두 군주께서는 그만하십시오.",
+    "lang": "ko",
+    "turn": 159,
+    "speaker": "합창대",
+    "group": 159
+  },
+  {
+    "text": "마침 궁전에서 이오카스테가 오십니다.",
+    "lang": "ko",
+    "turn": 159,
+    "speaker": "합창대",
+    "group": 159
+  },
+  {
+    "text": "더 일찍 오셨더라면 좋았을 것입니다.",
+    "lang": "ko",
+    "turn": 159,
+    "speaker": "합창대",
+    "group": 159
+  },
+  {
+    "text": "두 분의 다툼을 풀 평화의 중재자로, 그보다 적합한 분이 어디 있겠습니까?",
+    "lang": "ko",
+    "turn": 159,
+    "speaker": "합창대",
+    "group": 159
+  },
+  {
+    "text": "〈이오카스테가 들어온다.〉",
+    "lang": "ko",
+    "turn": 159,
+    "speaker": "합창대",
+    "group": 159
+  },
+  {
+    "text": "이오카스테: 길을 잃은 두 군주여.",
+    "lang": "ko",
+    "turn": 160,
+    "speaker": "이오카스테",
+    "group": 160
+  },
+  {
+    "text": "왜 이런 말다툼을 벌이나요?",
+    "lang": "ko",
+    "turn": 160,
+    "speaker": "이오카스테",
+    "group": 160
+  },
+  {
+    "text": "나라 전체가 쓰러져 있는데, 사적인 원망을 소리 높여 드러내는 것이 부끄럽지 않나요?",
+    "lang": "ko",
+    "turn": 160,
+    "speaker": "이오카스테",
+    "group": 160
+  },
+  {
+    "text": "남편이여, 안으로 들어가세요.",
+    "lang": "ko",
+    "turn": 160,
+    "speaker": "이오카스테",
+    "group": 160
+  },
+  {
+    "text": "오라버니도 집으로 돌아가세요.",
+    "lang": "ko",
+    "turn": 160,
+    "speaker": "이오카스테",
+    "group": 160
+  },
+  {
+    "text": "작은 슬픔을 온 나라의 추문으로 만들지 마세요.",
+    "lang": "ko",
+    "turn": 160,
+    "speaker": "이오카스테",
+    "group": 160
+  },
+  {
+    "text": "크레온: 왕비인 누이여.",
+    "lang": "ko",
+    "turn": 161,
+    "speaker": "크레온",
+    "group": 161
+  },
+  {
+    "text": "그대의 남편 오이디푸스가 내게 선택하라고 하오.",
+    "lang": "ko",
+    "turn": 161,
+    "speaker": "크레온",
+    "group": 161
+  },
+  {
+    "text": "무법자의 추방이나 죄인의 죽음 중에서 고르라니, 참으로 두려운 선택이오.",
+    "lang": "ko",
+    "turn": 161,
+    "speaker": "크레온",
+    "group": 161
+  },
+  {
+    "text": "오이디푸스: 그렇소, 부인.",
+    "lang": "ko",
+    "turn": 162,
+    "speaker": "오이디푸스",
+    "group": 162
+  },
+  {
+    "text": "그가 내 왕권을 해치려고 비열한 술책을 쓰는 것을 알아냈소.",
+    "lang": "ko",
+    "turn": 162,
+    "speaker": "오이디푸스",
+    "group": 162
+  },
+  {
+    "text": "크레온: 이 혐의에 내가 조금이라도 죄가 있다면, 아무 일도 잘되지 않고 저주받아 죽기를 바라오.",
+    "lang": "ko",
+    "turn": 163,
+    "speaker": "크레온",
+    "group": 163
+  },
+  {
+    "text": "이오카스테: 오이디푸스여, 그를 믿어주세요.",
+    "lang": "ko",
+    "turn": 164,
+    "speaker": "이오카스테",
+    "group": 164
+  },
+  {
+    "text": "먼저 그 엄숙한 맹세를 위해, 그다음에는 나를 위해, 그리고 당신 곁에서 기다리는 이 원로들을 위해 간청해요.",
+    "lang": "ko",
+    "turn": 164,
+    "speaker": "이오카스테",
+    "group": 164
+  },
+  {
+    "text": "합창대: 〈첫째 정가〉 왕이시여, 들으시고 생각하소서.",
+    "lang": "ko",
+    "turn": 165,
+    "speaker": "합창대",
+    "group": 165
+  },
+  {
+    "text": "완고하게 버티지 말고 마음을 누그러뜨리소서.",
+    "lang": "ko",
+    "turn": 165,
+    "speaker": "합창대",
+    "group": 165
+  },
+  {
+    "text": "오이디푸스: 무엇에 동의하라는 것인가?",
+    "lang": "ko",
+    "turn": 166,
+    "speaker": "오이디푸스",
+    "group": 166
+  },
+  {
+    "text": "합창대: 모두가 아는 정직함과 신의가 이제 맹세로 다시 확인된 사람을 존중하소서.",
+    "lang": "ko",
+    "turn": 167,
+    "speaker": "합창대",
+    "group": 167
+  },
+  {
+    "text": "오이디푸스: 어떤 은혜를 요구하는지 알고 하는 말인가?",
+    "lang": "ko",
+    "turn": 168,
+    "speaker": "오이디푸스",
+    "group": 168
+  },
+  {
+    "text": "합창대: 예, 알고 있습니다.",
+    "lang": "ko",
+    "turn": 169,
+    "speaker": "합창대",
+    "group": 169
+  },
+  {
+    "text": "오이디푸스: 그렇다면 뜻을 분명히 밝혀라.",
+    "lang": "ko",
+    "turn": 170,
+    "speaker": "오이디푸스",
+    "group": 170
+  },
+  {
+    "text": "합창대: 떠도는 말에 공격받는 벗에게 낙인을 찍지 마소서.",
+    "lang": "ko",
+    "turn": 171,
+    "speaker": "합창대",
+    "group": 171
+  },
+  {
+    "text": "의심이 그의 맹세보다 앞서게 하지 마소서.",
+    "lang": "ko",
+    "turn": 171,
+    "speaker": "합창대",
+    "group": 171
+  },
+  {
+    "text": "오이디푸스: 그대들이 이것을 요구하는 것은 사실상 나의 죽음이나 추방을 요구하는 것임을 생각해보았는가?",
+    "lang": "ko",
+    "turn": 172,
+    "speaker": "오이디푸스",
+    "group": 172
+  },
+  {
+    "text": "합창대: 아닙니다.",
+    "lang": "ko",
+    "turn": 173,
+    "speaker": "합창대",
+    "group": 173
+  },
+  {
+    "text": "신들의 무리를 이끄는 주인께 맹세합니다!",
+    "lang": "ko",
+    "turn": 173,
+    "speaker": "합창대",
+    "group": 173
+  },
+  {
+    "text": "〈둘째 정가〉 태양이여, 증인이 되소서.",
+    "lang": "ko",
+    "turn": 173,
+    "speaker": "합창대",
+    "group": 173
+  },
+  {
+    "text": "그런 생각을 한 적이 없습니다.",
+    "lang": "ko",
+    "turn": 173,
+    "speaker": "합창대",
+    "group": 173
+  },
+  {
+    "text": "그런 소망을 품었다면 복도 벗도 없이 죽어도 좋습니다.",
+    "lang": "ko",
+    "turn": 173,
+    "speaker": "합창대",
+    "group": 173
+  },
+  {
+    "text": "그러나 재앙을 당한 우리 나라를 생각하면 내 마음은 황폐합니다.",
+    "lang": "ko",
+    "turn": 173,
+    "speaker": "합창대",
+    "group": 173
+  },
+  {
+    "text": "두 분의 불화가 우리 슬픔 위에 더해진다면 나라는 두 겹으로 무너질 것입니다.",
+    "lang": "ko",
+    "turn": 173,
+    "speaker": "합창대",
+    "group": 173
+  },
+  {
+    "text": "오이디푸스: 좋다.",
+    "lang": "ko",
+    "turn": 174,
+    "speaker": "오이디푸스",
+    "group": 174
+  },
+  {
+    "text": "그를 보내라.",
+    "lang": "ko",
+    "turn": 174,
+    "speaker": "오이디푸스",
+    "group": 174
+  },
+  {
+    "text": "그 대가가 나의 확실한 죽음이든 수치스러운 추방이든 상관없다.",
+    "lang": "ko",
+    "turn": 174,
+    "speaker": "오이디푸스",
+    "group": 174
+  },
+  {
+    "text": "그를 위해서가 아니라 그대들을 위해 뜻을 꺾는다.",
+    "lang": "ko",
+    "turn": 174,
+    "speaker": "오이디푸스",
+    "group": 174
+  },
+  {
+    "text": "그러나 그가 어디에 있든 내 마음은 그를 미워할 것이다.",
+    "lang": "ko",
+    "turn": 174,
+    "speaker": "오이디푸스",
+    "group": 174
+  },
+  {
+    "text": "크레온: 그대는 분노할 때 사나웠듯, 물러설 때도 완고하오.",
+    "lang": "ko",
+    "turn": 175,
+    "speaker": "크레온",
+    "group": 175
+  },
+  {
+    "text": "그런 성정은 당연히 자기 자신을 가장 심하게 괴롭히오.",
+    "lang": "ko",
+    "turn": 175,
+    "speaker": "크레온",
+    "group": 175
+  },
+  {
+    "text": "오이디푸스: 나를 내버려두고 떠나라.",
+    "lang": "ko",
+    "turn": 176,
+    "speaker": "오이디푸스",
+    "group": 176
+  },
+  {
+    "text": "크레온: 가겠소.",
+    "lang": "ko",
+    "turn": 177,
+    "speaker": "크레온",
+    "group": 177
+  },
+  {
+    "text": "그대에게는 잘못 판단되었지만, 이 사람들은 나의 결백을 인정하오.",
+    "lang": "ko",
+    "turn": 177,
+    "speaker": "크레온",
+    "group": 177
+  },
+  {
+    "text": "〈크레온이 퇴장한다.〉",
+    "lang": "ko",
+    "turn": 177,
+    "speaker": "크레온",
+    "group": 177
+  },
+  {
+    "text": "합창대: 〈첫째 반정가〉 왕비여, 남편을 안으로 데려가소서.",
+    "lang": "ko",
+    "turn": 178,
+    "speaker": "합창대",
+    "group": 178
+  },
+  {
+    "text": "왜 더 오래 여기서 지체하십니까?",
+    "lang": "ko",
+    "turn": 178,
+    "speaker": "합창대",
+    "group": 178
+  },
+  {
+    "text": "이오카스테: 먼저 다툼이 어떻게 시작되었는지 말해주세요.",
+    "lang": "ko",
+    "turn": 179,
+    "speaker": "이오카스테",
+    "group": 179
+  },
+  {
+    "text": "합창대: 소문이 부당한 의심을 낳았고, 부당한 대우가 깊은 상처를 남겼습니다.",
+    "lang": "ko",
+    "turn": 180,
+    "speaker": "합창대",
+    "group": 180
+  },
+  {
+    "text": "이오카스테: 두 사람 모두에게 잘못이 있었나요?",
+    "lang": "ko",
+    "turn": 181,
+    "speaker": "이오카스테",
+    "group": 181
+  },
+  {
+    "text": "합창대: 두 분 모두입니다.",
+    "lang": "ko",
+    "turn": 182,
+    "speaker": "합창대",
+    "group": 182
+  },
+  {
+    "text": "이오카스테: 어떤 이야기였나요?",
+    "lang": "ko",
+    "turn": 183,
+    "speaker": "이오카스테",
+    "group": 183
+  },
+  {
+    "text": "합창대: 더는 묻지 마소서.",
+    "lang": "ko",
+    "turn": 184,
+    "speaker": "합창대",
+    "group": 184
+  },
+  {
+    "text": "나라가 몹시 괴롭습니다.",
+    "lang": "ko",
+    "turn": 184,
+    "speaker": "합창대",
+    "group": 184
+  },
+  {
+    "text": "잠든 불행은 그대로 쉬게 두는 것이 좋겠습니다.",
+    "lang": "ko",
+    "turn": 184,
+    "speaker": "합창대",
+    "group": 184
+  },
+  {
+    "text": "오이디푸스: 벗이여, 이상한 충고로군.",
+    "lang": "ko",
+    "turn": 185,
+    "speaker": "오이디푸스",
+    "group": 185
+  },
+  {
+    "text": "나를 위한다는 것은 알지만, 내 열성을 무디게 하고 가라앉히려 하는구나.",
+    "lang": "ko",
+    "turn": 185,
+    "speaker": "오이디푸스",
+    "group": 185
+  },
+  {
+    "text": "합창대: 〈둘째 반정가〉 왕이시여, 다시 말씀드립니다.",
+    "lang": "ko",
+    "turn": 186,
+    "speaker": "합창대",
+    "group": 186
+  },
+  {
+    "text": "나라의 버팀목인 왕을 가볍게 버린다면 제가 어리석고 미쳤다는 것이 증명될 것입니다.",
+    "lang": "ko",
+    "turn": 186,
+    "speaker": "합창대",
+    "group": 186
+  },
+  {
+    "text": "위험 속에서 찾았을 때, 혼란스러운 나라를 고요한 항구로 이끌어주신 조타수입니다.",
+    "lang": "ko",
+    "turn": 186,
+    "speaker": "합창대",
+    "group": 186
+  },
+  {
+    "text": "지금도 왕이 아니면 누가 우리를 올바르게 인도하겠습니까?",
+    "lang": "ko",
+    "turn": 186,
+    "speaker": "합창대",
+    "group": 186
+  },
+  {
+    "text": "이오카스테: 왕이여, 이 가라앉지 않는 분노를 일으킨 까닭을 나에게도 알려주세요.",
+    "lang": "ko",
+    "turn": 187,
+    "speaker": "이오카스테",
+    "group": 187
+  },
+  {
+    "text": "간청합니다.",
+    "lang": "ko",
+    "turn": 187,
+    "speaker": "이오카스테",
+    "group": 187
+  },
+  {
+    "text": "오이디푸스: 말하겠소.",
+    "lang": "ko",
+    "turn": 188,
+    "speaker": "오이디푸스",
+    "group": 188
+  },
+  {
+    "text": "당신은 이 사람들보다 내게 더 소중하니까.",
+    "lang": "ko",
+    "turn": 188,
+    "speaker": "오이디푸스",
+    "group": 188
+  },
+  {
+    "text": "부인, 그 원인은 크레온과 그의 음모요.",
+    "lang": "ko",
+    "turn": 188,
+    "speaker": "오이디푸스",
+    "group": 188
+  },
+  {
+    "text": "이오카스테: 그러나 무엇이 다툼을 일으켰나요?",
+    "lang": "ko",
+    "turn": 189,
+    "speaker": "이오카스테",
+    "group": 189
+  },
+  {
+    "text": "분명하게 말해주세요.",
+    "lang": "ko",
+    "turn": 189,
+    "speaker": "이오카스테",
+    "group": 189
+  },
+  {
+    "text": "오이디푸스: 그가 나를 라이오스의 살인자로 지목했소.",
+    "lang": "ko",
+    "turn": 190,
+    "speaker": "오이디푸스",
+    "group": 190
+  },
+  {
+    "text": "이오카스테: 직접 아는 사실인가요, 아니면 전해 들은 말인가요?",
+    "lang": "ko",
+    "turn": 191,
+    "speaker": "이오카스테",
+    "group": 191
+  },
+  {
+    "text": "오이디푸스: 그는 교활해서 직접 책임을 지려 하지 않소.",
+    "lang": "ko",
+    "turn": 192,
+    "speaker": "오이디푸스",
+    "group": 192
+  },
+  {
+    "text": "악한 예언자를 자기 입으로 삼았소.",
+    "lang": "ko",
+    "turn": 192,
+    "speaker": "오이디푸스",
+    "group": 192
+  },
+  {
+    "text": "이오카스테: 그 일이라면 마음을 놓아도 돼요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "내 말을 들으면 인간 누구도 예언술을 나누어 가진 자가 아니라는 것을 알게 될 거예요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "짧게 증거를 말하지요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "라이오스에게 한 번 신탁이 왔어요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "델포이의 신이 직접 주었다고는 하지 않겠어요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "그를 섬기는 사람들에게서 나온 말이었지요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "나에게서 태어날 친아들의 손에 그가 죽을 운명이라는 것이었어요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "그런데 적어도 전해지는 이야기에 따르면, 라이오스는 어느 날 세 길이 만나는 곳에서 외지의 강도들에게 죽었어요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "아이는 태어난 지 사흘밖에 되지 않았을 때, 라이오스가 발목을 뚫어 묶고 남에게 맡겨 길도 없는 산비탈에 버리게 했어요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "그러니 아폴론은 아이가 아버지를 죽이게 하지 않았고, 두려워하던 예언도 이루지 않았어요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "라이오스는 친아들에게 살해되지 않았지요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "예언자가 내놓은 운명은 이런 것이었어요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "왕이여, 그런 말에 마음 쓰지 마세요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "신께서 드러내야 한다고 여기시는 일이면, 누구의 도움도 없이 직접 밝혀주실 거예요.",
+    "lang": "ko",
+    "turn": 193,
+    "speaker": "이오카스테",
+    "group": 193
+  },
+  {
+    "text": "오이디푸스: 부인, 당신의 말을 듣자 어떤 기억과 사나운 마음의 소용돌이가 나를 덮쳤소!",
+    "lang": "ko",
+    "turn": 194,
+    "speaker": "오이디푸스",
+    "group": 194
+  },
+  {
+    "text": "이오카스테: 무슨 뜻인가요?",
+    "lang": "ko",
+    "turn": 195,
+    "speaker": "이오카스테",
+    "group": 195
+  },
+  {
+    "text": "무엇이 당신을 놀라게 하고 뒤흔들었나요?",
+    "lang": "ko",
+    "turn": 195,
+    "speaker": "이오카스테",
+    "group": 195
+  },
+  {
+    "text": "오이디푸스: 라이오스가 세 길이 만나는 곳에서 죽었다고 말한 듯했소.",
+    "lang": "ko",
+    "turn": 196,
+    "speaker": "오이디푸스",
+    "group": 196
+  },
+  {
+    "text": "이오카스테: 지금도 그렇게 전해지고 있어요.",
+    "lang": "ko",
+    "turn": 197,
+    "speaker": "이오카스테",
+    "group": 197
+  },
+  {
+    "text": "오이디푸스: 어디에서 일어났소?",
+    "lang": "ko",
+    "turn": 198,
+    "speaker": "오이디푸스",
+    "group": 198
+  },
+  {
+    "text": "그 장소를 알고 있소?",
+    "lang": "ko",
+    "turn": 198,
+    "speaker": "오이디푸스",
+    "group": 198
+  },
+  {
+    "text": "이오카스테: 포키스라는 땅이에요.",
+    "lang": "ko",
+    "turn": 199,
+    "speaker": "이오카스테",
+    "group": 199
+  },
+  {
+    "text": "델포이에서 오는 길과 다울리스에서 오는 길이 만나는 곳이지요.",
+    "lang": "ko",
+    "turn": 199,
+    "speaker": "이오카스테",
+    "group": 199
+  },
+  {
+    "text": "오이디푸스: 그 일이 일어난 지 얼마나 되었소?",
+    "lang": "ko",
+    "turn": 200,
+    "speaker": "오이디푸스",
+    "group": 200
+  },
+  {
+    "text": "이오카스테: 당신이 이 나라의 군주로 선포되기 얼마 전에 그 소식이 왔어요.",
+    "lang": "ko",
+    "turn": 201,
+    "speaker": "이오카스테",
+    "group": 201
+  },
+  {
+    "text": "오이디푸스: 제우스여, 나에게 무엇을 하려 하셨습니까!",
+    "lang": "ko",
+    "turn": 202,
+    "speaker": "오이디푸스",
+    "group": 202
+  },
+  {
+    "text": "이오카스테: 오이디푸스, 무엇이 당신을 그렇게 흔드나요?",
+    "lang": "ko",
+    "turn": 203,
+    "speaker": "이오카스테",
+    "group": 203
+  },
+  {
+    "text": "오이디푸스: 아직 묻지 마시오.",
+    "lang": "ko",
+    "turn": 204,
+    "speaker": "오이디푸스",
+    "group": 204
+  },
+  {
+    "text": "라이오스의 체격과 키를 말해주시오.",
+    "lang": "ko",
+    "turn": 204,
+    "speaker": "오이디푸스",
+    "group": 204
+  },
+  {
+    "text": "한창때의 남자였소?",
+    "lang": "ko",
+    "turn": 204,
+    "speaker": "오이디푸스",
+    "group": 204
+  },
+  {
+    "text": "이오카스테: 키가 컸고 머리에는 흰빛이 조금 섞여 있었어요.",
+    "lang": "ko",
+    "turn": 205,
+    "speaker": "이오카스테",
+    "group": 205
+  },
+  {
+    "text": "모습이 당신과 아주 다르지는 않았어요.",
+    "lang": "ko",
+    "turn": 205,
+    "speaker": "이오카스테",
+    "group": 205
+  },
+  {
+    "text": "오이디푸스: 아, 불행한 나여!",
+    "lang": "ko",
+    "turn": 206,
+    "speaker": "오이디푸스",
+    "group": 206
+  },
+  {
+    "text": "방금 나도 모르게 내 자신에게 무서운 저주를 내린 것 같소.",
+    "lang": "ko",
+    "turn": 206,
+    "speaker": "오이디푸스",
+    "group": 206
+  },
+  {
+    "text": "이오카스테: 무슨 말씀인가요?",
+    "lang": "ko",
+    "turn": 207,
+    "speaker": "이오카스테",
+    "group": 207
+  },
+  {
+    "text": "당신을 보고 있으면 나까지 떨려요, 나의 왕이여.",
+    "lang": "ko",
+    "turn": 207,
+    "speaker": "이오카스테",
+    "group": 207
+  },
+  {
+    "text": "오이디푸스: 결국 그 예언자가 눈먼 사람이 아니었다고 밝혀질 듯한 두려운 예감이오.",
+    "lang": "ko",
+    "turn": 208,
+    "speaker": "오이디푸스",
+    "group": 208
+  },
+  {
+    "text": "내 의심을 풀기 위해 한 가지 더 묻겠소.",
+    "lang": "ko",
+    "turn": 208,
+    "speaker": "오이디푸스",
+    "group": 208
+  },
+  {
+    "text": "이오카스테: 나도 두렵지만 물어보세요.",
+    "lang": "ko",
+    "turn": 209,
+    "speaker": "이오카스테",
+    "group": 209
+  },
+  {
+    "text": "모두 대답할게요.",
+    "lang": "ko",
+    "turn": 209,
+    "speaker": "이오카스테",
+    "group": 209
+  },
+  {
+    "text": "오이디푸스: 수행하는 사람이 몇 명뿐이었소?",
+    "lang": "ko",
+    "turn": 210,
+    "speaker": "오이디푸스",
+    "group": 210
+  },
+  {
+    "text": "아니면 군주답게 무장한 수행원들을 많이 거느리고 있었소?",
+    "lang": "ko",
+    "turn": 210,
+    "speaker": "오이디푸스",
+    "group": 210
+  },
+  {
+    "text": "이오카스테: 모두 다섯 명이었고, 그중 한 명이 전령이었어요.",
+    "lang": "ko",
+    "turn": 211,
+    "speaker": "이오카스테",
+    "group": 211
+  },
+  {
+    "text": "라이오스는 노새가 끄는 수레를 탔어요.",
+    "lang": "ko",
+    "turn": 211,
+    "speaker": "이오카스테",
+    "group": 211
+  },
+  {
+    "text": "오이디푸스: 아!",
+    "lang": "ko",
+    "turn": 212,
+    "speaker": "오이디푸스",
+    "group": 212
+  },
+  {
+    "text": "이제 대낮처럼 분명하오.",
+    "lang": "ko",
+    "turn": 212,
+    "speaker": "오이디푸스",
+    "group": 212
+  },
+  {
+    "text": "그러나 말해주시오, 부인.",
+    "lang": "ko",
+    "turn": 212,
+    "speaker": "오이디푸스",
+    "group": 212
+  },
+  {
+    "text": "누가 이 소식을 테바이에 가져왔소?",
+    "lang": "ko",
+    "turn": 212,
+    "speaker": "오이디푸스",
+    "group": 212
+  },
+  {
+    "text": "이오카스테: 하인 한 명이요.",
+    "lang": "ko",
+    "turn": 213,
+    "speaker": "이오카스테",
+    "group": 213
+  },
+  {
+    "text": "유일하게 살아 돌아온 사람이었어요.",
+    "lang": "ko",
+    "turn": 213,
+    "speaker": "이오카스테",
+    "group": 213
+  },
+  {
+    "text": "오이디푸스: 그가 가까이 있소?",
+    "lang": "ko",
+    "turn": 214,
+    "speaker": "오이디푸스",
+    "group": 214
+  },
+  {
+    "text": "이 집에 있소?",
+    "lang": "ko",
+    "turn": 214,
+    "speaker": "오이디푸스",
+    "group": 214
+  },
+  {
+    "text": "이오카스테: 아니요.",
+    "lang": "ko",
+    "turn": 215,
+    "speaker": "이오카스테",
+    "group": 215
+  },
+  {
+    "text": "돌아와서 죽은 라이오스 대신 당신이 다스리는 것을 보자, 내 손을 잡고 테바이가 보이지 않는 먼 산과 목초지로 보내달라고 애원했어요.",
+    "lang": "ko",
+    "turn": 215,
+    "speaker": "이오카스테",
+    "group": 215
+  },
+  {
+    "text": "그래서 보내주었지요.",
+    "lang": "ko",
+    "turn": 215,
+    "speaker": "이오카스테",
+    "group": 215
+  },
+  {
+    "text": "정직한 노예였고, 그보다 더 좋은 보답도 받을 만한 사람이었어요.",
+    "lang": "ko",
+    "turn": 215,
+    "speaker": "이오카스테",
+    "group": 215
+  },
+  {
+    "text": "오이디푸스: 곧 데려오시오.",
+    "lang": "ko",
+    "turn": 216,
+    "speaker": "오이디푸스",
+    "group": 216
+  },
+  {
+    "text": "그 사람을 만나고 싶소.",
+    "lang": "ko",
+    "turn": 216,
+    "speaker": "오이디푸스",
+    "group": 216
+  },
+  {
+    "text": "이오카스테: 데려올게요.",
+    "lang": "ko",
+    "turn": 217,
+    "speaker": "이오카스테",
+    "group": 217
+  },
+  {
+    "text": "하지만 왜 그를 부르려 하나요?",
+    "lang": "ko",
+    "turn": 217,
+    "speaker": "이오카스테",
+    "group": 217
+  },
+  {
+    "text": "오이디푸스: 부인, 내 혀가 분별을 앞질렀던 것 같아 두렵소.",
+    "lang": "ko",
+    "turn": 218,
+    "speaker": "오이디푸스",
+    "group": 218
+  },
+  {
+    "text": "그러니 그에게 물어보려 하오.",
+    "lang": "ko",
+    "turn": 218,
+    "speaker": "오이디푸스",
+    "group": 218
+  },
+  {
+    "text": "이오카스테: 좋아요, 그가 올 거예요.",
+    "lang": "ko",
+    "turn": 219,
+    "speaker": "이오카스테",
+    "group": 219
+  },
+  {
+    "text": "그러나 나도 당신 마음의 짐을 함께 질 수는 없나요, 나의 왕이여?",
+    "lang": "ko",
+    "turn": 219,
+    "speaker": "이오카스테",
+    "group": 219
+  },
+  {
+    "text": "오이디푸스: 당신의 바람을 거절하지 않겠소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "내 생각이 이미 여기까지 왔으니, 이 두려운 모험의 이야기를 들을 자격이 당신보다 큰 사람이 어디 있겠소?",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "들으시오.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "내 아버지는 코린토스의 폴뤼보스였고, 어머니는 도리스 출신 메로페였소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "나는 그곳에서 으뜸가는 시민으로 여겨졌소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그러다 이상한 일이 일어났소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "참으로 이상했으나, 그 일 때문에 생긴 격렬한 동요까지 정당화할 만한 일은 아니었소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "어느 잔치에서 술에 취한 사람이 ‘너는 네 아버지의 친아들이 아니다’라고 외쳤소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "불쾌했지만 그때는 모욕을 참았소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "다음 날 아버지와 어머니를 찾아가 물었소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "두 분은 내 출생에 대한 근거 없는 비방에 분개하며 나를 달래려 했소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그러나 소문이 계속 퍼지고 커져서, 독 묻은 화살촉처럼 마음에 남았소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그래서 두 분께 허락도 받지 않고 몰래 델포이로 갔소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "아폴론은 내가 알고자 한 일을 알려주지 않은 채 돌려보냈소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그러나 다른 무서운 일들, 슬픔과 탄식과 애도, 끔찍한 징조를 예언했소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "내가 어머니의 침상을 더럽히고, 보기조차 혐오스러운 자식을 낳게 하며, 나를 낳은 아버지를 죽일 것이라고 했소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그다음 일은, 부인, 당신에게 사실 그대로 말하겠소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "세 갈래 길 가까이 갔을 때 전령 한 명과, 당신의 이야기처럼 말이 끄는 수레에 앉은 남자를 만났소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "앞서 가던 사람과 그 노인이 거칠게 나를 길에서 밀어내려 했소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "마부가 나를 떠밀자 화가 나서 그를 때렸소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "노인이 그것을 보고 내가 지나갈 때까지 기다렸다가 수레 위에서 끝이 둘로 갈라진 막대기로 내 머리를 세게 내리쳤소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그러나 나는 그에게 똑같이, 아니 더 심하게 갚았소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "내 지팡이로 한 번 내리치자 그는 수레 자리에서 굴러떨어져 땅에 쓰러졌소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그렇게 그들 모두를 죽였소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그런데 이 낯선 사람과 라이오스 사이에 어떤 관계라도 있다면, 나보다 더 비참한 사람이 어디 있겠소?",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "신들이 나보다 더 미워할 인간을 찾을 수 있겠소?",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "이방인이든 시민이든 누구도 집에 들이거나 말을 걸어서는 안 되고, 모두 자기 집에서 몰아내야 하는 비참한 자가 나요.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그리고 이 저주는 내게 내려졌으며, 내린 사람도 바로 나였소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "피 묻은 이 손으로 내가 죽인 사람의 침상까지 더럽히고 있소.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "말해보시오.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "나는 추악하지 않소?",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "완전히 더럽혀진 존재가 아니오?",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "추방될 운명이며, 추방된 뒤에는 사랑하는 사람들을 보지 못하고 고향 땅을 다시 밟지도 못할 비참한 자가 아니오?",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그렇지 않으면 내 어머니와 결혼하고, 나를 낳아 기른 아버지 폴뤼보스를 죽여야 하오.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "이것이 비인간적인 힘의 소행이라고 말하는 사람이 있다면, 누가 그 판단을 탓하겠소?",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그러나 순결하고 두려운 신들이여, 제가 그런 날을 보지 않게 하소서.",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "그런 오염이 제게 낙인을 찍기 전에, 살아 있는 사람들 가운데서 저를 지워주소서!",
+    "lang": "ko",
+    "turn": 220,
+    "speaker": "오이디푸스",
+    "group": 220
+  },
+  {
+    "text": "합창대: 왕이시여, 우리도 두렵습니다.",
+    "lang": "ko",
+    "turn": 221,
+    "speaker": "합창대",
+    "group": 221
+  },
+  {
+    "text": "그러나 살아남은 사람에게 물어보기 전까지는 희망을 놓지 마소서.",
+    "lang": "ko",
+    "turn": 221,
+    "speaker": "합창대",
+    "group": 221
+  },
+  {
+    "text": "오이디푸스: 희망은 희미하지만, 아직 이 목자가 올 때까지 기다리게 할 만큼은 남아 있다.",
+    "lang": "ko",
+    "turn": 222,
+    "speaker": "오이디푸스",
+    "group": 222
+  },
+  {
+    "text": "이오카스테: 그가 여기 있다고 하면 무엇을 알아내려 하나요?",
+    "lang": "ko",
+    "turn": 223,
+    "speaker": "이오카스테",
+    "group": 223
+  },
+  {
+    "text": "오이디푸스: 말해주겠소, 부인.",
+    "lang": "ko",
+    "turn": 224,
+    "speaker": "오이디푸스",
+    "group": 224
+  },
+  {
+    "text": "그의 이야기가 당신의 말과 일치하면 나는 재앙을 피하게 되오.",
+    "lang": "ko",
+    "turn": 224,
+    "speaker": "오이디푸스",
+    "group": 224
+  },
+  {
+    "text": "이오카스테: 내가 한 말 중에서 무엇이 특별히 중요한가요?",
+    "lang": "ko",
+    "turn": 225,
+    "speaker": "이오카스테",
+    "group": 225
+  },
+  {
+    "text": "오이디푸스: 당신이 전한 목자의 말에 따르면 라이오스는 강도들에게 죽었소.",
+    "lang": "ko",
+    "turn": 226,
+    "speaker": "오이디푸스",
+    "group": 226
+  },
+  {
+    "text": "그가 여전히 한 강도가 아니라 여러 강도였다고 말한다면 나는 그를 죽이지 않았소.",
+    "lang": "ko",
+    "turn": 226,
+    "speaker": "오이디푸스",
+    "group": 226
+  },
+  {
+    "text": "‘한 사람’과 ‘여러 사람’은 같을 수 없으니까.",
+    "lang": "ko",
+    "turn": 226,
+    "speaker": "오이디푸스",
+    "group": 226
+  },
+  {
+    "text": "그러나 외로운 행인 한 사람이었다고 말한다면, 내 죄를 완성하는 마지막 고리가 만들어지는 것이오.",
+    "lang": "ko",
+    "turn": 226,
+    "speaker": "오이디푸스",
+    "group": 226
+  },
+  {
+    "text": "이오카스테: 안심해요.",
+    "lang": "ko",
+    "turn": 227,
+    "speaker": "이오카스테",
+    "group": 227
+  },
+  {
+    "text": "그가 처음에 한 말은 분명히 그랬어요.",
+    "lang": "ko",
+    "turn": 227,
+    "speaker": "이오카스테",
+    "group": 227
+  },
+  {
+    "text": "이제 와서 그때의 말을 철회할 수도 없을 거예요.",
+    "lang": "ko",
+    "turn": 227,
+    "speaker": "이오카스테",
+    "group": 227
+  },
+  {
+    "text": "나만 들은 것이 아니라 모든 시민이 들었으니까요.",
+    "lang": "ko",
+    "turn": 227,
+    "speaker": "이오카스테",
+    "group": 227
+  },
+  {
+    "text": "이야기를 조금 바꾼다고 해도, 라이오스의 죽음이 신탁과 들어맞게 만들 수는 없어요.",
+    "lang": "ko",
+    "turn": 227,
+    "speaker": "이오카스테",
+    "group": 227
+  },
+  {
+    "text": "록시아스는 그가 내 아이의 손에 죽을 운명이라고 분명히 말했어요.",
+    "lang": "ko",
+    "turn": 227,
+    "speaker": "이오카스테",
+    "group": 227
+  },
+  {
+    "text": "그러나 그 가엾은 아기는 피를 흘리게 하지 못하고 먼저 죽었지요.",
+    "lang": "ko",
+    "turn": 227,
+    "speaker": "이오카스테",
+    "group": 227
+  },
+  {
+    "text": "예언이라는 것은 그 정도예요.",
+    "lang": "ko",
+    "turn": 227,
+    "speaker": "이오카스테",
+    "group": 227
+  },
+  {
+    "text": "이제 나는 오른쪽이든 왼쪽이든 징조를 찾지 않을 거예요.",
+    "lang": "ko",
+    "turn": 227,
+    "speaker": "이오카스테",
+    "group": 227
+  },
+  {
+    "text": "오이디푸스: 당신의 판단은 옳소.",
+    "lang": "ko",
+    "turn": 228,
+    "speaker": "오이디푸스",
+    "group": 228
+  },
+  {
+    "text": "그래도 사람을 보내 그 노예를 데려오시오.",
+    "lang": "ko",
+    "turn": 228,
+    "speaker": "오이디푸스",
+    "group": 228
+  },
+  {
+    "text": "그 일을 부탁하오.",
+    "lang": "ko",
+    "turn": 228,
+    "speaker": "오이디푸스",
+    "group": 228
+  },
+  {
+    "text": "이오카스테: 곧 그렇게 할게요.",
+    "lang": "ko",
+    "turn": 229,
+    "speaker": "이오카스테",
+    "group": 229
+  },
+  {
+    "text": "안으로 들어가요.",
+    "lang": "ko",
+    "turn": 229,
+    "speaker": "이오카스테",
+    "group": 229
+  },
+  {
+    "text": "당신이 싫어하는 일은 하지 않겠어요.",
+    "lang": "ko",
+    "turn": 229,
+    "speaker": "이오카스테",
+    "group": 229
+  },
+  {
+    "text": "〈오이디푸스와 이오카스테가 퇴장한다.〉",
+    "lang": "ko",
+    "turn": 229,
+    "speaker": "이오카스테",
+    "group": 229
+  },
+  {
+    "text": "합창대: 〈첫째 정가〉 내 몫은 언제나 순결한 삶을 이끌고, 말과 행동의 불경함을 피하는 것이기를.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "높은 곳에서 정해진 법을 언제나 따르기를.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "그 법이 태어난 곳은 빛나는 하늘이며 인간에게서 태어난 것이 아니다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "오직 올림포스가 그 부모다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "차가운 망각 속에 잠드는 일은 없으리라.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "그 안의 신은 강하고 늙지 않는다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "〈첫째 반정가〉 오만이 폭군을 낳는다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "오만이 활짝 피어 텅 빈 부에 배부르면, 가파른 높이로 올라 왕좌를 움켜쥔다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "그러다 넘어져 파멸 속에 엎어진다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "아찔한 비탈에는 발 디딜 곳이 없다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "그러나 나라를 섬기려는 뜨거운 열성으로 선의의 경쟁을 하는 참된 애국자는 하늘이 지켜주기를.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "신이 내 도움이며 희망이니, 나는 신을 기다린다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "〈둘째 정가〉 말이나 행동으로 교만한 죄를 짓고, 정의를 따르지 않으며, 신들의 거룩한 형상을 모신 사당을 공경하지 않는 자여.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "불경한 탐욕에 밀려 부당한 이익을 움켜쥐고, 가장 거룩한 것을 신성하지 않은 손으로 만진다면, 그 헛된 생각을 파멸이 붙잡기를.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "이런 일을 하고 누가 하늘의 벼락을 피하리라 기대하겠는가?",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "이런 죄가 명예를 얻을 수 있다면, 내가 왜 여전히 춤추며 거룩한 합창을 이끌겠는가?",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "〈둘째 반정가〉 신의 진실이 모두 앞에 분명히 드러나지 않는다면, 더는 세상의 중심 신탁을 찾지 않으리라.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "아바이의 거룩한 성소에도, 봉헌물을 바치러 올림피아에도 가지 않으리라.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "제우스여, 힘을 드러내소서.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "옛날처럼 모든 것을 보고 모든 것을 할 수 있는 왕이라는 이름이 옳다면, 그 힘을 나타내소서.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "라이오스는 잊히고 그에게 정해진 운명을 사람들이 돌보지 않습니다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "아폴론은 버림받고 믿음은 차갑게 식습니다.",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "〈이오카스테가 들어온다.〉",
+    "lang": "ko",
+    "turn": 230,
+    "speaker": "합창대",
+    "group": 230
+  },
+  {
+    "text": "이오카스테: 여러분, 왕비가 화환과 향의 제물을 손에 들고 나타나니 놀라시는군요.",
+    "lang": "ko",
+    "turn": 231,
+    "speaker": "이오카스테",
+    "group": 231
+  },
+  {
+    "text": "높은 신전들을 찾아가려 했어요.",
+    "lang": "ko",
+    "turn": 231,
+    "speaker": "이오카스테",
+    "group": 231
+  },
+  {
+    "text": "오이디푸스가 수많은 두려움에 짓눌려 지나치게 동요하고 있기 때문이에요.",
+    "lang": "ko",
+    "turn": 231,
+    "speaker": "이오카스테",
+    "group": 231
+  },
+  {
+    "text": "분별 있는 사람처럼 지난 경험으로 지금의 일을 판단하지 않고, 불길한 예고라면 누구의 말에도 귀를 기울여요.",
+    "lang": "ko",
+    "turn": 231,
+    "speaker": "이오카스테",
+    "group": 231
+  },
+  {
+    "text": "내 충고는 아무 도움이 되지 않으니, 고난의 때에 늘 곁에서 돕는 신께 돌아섭니다.",
+    "lang": "ko",
+    "turn": 231,
+    "speaker": "이오카스테",
+    "group": 231
+  },
+  {
+    "text": "뤼케이오스의 주인 아폴론이여, 여기 제 기도와 탄원을 바칩니다.",
+    "lang": "ko",
+    "turn": 231,
+    "speaker": "이오카스테",
+    "group": 231
+  },
+  {
+    "text": "우리를 가볍게 하시고 이 저주에서 씻어주소서!",
+    "lang": "ko",
+    "turn": 231,
+    "speaker": "이오카스테",
+    "group": 231
+  },
+  {
+    "text": "폭풍 속에서 조타수가 말문을 잃는 것을 본 뱃사람들처럼, 이제 우리 모두가 두려움에 움츠러들었습니다.",
+    "lang": "ko",
+    "turn": 231,
+    "speaker": "이오카스테",
+    "group": 231
+  },
+  {
+    "text": "〈코린토스의 사자가 들어온다.〉",
+    "lang": "ko",
+    "turn": 231,
+    "speaker": "이오카스테",
+    "group": 231
+  },
+  {
+    "text": "코린토스의 사자: 여러분, 오이디푸스의 궁전이 어디인지 알려주십시오.",
+    "lang": "ko",
+    "turn": 232,
+    "speaker": "코린토스의 사자",
+    "group": 232
+  },
+  {
+    "text": "아니, 왕이 어디 계신지 알려주시면 더 좋겠습니다.",
+    "lang": "ko",
+    "turn": 232,
+    "speaker": "코린토스의 사자",
+    "group": 232
+  },
+  {
+    "text": "합창대: 여기가 궁전이고 왕은 안에 계십니다.",
+    "lang": "ko",
+    "turn": 233,
+    "speaker": "합창대",
+    "group": 233
+  },
+  {
+    "text": "이분은 그의 왕비이자 아이들의 어머니입니다.",
+    "lang": "ko",
+    "turn": 233,
+    "speaker": "합창대",
+    "group": 233
+  },
+  {
+    "text": "코린토스의 사자: 그분과 이 집안에 모든 행복이 함께하기를 바랍니다.",
+    "lang": "ko",
+    "turn": 234,
+    "speaker": "코린토스의 사자",
+    "group": 234
+  },
+  {
+    "text": "그 남편과 혼인의 침상도 복을 받기를.",
+    "lang": "ko",
+    "turn": 234,
+    "speaker": "코린토스의 사자",
+    "group": 234
+  },
+  {
+    "text": "이오카스테: 낯선 분이여, 환영합니다.",
+    "lang": "ko",
+    "turn": 235,
+    "speaker": "이오카스테",
+    "group": 235
+  },
+  {
+    "text": "그 좋은 말씀에는 같은 인사로 답해야겠지요.",
+    "lang": "ko",
+    "turn": 235,
+    "speaker": "이오카스테",
+    "group": 235
+  },
+  {
+    "text": "그런데 무슨 일로 왔나요?",
+    "lang": "ko",
+    "turn": 235,
+    "speaker": "이오카스테",
+    "group": 235
+  },
+  {
+    "text": "무엇이 필요한가요, 어떤 소식이 있나요?",
+    "lang": "ko",
+    "turn": 235,
+    "speaker": "이오카스테",
+    "group": 235
+  },
+  {
+    "text": "코린토스의 사자: 왕비의 남편과 왕실에 좋은 소식입니다.",
+    "lang": "ko",
+    "turn": 236,
+    "speaker": "코린토스의 사자",
+    "group": 236
+  },
+  {
+    "text": "이오카스테: 무슨 소식인가요?",
+    "lang": "ko",
+    "turn": 237,
+    "speaker": "이오카스테",
+    "group": 237
+  },
+  {
+    "text": "누구의 사자로 왔나요?",
+    "lang": "ko",
+    "turn": 237,
+    "speaker": "이오카스테",
+    "group": 237
+  },
+  {
+    "text": "코린토스의 사자: 이스토모스의 시민들이 왕비의 남편을 왕으로 모시기로 정했습니다.",
+    "lang": "ko",
+    "turn": 238,
+    "speaker": "코린토스의 사자",
+    "group": 238
+  },
+  {
+    "text": "그곳에서는 그렇게 알려져 있습니다.",
+    "lang": "ko",
+    "turn": 238,
+    "speaker": "코린토스의 사자",
+    "group": 238
+  },
+  {
+    "text": "이오카스테: 무엇이라고요?",
+    "lang": "ko",
+    "turn": 239,
+    "speaker": "이오카스테",
+    "group": 239
+  },
+  {
+    "text": "늙은 폴뤼보스가 아직 왕이 아닌가요?",
+    "lang": "ko",
+    "turn": 239,
+    "speaker": "이오카스테",
+    "group": 239
+  },
+  {
+    "text": "코린토스의 사자: 아닙니다.",
+    "lang": "ko",
+    "turn": 240,
+    "speaker": "코린토스의 사자",
+    "group": 240
+  },
+  {
+    "text": "그는 죽어 무덤에 묻혔습니다.",
+    "lang": "ko",
+    "turn": 240,
+    "speaker": "코린토스의 사자",
+    "group": 240
+  },
+  {
+    "text": "이오카스테: 무엇이라고요?",
+    "lang": "ko",
+    "turn": 241,
+    "speaker": "이오카스테",
+    "group": 241
+  },
+  {
+    "text": "오이디푸스의 아버지가 죽었나요?",
+    "lang": "ko",
+    "turn": 241,
+    "speaker": "이오카스테",
+    "group": 241
+  },
+  {
+    "text": "코린토스의 사자: 제가 거짓말을 한다면 저 자신이 죽어도 좋습니다.",
+    "lang": "ko",
+    "turn": 242,
+    "speaker": "코린토스의 사자",
+    "group": 242
+  },
+  {
+    "text": "이오카스테: 얘야, 빨리 이 소식을 왕께 전하거라.",
+    "lang": "ko",
+    "turn": 243,
+    "speaker": "이오카스테",
+    "group": 243
+  },
+  {
+    "text": "신들이 보내신 신탁들이여, 이제 어디에 있는가!",
+    "lang": "ko",
+    "turn": 243,
+    "speaker": "이오카스테",
+    "group": 243
+  },
+  {
+    "text": "이 사람이야말로 오이디푸스가 자기가 죽이게 될까 두려워 오래 피해온 사람이었다.",
+    "lang": "ko",
+    "turn": 243,
+    "speaker": "이오카스테",
+    "group": 243
+  },
+  {
+    "text": "그런데 이제 그의 손이 아니라 자연의 순서에 따라 죽었다.",
+    "lang": "ko",
+    "turn": 243,
+    "speaker": "이오카스테",
+    "group": 243
+  },
+  {
+    "text": "〈오이디푸스가 들어온다.〉",
+    "lang": "ko",
+    "turn": 243,
+    "speaker": "이오카스테",
+    "group": 243
+  },
+  {
+    "text": "오이디푸스: 나의 아내이자 왕비인 이오카스테여.",
+    "lang": "ko",
+    "turn": 244,
+    "speaker": "오이디푸스",
+    "group": 244
+  },
+  {
+    "text": "왜 나를 궁전에서 불렀소?",
+    "lang": "ko",
+    "turn": 244,
+    "speaker": "오이디푸스",
+    "group": 244
+  },
+  {
+    "text": "이오카스테: 이 사람의 말을 들어보세요.",
+    "lang": "ko",
+    "turn": 245,
+    "speaker": "이오카스테",
+    "group": 245
+  },
+  {
+    "text": "듣고 나서, 두렵던 그 신탁들이 어떻게 되었는지 판단하세요.",
+    "lang": "ko",
+    "turn": 245,
+    "speaker": "이오카스테",
+    "group": 245
+  },
+  {
+    "text": "오이디푸스: 이 사람은 누구이며, 내게 어떤 소식을 가져왔소?",
+    "lang": "ko",
+    "turn": 246,
+    "speaker": "오이디푸스",
+    "group": 246
+  },
+  {
+    "text": "이오카스테: 코린토스에서 왔고, 당신 아버지 폴뤼보스가 죽었다는 소식을 가져왔어요.",
+    "lang": "ko",
+    "turn": 247,
+    "speaker": "이오카스테",
+    "group": 247
+  },
+  {
+    "text": "오이디푸스: 무엇이라고?",
+    "lang": "ko",
+    "turn": 248,
+    "speaker": "오이디푸스",
+    "group": 248
+  },
+  {
+    "text": "낯선 사람이여, 그대의 입으로 직접 들려주게.",
+    "lang": "ko",
+    "turn": 248,
+    "speaker": "오이디푸스",
+    "group": 248
+  },
+  {
+    "text": "코린토스의 사자: 제 소식을 의심의 여지 없이 분명하게 해야 한다면, 폴뤼보스가 죽었다는 것을 아십시오.",
+    "lang": "ko",
+    "turn": 249,
+    "speaker": "코린토스의 사자",
+    "group": 249
+  },
+  {
+    "text": "오이디푸스: 배신으로 죽었는가, 아니면 병을 얻었는가?",
+    "lang": "ko",
+    "turn": 250,
+    "speaker": "오이디푸스",
+    "group": 250
+  },
+  {
+    "text": "코린토스의 사자: 늙은 사람은 조금만 건드려도 영원한 쉼에 들 수 있습니다.",
+    "lang": "ko",
+    "turn": 251,
+    "speaker": "코린토스의 사자",
+    "group": 251
+  },
+  {
+    "text": "오이디푸스: 그러면 가엾은 그분이 어떤 병으로 죽었군.",
+    "lang": "ko",
+    "turn": 252,
+    "speaker": "오이디푸스",
+    "group": 252
+  },
+  {
+    "text": "코린토스의 사자: 그렇습니다.",
+    "lang": "ko",
+    "turn": 253,
+    "speaker": "코린토스의 사자",
+    "group": 253
+  },
+  {
+    "text": "충분한 세월을 사신 뒤였습니다.",
+    "lang": "ko",
+    "turn": 253,
+    "speaker": "코린토스의 사자",
+    "group": 253
+  },
+  {
+    "text": "오이디푸스: 부인, 어찌 이런 일이!",
+    "lang": "ko",
+    "turn": 254,
+    "speaker": "오이디푸스",
+    "group": 254
+  },
+  {
+    "text": "왜 사람이 피토의 신전이나 허공에서 울어대는 새를 마음에 두어야 하겠소?",
+    "lang": "ko",
+    "turn": 254,
+    "speaker": "오이디푸스",
+    "group": 254
+  },
+  {
+    "text": "그것들은 내가 아버지를 죽일 운명이라고 하지 않았소?",
+    "lang": "ko",
+    "turn": 254,
+    "speaker": "오이디푸스",
+    "group": 254
+  },
+  {
+    "text": "그러나 아버지는 죽어 무덤에 있고, 나는 여기서 칼 한 번 뽑지 않았소.",
+    "lang": "ko",
+    "turn": 254,
+    "speaker": "오이디푸스",
+    "group": 254
+  },
+  {
+    "text": "떨어져 있는 아들을 그리워하다 죽었다면 어떤 의미에서는 내가 죽인 셈이겠지만.",
+    "lang": "ko",
+    "turn": 254,
+    "speaker": "오이디푸스",
+    "group": 254
+  },
+  {
+    "text": "그래도 지금의 사실대로라면 신탁은 죽었소.",
+    "lang": "ko",
+    "turn": 254,
+    "speaker": "오이디푸스",
+    "group": 254
+  },
+  {
+    "text": "먼지요, 재요, 아무것도 아니오.",
+    "lang": "ko",
+    "turn": 254,
+    "speaker": "오이디푸스",
+    "group": 254
+  },
+  {
+    "text": "폴뤼보스만큼 죽어버렸소.",
+    "lang": "ko",
+    "turn": 254,
+    "speaker": "오이디푸스",
+    "group": 254
+  },
+  {
+    "text": "이오카스테: 오래전에 내가 그렇게 말하지 않았나요?",
+    "lang": "ko",
+    "turn": 255,
+    "speaker": "이오카스테",
+    "group": 255
+  },
+  {
+    "text": "오이디푸스: 그랬소.",
+    "lang": "ko",
+    "turn": 256,
+    "speaker": "오이디푸스",
+    "group": 256
+  },
+  {
+    "text": "그러나 나는 두려움에 잘못 이끌렸소.",
+    "lang": "ko",
+    "turn": 256,
+    "speaker": "오이디푸스",
+    "group": 256
+  },
+  {
+    "text": "이오카스테: 그러니 이제 그것이 더는 당신의 영혼을 짓누르게 하지 마세요.",
+    "lang": "ko",
+    "turn": 257,
+    "speaker": "이오카스테",
+    "group": 257
+  },
+  {
+    "text": "오이디푸스: 그러나 어머니와의 혼인 침상을 두려워해야 하지 않겠소?",
+    "lang": "ko",
+    "turn": 258,
+    "speaker": "오이디푸스",
+    "group": 258
+  },
+  {
+    "text": "이오카스테: 우연에 휘둘리고 앞날을 확실히 알지도 못하는 인간이 왜 두려워해야 하나요?",
+    "lang": "ko",
+    "turn": 259,
+    "speaker": "이오카스테",
+    "group": 259
+  },
+  {
+    "text": "하루하루 근심 없이 사는 것이 가장 좋아요.",
+    "lang": "ko",
+    "turn": 259,
+    "speaker": "이오카스테",
+    "group": 259
+  },
+  {
+    "text": "어머니와의 혼인을 두려워하지 마세요.",
+    "lang": "ko",
+    "turn": 259,
+    "speaker": "이오카스테",
+    "group": 259
+  },
+  {
+    "text": "사람이 꿈속에서 어머니와 결혼하는 일이 얼마나 흔한가요!",
+    "lang": "ko",
+    "turn": 259,
+    "speaker": "이오카스테",
+    "group": 259
+  },
+  {
+    "text": "그런 병든 상상을 가장 적게 마음에 두는 사람이 가장 편안하게 살아요.",
+    "lang": "ko",
+    "turn": 259,
+    "speaker": "이오카스테",
+    "group": 259
+  },
+  {
+    "text": "오이디푸스: 어머니가 살아 계시지 않다면 당신의 확신을 전적으로 받아들였을 것이오.",
+    "lang": "ko",
+    "turn": 260,
+    "speaker": "오이디푸스",
+    "group": 260
+  },
+  {
+    "text": "그러나 살아 계시니, 반쯤 설득되어도 여전히 두려움 속에서 살아야 하오.",
+    "lang": "ko",
+    "turn": 260,
+    "speaker": "오이디푸스",
+    "group": 260
+  },
+  {
+    "text": "이오카스테: 그래도 아버지의 죽음이 어둠을 많이 걷어내지 않았나요?",
+    "lang": "ko",
+    "turn": 261,
+    "speaker": "이오카스테",
+    "group": 261
+  },
+  {
+    "text": "오이디푸스: 많이 걷어냈소.",
+    "lang": "ko",
+    "turn": 262,
+    "speaker": "오이디푸스",
+    "group": 262
+  },
+  {
+    "text": "그러나 내가 두려워하는 것은 살아 계신 그분이오.",
+    "lang": "ko",
+    "turn": 262,
+    "speaker": "오이디푸스",
+    "group": 262
+  },
+  {
+    "text": "코린토스의 사자: 그렇게 두려워하시는 여인은 누구입니까?",
+    "lang": "ko",
+    "turn": 263,
+    "speaker": "코린토스의 사자",
+    "group": 263
+  },
+  {
+    "text": "오이디푸스: 낯선 사람이여, 폴뤼보스의 아내 메로페다.",
+    "lang": "ko",
+    "turn": 264,
+    "speaker": "오이디푸스",
+    "group": 264
+  },
+  {
+    "text": "코린토스의 사자: 그분의 무엇 때문에 두려워하십니까?",
+    "lang": "ko",
+    "turn": 265,
+    "speaker": "코린토스의 사자",
+    "group": 265
+  },
+  {
+    "text": "오이디푸스: 하늘에서 내린, 무서운 뜻의 신탁 때문이다.",
+    "lang": "ko",
+    "turn": 266,
+    "speaker": "오이디푸스",
+    "group": 266
+  },
+  {
+    "text": "코린토스의 사자: 비밀입니까, 아니면 낯선 사람도 들어도 됩니까?",
+    "lang": "ko",
+    "turn": 267,
+    "speaker": "코린토스의 사자",
+    "group": 267
+  },
+  {
+    "text": "오이디푸스: 비밀은 아니다.",
+    "lang": "ko",
+    "turn": 268,
+    "speaker": "오이디푸스",
+    "group": 268
+  },
+  {
+    "text": "록시아스는 내가 친어머니와 몸을 함께하고, 내 손으로 친아버지의 피를 흘리게 하리라고 예언했다.",
+    "lang": "ko",
+    "turn": 268,
+    "speaker": "오이디푸스",
+    "group": 268
+  },
+  {
+    "text": "그래서 코린토스는 여러 해 동안 내게 먼 고향이 되었고, 나는 외국을 떠돌았다.",
+    "lang": "ko",
+    "turn": 268,
+    "speaker": "오이디푸스",
+    "group": 268
+  },
+  {
+    "text": "그러나 가장 달콤한 모습인 부모님의 얼굴을 그리워했다.",
+    "lang": "ko",
+    "turn": 268,
+    "speaker": "오이디푸스",
+    "group": 268
+  },
+  {
+    "text": "코린토스의 사자: 그 두려움이 왕을 고향에서 내몰았습니까?",
+    "lang": "ko",
+    "turn": 269,
+    "speaker": "코린토스의 사자",
+    "group": 269
+  },
+  {
+    "text": "오이디푸스: 그렇다.",
+    "lang": "ko",
+    "turn": 270,
+    "speaker": "오이디푸스",
+    "group": 270
+  },
+  {
+    "text": "친아버지를 죽일까 하는 공포와 함께.",
+    "lang": "ko",
+    "turn": 270,
+    "speaker": "오이디푸스",
+    "group": 270
+  },
+  {
+    "text": "코린토스의 사자: 왕께 기쁨을 드리려고 왔으니, 이 두 번째 두려움에서도 해방해드려야 하지 않겠습니까?",
+    "lang": "ko",
+    "turn": 271,
+    "speaker": "코린토스의 사자",
+    "group": 271
+  },
+  {
+    "text": "오이디푸스: 그렇다면 그대의 수고에 합당한 보상을 하겠다.",
+    "lang": "ko",
+    "turn": 272,
+    "speaker": "오이디푸스",
+    "group": 272
+  },
+  {
+    "text": "코린토스의 사자: 솔직히 말씀드리면, 제가 온 가장 큰 이유는 왕께서 고향에 돌아오시면 이익을 얻으리라는 희망 때문이었습니다.",
+    "lang": "ko",
+    "turn": 273,
+    "speaker": "코린토스의 사자",
+    "group": 273
+  },
+  {
+    "text": "오이디푸스: 아니다.",
+    "lang": "ko",
+    "turn": 274,
+    "speaker": "오이디푸스",
+    "group": 274
+  },
+  {
+    "text": "나는 다시는 부모님 곁으로 가지 않겠다.",
+    "lang": "ko",
+    "turn": 274,
+    "speaker": "오이디푸스",
+    "group": 274
+  },
+  {
+    "text": "코린토스의 사자: 나의 아들이여, 왕께서는 자신이 무엇을 하는지 모르시는 것이 분명합니다.",
+    "lang": "ko",
+    "turn": 275,
+    "speaker": "코린토스의 사자",
+    "group": 275
+  },
+  {
+    "text": "오이디푸스: 노인이여, 무슨 말인가?",
+    "lang": "ko",
+    "turn": 276,
+    "speaker": "오이디푸스",
+    "group": 276
+  },
+  {
+    "text": "신들을 생각해서라도 모두 말해다오.",
+    "lang": "ko",
+    "turn": 276,
+    "speaker": "오이디푸스",
+    "group": 276
+  },
+  {
+    "text": "코린토스의 사자: 돌아갈 것을 두려워하는 까닭이 그것이라면 말씀입니다.",
+    "lang": "ko",
+    "turn": 277,
+    "speaker": "코린토스의 사자",
+    "group": 277
+  },
+  {
+    "text": "오이디푸스: 그렇다.",
+    "lang": "ko",
+    "turn": 278,
+    "speaker": "오이디푸스",
+    "group": 278
+  },
+  {
+    "text": "신의 말이 내게서 이루어질까 두렵다.",
+    "lang": "ko",
+    "turn": 278,
+    "speaker": "오이디푸스",
+    "group": 278
+  },
+  {
+    "text": "코린토스의 사자: 부모님 때문에 저주받게 될까 두려우십니까?",
+    "lang": "ko",
+    "turn": 279,
+    "speaker": "코린토스의 사자",
+    "group": 279
+  },
+  {
+    "text": "오이디푸스: 바로 그것 하나가 언제나 나를 두렵게 한다.",
+    "lang": "ko",
+    "turn": 280,
+    "speaker": "오이디푸스",
+    "group": 280
+  },
+  {
+    "text": "코린토스의 사자: 그 두려움이 모두 근거 없다는 것을 모르십니까?",
+    "lang": "ko",
+    "turn": 281,
+    "speaker": "코린토스의 사자",
+    "group": 281
+  },
+  {
+    "text": "오이디푸스: 내가 두 분의 친아들인데 어떻게 근거가 없는가?",
+    "lang": "ko",
+    "turn": 282,
+    "speaker": "오이디푸스",
+    "group": 282
+  },
+  {
+    "text": "코린토스의 사자: 폴뤼보스는 왕과 피로 이어진 사람이 아니니까요.",
+    "lang": "ko",
+    "turn": 283,
+    "speaker": "코린토스의 사자",
+    "group": 283
+  },
+  {
+    "text": "오이디푸스: 무슨 말인가?",
+    "lang": "ko",
+    "turn": 284,
+    "speaker": "오이디푸스",
+    "group": 284
+  },
+  {
+    "text": "폴뤼보스가 내 아버지가 아니었는가?",
+    "lang": "ko",
+    "turn": 284,
+    "speaker": "오이디푸스",
+    "group": 284
+  },
+  {
+    "text": "코린토스의 사자: 제가 왕의 아버지인 만큼만 그분도 아버지입니다.",
+    "lang": "ko",
+    "turn": 285,
+    "speaker": "코린토스의 사자",
+    "group": 285
+  },
+  {
+    "text": "그 이상은 아닙니다.",
+    "lang": "ko",
+    "turn": 285,
+    "speaker": "코린토스의 사자",
+    "group": 285
+  },
+  {
+    "text": "오이디푸스: 내 아버지가, 내게 아무 관계도 없는 사람과 같다는 것인가?",
+    "lang": "ko",
+    "turn": 286,
+    "speaker": "오이디푸스",
+    "group": 286
+  },
+  {
+    "text": "코린토스의 사자: 제가 왕을 낳지 않았듯 그분도 낳지 않았습니다.",
+    "lang": "ko",
+    "turn": 287,
+    "speaker": "코린토스의 사자",
+    "group": 287
+  },
+  {
+    "text": "오이디푸스: 그러면 왜 나를 아들이라고 불렀는가?",
+    "lang": "ko",
+    "turn": 288,
+    "speaker": "오이디푸스",
+    "group": 288
+  },
+  {
+    "text": "코린토스의 사자: 제 손에서 왕을 선물로 받았다는 것을 아십시오.",
+    "lang": "ko",
+    "turn": 289,
+    "speaker": "코린토스의 사자",
+    "group": 289
+  },
+  {
+    "text": "오이디푸스: 그분의 자식이 아니었어도 나를 많이 사랑하셨다.",
+    "lang": "ko",
+    "turn": 290,
+    "speaker": "오이디푸스",
+    "group": 290
+  },
+  {
+    "text": "코린토스의 사자: 그때까지 자식이 없었던 분이 왕에게 마음을 주셨습니다.",
+    "lang": "ko",
+    "turn": 291,
+    "speaker": "코린토스의 사자",
+    "group": 291
+  },
+  {
+    "text": "오이디푸스: 그 아이는 주운 아이였는가, 아니면 돈을 주고 산 노예였는가?",
+    "lang": "ko",
+    "turn": 292,
+    "speaker": "오이디푸스",
+    "group": 292
+  },
+  {
+    "text": "코린토스의 사자: 키타이론의 숲 우거진 골짜기에서 왕을 발견했습니다.",
+    "lang": "ko",
+    "turn": 293,
+    "speaker": "코린토스의 사자",
+    "group": 293
+  },
+  {
+    "text": "오이디푸스: 무슨 일로 그 산의 숲에 들어갔는가?",
+    "lang": "ko",
+    "turn": 294,
+    "speaker": "오이디푸스",
+    "group": 294
+  },
+  {
+    "text": "코린토스의 사자: 산에서 양 떼를 돌보는 것이 제 일이었습니다.",
+    "lang": "ko",
+    "turn": 295,
+    "speaker": "코린토스의 사자",
+    "group": 295
+  },
+  {
+    "text": "오이디푸스: 품삯을 받고 떠돌아다니던 목자였는가?",
+    "lang": "ko",
+    "turn": 296,
+    "speaker": "오이디푸스",
+    "group": 296
+  },
+  {
+    "text": "코린토스의 사자: 그렇습니다.",
+    "lang": "ko",
+    "turn": 297,
+    "speaker": "코린토스의 사자",
+    "group": 297
+  },
+  {
+    "text": "그러나 그 순간에는 왕의 목숨을 구한 사람이었습니다, 나의 아들이여.",
+    "lang": "ko",
+    "turn": 297,
+    "speaker": "코린토스의 사자",
+    "group": 297
+  },
+  {
+    "text": "오이디푸스: 내 목숨을 구했다고?",
+    "lang": "ko",
+    "turn": 298,
+    "speaker": "오이디푸스",
+    "group": 298
+  },
+  {
+    "text": "어떤 위험에서?",
+    "lang": "ko",
+    "turn": 298,
+    "speaker": "오이디푸스",
+    "group": 298
+  },
+  {
+    "text": "그때 내게 무엇이 잘못되어 있었는가?",
+    "lang": "ko",
+    "turn": 298,
+    "speaker": "오이디푸스",
+    "group": 298
+  },
+  {
+    "text": "코린토스의 사자: 왕의 발목 관절이 충분한 증거입니다.",
+    "lang": "ko",
+    "turn": 299,
+    "speaker": "코린토스의 사자",
+    "group": 299
+  },
+  {
+    "text": "오이디푸스: 아, 왜 그 오래된 상처를 다시 떠올리게 하는가?",
+    "lang": "ko",
+    "turn": 300,
+    "speaker": "오이디푸스",
+    "group": 300
+  },
+  {
+    "text": "코린토스의 사자: 왕의 두 발을 묶어놓은 못을 제가 풀었습니다.",
+    "lang": "ko",
+    "turn": 301,
+    "speaker": "코린토스의 사자",
+    "group": 301
+  },
+  {
+    "text": "오이디푸스: 그렇다.",
+    "lang": "ko",
+    "turn": 302,
+    "speaker": "오이디푸스",
+    "group": 302
+  },
+  {
+    "text": "나는 요람에서부터 그 무서운 낙인을 지녔다.",
+    "lang": "ko",
+    "turn": 302,
+    "speaker": "오이디푸스",
+    "group": 302
+  },
+  {
+    "text": "코린토스의 사자: 지금도 쓰시는 이름은 거기에서 나온 것입니다.",
+    "lang": "ko",
+    "turn": 303,
+    "speaker": "코린토스의 사자",
+    "group": 303
+  },
+  {
+    "text": "오이디푸스: 누가 그렇게 했는가?",
+    "lang": "ko",
+    "turn": 304,
+    "speaker": "오이디푸스",
+    "group": 304
+  },
+  {
+    "text": "간청하니 누가 했는지 말해다오.",
+    "lang": "ko",
+    "turn": 304,
+    "speaker": "오이디푸스",
+    "group": 304
+  },
+  {
+    "text": "아버지였는가, 어머니였는가?",
+    "lang": "ko",
+    "turn": 304,
+    "speaker": "오이디푸스",
+    "group": 304
+  },
+  {
+    "text": "코린토스의 사자: 모릅니다.",
+    "lang": "ko",
+    "turn": 305,
+    "speaker": "코린토스의 사자",
+    "group": 305
+  },
+  {
+    "text": "왕을 제게 넘긴 사람이 더 많이 알 것입니다.",
+    "lang": "ko",
+    "turn": 305,
+    "speaker": "코린토스의 사자",
+    "group": 305
+  },
+  {
+    "text": "오이디푸스: 무엇이라고?",
+    "lang": "ko",
+    "turn": 306,
+    "speaker": "오이디푸스",
+    "group": 306
+  },
+  {
+    "text": "나를 발견한 것은 그대 자신이 아니라 다른 사람이었는가?",
+    "lang": "ko",
+    "turn": 306,
+    "speaker": "오이디푸스",
+    "group": 306
+  },
+  {
+    "text": "코린토스의 사자: 제가 아닙니다.",
+    "lang": "ko",
+    "turn": 307,
+    "speaker": "코린토스의 사자",
+    "group": 307
+  },
+  {
+    "text": "다른 목자가 왕을 제게 주었습니다.",
+    "lang": "ko",
+    "turn": 307,
+    "speaker": "코린토스의 사자",
+    "group": 307
+  },
+  {
+    "text": "오이디푸스: 누구였는가?",
+    "lang": "ko",
+    "turn": 308,
+    "speaker": "오이디푸스",
+    "group": 308
+  },
+  {
+    "text": "그를 다시 보면 알아볼 수 있겠는가?",
+    "lang": "ko",
+    "turn": 308,
+    "speaker": "오이디푸스",
+    "group": 308
+  },
+  {
+    "text": "코린토스의 사자: 라이오스의 집안에 속한 사람으로 알려져 있었습니다.",
+    "lang": "ko",
+    "turn": 309,
+    "speaker": "코린토스의 사자",
+    "group": 309
+  },
+  {
+    "text": "오이디푸스: 오래전에 이 나라를 다스린 그 왕 말인가?",
+    "lang": "ko",
+    "turn": 310,
+    "speaker": "오이디푸스",
+    "group": 310
+  },
+  {
+    "text": "코린토스의 사자: 그분입니다.",
+    "lang": "ko",
+    "turn": 311,
+    "speaker": "코린토스의 사자",
+    "group": 311
+  },
+  {
+    "text": "그는 왕의 목자였습니다.",
+    "lang": "ko",
+    "turn": 311,
+    "speaker": "코린토스의 사자",
+    "group": 311
+  },
+  {
+    "text": "오이디푸스: 그가 아직 살아 있어서 내가 볼 수 있는가?",
+    "lang": "ko",
+    "turn": 312,
+    "speaker": "오이디푸스",
+    "group": 312
+  },
+  {
+    "text": "코린토스의 사자: 그의 동포들이 가장 잘 알 것입니다.",
+    "lang": "ko",
+    "turn": 313,
+    "speaker": "코린토스의 사자",
+    "group": 313
+  },
+  {
+    "text": "오이디푸스: 여기 있는 그대들 중에 그가 말하는 목자를 아는 사람이 있는가?",
+    "lang": "ko",
+    "turn": 314,
+    "speaker": "오이디푸스",
+    "group": 314
+  },
+  {
+    "text": "들이나 도시에서 본 적이 있는가?",
+    "lang": "ko",
+    "turn": 314,
+    "speaker": "오이디푸스",
+    "group": 314
+  },
+  {
+    "text": "곧 대답하라.",
+    "lang": "ko",
+    "turn": 314,
+    "speaker": "오이디푸스",
+    "group": 314
+  },
+  {
+    "text": "이 일을 밝혀낼 때가 왔다.",
+    "lang": "ko",
+    "turn": 314,
+    "speaker": "오이디푸스",
+    "group": 314
+  },
+  {
+    "text": "합창대: 제 생각에는 왕께서 조금 전에 만나고 싶어 하셨던 바로 그 하인을 말하는 듯합니다.",
+    "lang": "ko",
+    "turn": 315,
+    "speaker": "합창대",
+    "group": 315
+  },
+  {
+    "text": "그러나 우리 왕비 이오카스테가 가장 잘 아실 것입니다.",
+    "lang": "ko",
+    "turn": 315,
+    "speaker": "합창대",
+    "group": 315
+  },
+  {
+    "text": "오이디푸스: 부인, 우리가 데려오라고 보낸 그 사람을 알고 있소?",
+    "lang": "ko",
+    "turn": 316,
+    "speaker": "오이디푸스",
+    "group": 316
+  },
+  {
+    "text": "낯선 사람이 말하는 이와 같은 사람이오?",
+    "lang": "ko",
+    "turn": 316,
+    "speaker": "오이디푸스",
+    "group": 316
+  },
+  {
+    "text": "이오카스테: 누구인들 무엇이 중요하겠어요?",
+    "lang": "ko",
+    "turn": 317,
+    "speaker": "이오카스테",
+    "group": 317
+  },
+  {
+    "text": "그대로 두세요.",
+    "lang": "ko",
+    "turn": 317,
+    "speaker": "이오카스테",
+    "group": 317
+  },
+  {
+    "text": "이런 헛된 말을 따져보는 것은 생각을 낭비하는 일이에요.",
+    "lang": "ko",
+    "turn": 317,
+    "speaker": "이오카스테",
+    "group": 317
+  },
+  {
+    "text": "오이디푸스: 아니오.",
+    "lang": "ko",
+    "turn": 318,
+    "speaker": "오이디푸스",
+    "group": 318
+  },
+  {
+    "text": "이렇게 인도하는 단서들이 있으니, 내 출생의 비밀을 밝혀내지 않을 수 없소.",
+    "lang": "ko",
+    "turn": 318,
+    "speaker": "오이디푸스",
+    "group": 318
+  },
+  {
+    "text": "이오카스테: 아, 당신의 목숨이 소중하다면 이 추적을 그만두세요.",
+    "lang": "ko",
+    "turn": 319,
+    "speaker": "이오카스테",
+    "group": 319
+  },
+  {
+    "text": "내가 겪는 괴로움만으로도 충분해요.",
+    "lang": "ko",
+    "turn": 319,
+    "speaker": "이오카스테",
+    "group": 319
+  },
+  {
+    "text": "오이디푸스: 안심하시오.",
+    "lang": "ko",
+    "turn": 320,
+    "speaker": "오이디푸스",
+    "group": 320
+  },
+  {
+    "text": "내가 노예 여자의 아들로 밝혀지고, 삼 대째 내려오는 세 겹의 노예라 하더라도 당신의 명예는 더럽혀지지 않소.",
+    "lang": "ko",
+    "turn": 320,
+    "speaker": "오이디푸스",
+    "group": 320
+  },
+  {
+    "text": "이오카스테: 그래도 내 말을 들어주세요.",
+    "lang": "ko",
+    "turn": 321,
+    "speaker": "이오카스테",
+    "group": 321
+  },
+  {
+    "text": "간청하니 이 일을 하지 마세요.",
+    "lang": "ko",
+    "turn": 321,
+    "speaker": "이오카스테",
+    "group": 321
+  },
+  {
+    "text": "오이디푸스: 그럴 수 없소.",
+    "lang": "ko",
+    "turn": 322,
+    "speaker": "오이디푸스",
+    "group": 322
+  },
+  {
+    "text": "이 일의 끝까지 파고들어야 하오.",
+    "lang": "ko",
+    "turn": 322,
+    "speaker": "오이디푸스",
+    "group": 322
+  },
+  {
+    "text": "이오카스테: 당신을 위해 가장 좋은 충고를 하는 거예요.",
+    "lang": "ko",
+    "turn": 323,
+    "speaker": "이오카스테",
+    "group": 323
+  },
+  {
+    "text": "오이디푸스: 그 가장 좋은 충고를 듣기가 이제 답답하오.",
+    "lang": "ko",
+    "turn": 324,
+    "speaker": "오이디푸스",
+    "group": 324
+  },
+  {
+    "text": "이오카스테: 아, 당신이 누구인지 끝내 알아내지 못하기를!",
+    "lang": "ko",
+    "turn": 325,
+    "speaker": "이오카스테",
+    "group": 325
+  },
+  {
+    "text": "오이디푸스: 가서 목자를 이리 데려오라.",
+    "lang": "ko",
+    "turn": 326,
+    "speaker": "오이디푸스",
+    "group": 326
+  },
+  {
+    "text": "저 여자는 자기 조상의 고귀함을 자랑하도록 내버려두어라.",
+    "lang": "ko",
+    "turn": 326,
+    "speaker": "오이디푸스",
+    "group": 326
+  },
+  {
+    "text": "이오카스테: 아, 불행한 당신, 가엾은 사람이여!",
+    "lang": "ko",
+    "turn": 327,
+    "speaker": "이오카스테",
+    "group": 327
+  },
+  {
+    "text": "이것이 내가 당신에게 하는 마지막 말이에요.",
+    "lang": "ko",
+    "turn": 327,
+    "speaker": "이오카스테",
+    "group": 327
+  },
+  {
+    "text": "이제부터 영원히 침묵할 거예요.",
+    "lang": "ko",
+    "turn": 327,
+    "speaker": "이오카스테",
+    "group": 327
+  },
+  {
+    "text": "〈이오카스테가 퇴장한다.〉",
+    "lang": "ko",
+    "turn": 327,
+    "speaker": "이오카스테",
+    "group": 327
+  },
+  {
+    "text": "합창대: 오이디푸스여, 왕비께서는 왜 격렬한 슬픔에 찔린 듯 떠나셨습니까?",
+    "lang": "ko",
+    "turn": 328,
+    "speaker": "합창대",
+    "group": 328
+  },
+  {
+    "text": "이 죽은 듯한 고요에서 불행의 폭풍이 터져 나올까 몹시 두렵습니다.",
+    "lang": "ko",
+    "turn": 328,
+    "speaker": "합창대",
+    "group": 328
+  },
+  {
+    "text": "오이디푸스: 폭풍이 터지게 두어라.",
+    "lang": "ko",
+    "turn": 329,
+    "speaker": "오이디푸스",
+    "group": 329
+  },
+  {
+    "text": "내 혈통이 아무리 낮아도 그것을 알아내려는 결심은 변하지 않는다.",
+    "lang": "ko",
+    "turn": 329,
+    "speaker": "오이디푸스",
+    "group": 329
+  },
+  {
+    "text": "그녀는 여자로서의 자부심 때문에 내 비천한 출생을 업신여기는지도 모르겠다.",
+    "lang": "ko",
+    "turn": 329,
+    "speaker": "오이디푸스",
+    "group": 329
+  },
+  {
+    "text": "그러나 나는 좋은 선물을 주는 행운의 사랑받는 자식이라 여긴다.",
+    "lang": "ko",
+    "turn": 329,
+    "speaker": "오이디푸스",
+    "group": 329
+  },
+  {
+    "text": "그러니 부끄러워하지 않겠다.",
+    "lang": "ko",
+    "turn": 329,
+    "speaker": "오이디푸스",
+    "group": 329
+  },
+  {
+    "text": "행운은 나의 어머니이고, 차고 이지러지는 달들은 내 형제다.",
+    "lang": "ko",
+    "turn": 329,
+    "speaker": "오이디푸스",
+    "group": 329
+  },
+  {
+    "text": "나도 그들과 함께 커지고 작아진다.",
+    "lang": "ko",
+    "turn": 329,
+    "speaker": "오이디푸스",
+    "group": 329
+  },
+  {
+    "text": "이런 태생인 내가 왜 출생을 추적하는 것을 두려워하겠는가?",
+    "lang": "ko",
+    "turn": 329,
+    "speaker": "오이디푸스",
+    "group": 329
+  },
+  {
+    "text": "어떤 것도 나를 지금의 나 아닌 것으로 만들 수 없다.",
+    "lang": "ko",
+    "turn": 329,
+    "speaker": "오이디푸스",
+    "group": 329
+  },
+  {
+    "text": "합창대: 〈정가〉 예언하는 내 영혼이 틀리지 않고, 내 지혜에 조금이라도 힘이 있다면, 키타이론이여, 내일 보름달이 뜨기 전에 너를 찬양하리라.",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "우리 오이디푸스의 유모이자 양어머니로 너를 맞이하고, 마땅히 너를 높이리라.",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "왕의 집안을 사랑하는 너를 춤과 노래로 기리리라.",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "포이보스여, 이 말이 은혜롭게 받아들여지기를!",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "〈반정가〉 아이여, 너를 낳은 이는 님프인가 여신인가?",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "네 아버지는 분명 인간보다 높은 존재이리라.",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "산을 돌아다니는 판인가?",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "산의 벌판에 머무는 록시아스가 너를 낳았는가?",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "아니면 킬레네의 주인이나 차가운 산꼭대기에 사는 바코스인가?",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "그가 함께 놀기를 좋아하는 헬리콘의 산 님프가, 새로 태어난 기쁨인 너를 그에게 안겨주었는가?",
+    "lang": "ko",
+    "turn": 330,
+    "speaker": "합창대",
+    "group": 330
+  },
+  {
+    "text": "오이디푸스: 원로들이여.",
+    "lang": "ko",
+    "turn": 331,
+    "speaker": "오이디푸스",
+    "group": 331
+  },
+  {
+    "text": "나는 그 사람을 전에 만난 적이 없지만 짐작해보면, 오랫동안 찾던 목자가 오는 듯하다.",
+    "lang": "ko",
+    "turn": 331,
+    "speaker": "오이디푸스",
+    "group": 331
+  },
+  {
+    "text": "세월에 닳은 모습이 저 늙은 사자의 나이와 어울린다.",
+    "lang": "ko",
+    "turn": 331,
+    "speaker": "오이디푸스",
+    "group": 331
+  },
+  {
+    "text": "또 그를 데려오는 사람들은 내 하인들로 보인다.",
+    "lang": "ko",
+    "turn": 331,
+    "speaker": "오이디푸스",
+    "group": 331
+  },
+  {
+    "text": "그러나 그대들은 예전에 그 목자를 알거나 본 적이 있을 테니, 내 짐작보다 더 확실히 알 것이다.",
+    "lang": "ko",
+    "turn": 331,
+    "speaker": "오이디푸스",
+    "group": 331
+  },
+  {
+    "text": "합창대: 알아보겠습니다.",
+    "lang": "ko",
+    "turn": 332,
+    "speaker": "합창대",
+    "group": 332
+  },
+  {
+    "text": "라이오스의 집안 사람이었습니다.",
+    "lang": "ko",
+    "turn": 332,
+    "speaker": "합창대",
+    "group": 332
+  },
+  {
+    "text": "평범한 하인이지만 누구 못지않게 진실한 사람이었습니다.",
+    "lang": "ko",
+    "turn": 332,
+    "speaker": "합창대",
+    "group": 332
+  },
+  {
+    "text": "〈목자가 들어온다.〉",
+    "lang": "ko",
+    "turn": 332,
+    "speaker": "합창대",
+    "group": 332
+  },
+  {
+    "text": "오이디푸스: 코린토스에서 온 낯선 사람이여, 먼저 그대에게 묻겠다.",
+    "lang": "ko",
+    "turn": 333,
+    "speaker": "오이디푸스",
+    "group": 333
+  },
+  {
+    "text": "이 사람이 그대가 말한 사람인가?",
+    "lang": "ko",
+    "turn": 333,
+    "speaker": "오이디푸스",
+    "group": 333
+  },
+  {
+    "text": "코린토스의 사자: 바로 이 사람입니다.",
+    "lang": "ko",
+    "turn": 334,
+    "speaker": "코린토스의 사자",
+    "group": 334
+  },
+  {
+    "text": "오이디푸스: 이제 노인이여, 고개를 들고 내가 묻는 모든 말에 대답하라.",
+    "lang": "ko",
+    "turn": 335,
+    "speaker": "오이디푸스",
+    "group": 335
+  },
+  {
+    "text": "한때 라이오스의 집안에 있었는가?",
+    "lang": "ko",
+    "turn": 335,
+    "speaker": "오이디푸스",
+    "group": 335
+  },
+  {
+    "text": "라이오스의 목자: 있었습니다.",
+    "lang": "ko",
+    "turn": 336,
+    "speaker": "라이오스의 목자",
+    "group": 336
+  },
+  {
+    "text": "사들인 노예가 아니라 그 집에서 태어나 자란 노예였습니다.",
+    "lang": "ko",
+    "turn": 336,
+    "speaker": "라이오스의 목자",
+    "group": 336
+  },
+  {
+    "text": "오이디푸스: 무엇을 했는가?",
+    "lang": "ko",
+    "turn": 337,
+    "speaker": "오이디푸스",
+    "group": 337
+  },
+  {
+    "text": "어떤 일을 맡았는가?",
+    "lang": "ko",
+    "turn": 337,
+    "speaker": "오이디푸스",
+    "group": 337
+  },
+  {
+    "text": "라이오스의 목자: 제 삶의 대부분 동안 양을 돌보았습니다.",
+    "lang": "ko",
+    "turn": 338,
+    "speaker": "라이오스의 목자",
+    "group": 338
+  },
+  {
+    "text": "오이디푸스: 주로 어느 목초지로 다녔는가?",
+    "lang": "ko",
+    "turn": 339,
+    "speaker": "오이디푸스",
+    "group": 339
+  },
+  {
+    "text": "라이오스의 목자: 키타이론과 그 주변 산들이었습니다.",
+    "lang": "ko",
+    "turn": 340,
+    "speaker": "라이오스의 목자",
+    "group": 340
+  },
+  {
+    "text": "오이디푸스: 그렇다면 그곳에서 저 사람을 알았겠군.",
+    "lang": "ko",
+    "turn": 341,
+    "speaker": "오이디푸스",
+    "group": 341
+  },
+  {
+    "text": "적어도 이름이라도 들었겠지?",
+    "lang": "ko",
+    "turn": 341,
+    "speaker": "오이디푸스",
+    "group": 341
+  },
+  {
+    "text": "라이오스의 목자: 저 사람을요?",
+    "lang": "ko",
+    "turn": 342,
+    "speaker": "라이오스의 목자",
+    "group": 342
+  },
+  {
+    "text": "어떻게 말입니까?",
+    "lang": "ko",
+    "turn": 342,
+    "speaker": "라이오스의 목자",
+    "group": 342
+  },
+  {
+    "text": "누구를 말씀하십니까?",
+    "lang": "ko",
+    "turn": 342,
+    "speaker": "라이오스의 목자",
+    "group": 342
+  },
+  {
+    "text": "오이디푸스: 여기 있는 사람 말이다.",
+    "lang": "ko",
+    "turn": 343,
+    "speaker": "오이디푸스",
+    "group": 343
+  },
+  {
+    "text": "전에 그를 만났을 테니…….",
+    "lang": "ko",
+    "turn": 343,
+    "speaker": "오이디푸스",
+    "group": 343
+  },
+  {
+    "text": "라이오스의 목자: 곧바로는 잘 기억나지 않습니다.",
+    "lang": "ko",
+    "turn": 344,
+    "speaker": "라이오스의 목자",
+    "group": 344
+  },
+  {
+    "text": "코린토스의 사자: 주인님, 놀라운 일은 아닙니다.",
+    "lang": "ko",
+    "turn": 345,
+    "speaker": "코린토스의 사자",
+    "group": 345
+  },
+  {
+    "text": "그러나 제가 흐려진 기억을 되살리겠습니다.",
+    "lang": "ko",
+    "turn": 345,
+    "speaker": "코린토스의 사자",
+    "group": 345
+  },
+  {
+    "text": "우리가 함께 양 떼를 몰던 때는 분명 기억할 것입니다.",
+    "lang": "ko",
+    "turn": 345,
+    "speaker": "코린토스의 사자",
+    "group": 345
+  },
+  {
+    "text": "그에게는 두 떼, 제게는 한 떼가 있었고, 키타이론의 산에서 긴 여름을 세 번 함께 보냈습니다.",
+    "lang": "ko",
+    "turn": 345,
+    "speaker": "코린토스의 사자",
+    "group": 345
+  },
+  {
+    "text": "봄부터 아르크투로스가 떠오를 때까지 제가 그의 동료였습니다.",
+    "lang": "ko",
+    "turn": 345,
+    "speaker": "코린토스의 사자",
+    "group": 345
+  },
+  {
+    "text": "겨울이 되면 저는 제 양들을 집으로 데려가고, 그는 자기 양들을 라이오스의 우리로 데려갔습니다.",
+    "lang": "ko",
+    "turn": 345,
+    "speaker": "코린토스의 사자",
+    "group": 345
+  },
+  {
+    "text": "제가 말한 대로였습니까, 아니었습니까?",
+    "lang": "ko",
+    "turn": 345,
+    "speaker": "코린토스의 사자",
+    "group": 345
+  },
+  {
+    "text": "라이오스의 목자: 오래전 일이지만, 그대의 말은 모두 사실이네.",
+    "lang": "ko",
+    "turn": 346,
+    "speaker": "라이오스의 목자",
+    "group": 346
+  },
+  {
+    "text": "코린토스의 사자: 그렇다면 내게 아이 하나를 주어 내 양아들로 기르게 한 것도 기억하겠지?",
+    "lang": "ko",
+    "turn": 347,
+    "speaker": "코린토스의 사자",
+    "group": 347
+  },
+  {
+    "text": "라이오스의 목자: 왜 그런 것을 묻는가?",
+    "lang": "ko",
+    "turn": 348,
+    "speaker": "라이오스의 목자",
+    "group": 348
+  },
+  {
+    "text": "그 일이 무엇과 관계가 있는가?",
+    "lang": "ko",
+    "turn": 348,
+    "speaker": "라이오스의 목자",
+    "group": 348
+  },
+  {
+    "text": "코린토스의 사자: 벗이여, 그대 앞에 서 있는 분이 바로 그 아이였다네.",
+    "lang": "ko",
+    "turn": 349,
+    "speaker": "코린토스의 사자",
+    "group": 349
+  },
+  {
+    "text": "라이오스의 목자: 저주받을 자여!",
+    "lang": "ko",
+    "turn": 350,
+    "speaker": "라이오스의 목자",
+    "group": 350
+  },
+  {
+    "text": "함부로 놀리는 혀를 다물게!",
+    "lang": "ko",
+    "turn": 350,
+    "speaker": "라이오스의 목자",
+    "group": 350
+  },
+  {
+    "text": "오이디푸스: 진정하라, 노인.",
+    "lang": "ko",
+    "turn": 351,
+    "speaker": "오이디푸스",
+    "group": 351
+  },
+  {
+    "text": "그를 꾸짖지 마라.",
+    "lang": "ko",
+    "turn": 351,
+    "speaker": "오이디푸스",
+    "group": 351
+  },
+  {
+    "text": "그의 말보다 그대의 말이 벌을 받을 만하다.",
+    "lang": "ko",
+    "turn": 351,
+    "speaker": "오이디푸스",
+    "group": 351
+  },
+  {
+    "text": "라이오스의 목자: 가장 좋은 주인님, 제 잘못이 무엇입니까?",
+    "lang": "ko",
+    "turn": 352,
+    "speaker": "라이오스의 목자",
+    "group": 352
+  },
+  {
+    "text": "오이디푸스: 그 아이에 대해 그가 묻는 말에 대답하지 않는 것이다.",
+    "lang": "ko",
+    "turn": 353,
+    "speaker": "오이디푸스",
+    "group": 353
+  },
+  {
+    "text": "라이오스의 목자: 저 사람은 아무 말이나 합니다.",
+    "lang": "ko",
+    "turn": 354,
+    "speaker": "라이오스의 목자",
+    "group": 354
+  },
+  {
+    "text": "어리석은 사람처럼 떠들고 있습니다.",
+    "lang": "ko",
+    "turn": 354,
+    "speaker": "라이오스의 목자",
+    "group": 354
+  },
+  {
+    "text": "오이디푸스: 순순히 말할 뜻이 없다면, 내가 그대의 혀를 열겠다.",
+    "lang": "ko",
+    "turn": 355,
+    "speaker": "오이디푸스",
+    "group": 355
+  },
+  {
+    "text": "라이오스의 목자: 자비를 베푸셔서 늙은 사람을 괴롭히지 마십시오.",
+    "lang": "ko",
+    "turn": 356,
+    "speaker": "라이오스의 목자",
+    "group": 356
+  },
+  {
+    "text": "오이디푸스: 이 악당을 붙잡아라.",
+    "lang": "ko",
+    "turn": 357,
+    "speaker": "오이디푸스",
+    "group": 357
+  },
+  {
+    "text": "잡아서 두 팔을 묶어라!",
+    "lang": "ko",
+    "turn": 357,
+    "speaker": "오이디푸스",
+    "group": 357
+  },
+  {
+    "text": "라이오스의 목자: 아이고, 아이고!",
+    "lang": "ko",
+    "turn": 358,
+    "speaker": "라이오스의 목자",
+    "group": 358
+  },
+  {
+    "text": "제가 무슨 일을 했습니까?",
+    "lang": "ko",
+    "turn": 358,
+    "speaker": "라이오스의 목자",
+    "group": 358
+  },
+  {
+    "text": "무엇을 더 알아내려 하십니까?",
+    "lang": "ko",
+    "turn": 358,
+    "speaker": "라이오스의 목자",
+    "group": 358
+  },
+  {
+    "text": "오이디푸스: 그가 묻는 그 아이를 이 사람에게 주었는가?",
+    "lang": "ko",
+    "turn": 359,
+    "speaker": "오이디푸스",
+    "group": 359
+  },
+  {
+    "text": "라이오스의 목자: 주었습니다.",
+    "lang": "ko",
+    "turn": 360,
+    "speaker": "라이오스의 목자",
+    "group": 360
+  },
+  {
+    "text": "그날 제가 죽었더라면 좋았을 것입니다!",
+    "lang": "ko",
+    "turn": 360,
+    "speaker": "라이오스의 목자",
+    "group": 360
+  },
+  {
+    "text": "오이디푸스: 진실을 말하지 않으면 그대는 죽게 될 것이다.",
+    "lang": "ko",
+    "turn": 361,
+    "speaker": "오이디푸스",
+    "group": 361
+  },
+  {
+    "text": "라이오스의 목자: 그러나 진실을 말하면 저는 더욱 확실하게 끝장납니다.",
+    "lang": "ko",
+    "turn": 362,
+    "speaker": "라이오스의 목자",
+    "group": 362
+  },
+  {
+    "text": "오이디푸스: 이 악당은 아직도 말을 돌리려 하는 것 같다.",
+    "lang": "ko",
+    "turn": 363,
+    "speaker": "오이디푸스",
+    "group": 363
+  },
+  {
+    "text": "라이오스의 목자: 아닙니다.",
+    "lang": "ko",
+    "turn": 364,
+    "speaker": "라이오스의 목자",
+    "group": 364
+  },
+  {
+    "text": "아이를 주었다고 이미 말씀드렸습니다.",
+    "lang": "ko",
+    "turn": 364,
+    "speaker": "라이오스의 목자",
+    "group": 364
+  },
+  {
+    "text": "오이디푸스: 그 아이는 어디에서 왔는가?",
+    "lang": "ko",
+    "turn": 365,
+    "speaker": "오이디푸스",
+    "group": 365
+  },
+  {
+    "text": "그대의 아이였는가, 아니면 누가 맡긴 아이였는가?",
+    "lang": "ko",
+    "turn": 365,
+    "speaker": "오이디푸스",
+    "group": 365
+  },
+  {
+    "text": "라이오스의 목자: 다른 사람에게 받았습니다.",
+    "lang": "ko",
+    "turn": 366,
+    "speaker": "라이오스의 목자",
+    "group": 366
+  },
+  {
+    "text": "제 아이는 아니었습니다.",
+    "lang": "ko",
+    "turn": 366,
+    "speaker": "라이오스의 목자",
+    "group": 366
+  },
+  {
+    "text": "오이디푸스: 우리 시민 중 누구에게서 받았는가?",
+    "lang": "ko",
+    "turn": 367,
+    "speaker": "오이디푸스",
+    "group": 367
+  },
+  {
+    "text": "어느 집안이었는가?",
+    "lang": "ko",
+    "turn": 367,
+    "speaker": "오이디푸스",
+    "group": 367
+  },
+  {
+    "text": "라이오스의 목자: 신들을 위해서라도 그만해주십시오, 주인님.",
+    "lang": "ko",
+    "turn": 368,
+    "speaker": "라이오스의 목자",
+    "group": 368
+  },
+  {
+    "text": "더는 묻지 마십시오.",
+    "lang": "ko",
+    "turn": 368,
+    "speaker": "라이오스의 목자",
+    "group": 368
+  },
+  {
+    "text": "오이디푸스: 다시 물어야 한다면 그대는 끝장이다.",
+    "lang": "ko",
+    "turn": 369,
+    "speaker": "오이디푸스",
+    "group": 369
+  },
+  {
+    "text": "라이오스의 목자: 그러면 말씀드리겠습니다.",
+    "lang": "ko",
+    "turn": 370,
+    "speaker": "라이오스의 목자",
+    "group": 370
+  },
+  {
+    "text": "라이오스의 집안 아이였습니다.",
+    "lang": "ko",
+    "turn": 370,
+    "speaker": "라이오스의 목자",
+    "group": 370
+  },
+  {
+    "text": "오이디푸스: 노예의 아이였는가, 아니면 라이오스 자신의 핏줄이었는가?",
+    "lang": "ko",
+    "turn": 371,
+    "speaker": "오이디푸스",
+    "group": 371
+  },
+  {
+    "text": "라이오스의 목자: 아, 저는 지금 말하기 두려운 벼랑 끝에 서 있습니다.",
+    "lang": "ko",
+    "turn": 372,
+    "speaker": "라이오스의 목자",
+    "group": 372
+  },
+  {
+    "text": "오이디푸스: 나는 듣기 두려운 벼랑 끝에 있다.",
+    "lang": "ko",
+    "turn": 373,
+    "speaker": "오이디푸스",
+    "group": 373
+  },
+  {
+    "text": "그래도 들어야 한다.",
+    "lang": "ko",
+    "turn": 373,
+    "speaker": "오이디푸스",
+    "group": 373
+  },
+  {
+    "text": "라이오스의 목자: 그러면 아십시오.",
+    "lang": "ko",
+    "turn": 374,
+    "speaker": "라이오스의 목자",
+    "group": 374
+  },
+  {
+    "text": "그 아이는 왕 자신의 아이라고 알려져 있었습니다.",
+    "lang": "ko",
+    "turn": 374,
+    "speaker": "라이오스의 목자",
+    "group": 374
+  },
+  {
+    "text": "그러나 안에 계신 왕의 아내께서 가장 잘 말씀하실 수 있을 것입니다.",
+    "lang": "ko",
+    "turn": 374,
+    "speaker": "라이오스의 목자",
+    "group": 374
+  },
+  {
+    "text": "오이디푸스: 무엇이라고?",
+    "lang": "ko",
+    "turn": 375,
+    "speaker": "오이디푸스",
+    "group": 375
+  },
+  {
+    "text": "그녀가, 그녀가 그대에게 아이를 주었는가?",
+    "lang": "ko",
+    "turn": 375,
+    "speaker": "오이디푸스",
+    "group": 375
+  },
+  {
+    "text": "라이오스의 목자: 그렇습니다, 왕이시여.",
+    "lang": "ko",
+    "turn": 376,
+    "speaker": "라이오스의 목자",
+    "group": 376
+  },
+  {
+    "text": "오이디푸스: 어떤 뜻으로 주었는가?",
+    "lang": "ko",
+    "turn": 377,
+    "speaker": "오이디푸스",
+    "group": 377
+  },
+  {
+    "text": "라이오스의 목자: 그 아이를 없애라는 뜻이었습니다.",
+    "lang": "ko",
+    "turn": 378,
+    "speaker": "라이오스의 목자",
+    "group": 378
+  },
+  {
+    "text": "오이디푸스: 무엇이라고?",
+    "lang": "ko",
+    "turn": 379,
+    "speaker": "오이디푸스",
+    "group": 379
+  },
+  {
+    "text": "그 아이의 어머니가?",
+    "lang": "ko",
+    "turn": 379,
+    "speaker": "오이디푸스",
+    "group": 379
+  },
+  {
+    "text": "라이오스의 목자: 무서운 운명을 두려워했기 때문입니다.",
+    "lang": "ko",
+    "turn": 380,
+    "speaker": "라이오스의 목자",
+    "group": 380
+  },
+  {
+    "text": "오이디푸스: 어떤 운명인가?",
+    "lang": "ko",
+    "turn": 381,
+    "speaker": "오이디푸스",
+    "group": 381
+  },
+  {
+    "text": "라이오스의 목자: 그 아이가 아버지를 죽일 것이라고 했습니다.",
+    "lang": "ko",
+    "turn": 382,
+    "speaker": "라이오스의 목자",
+    "group": 382
+  },
+  {
+    "text": "오이디푸스: 그렇다면 왜 그 아이를 이 노인에게 주었는가?",
+    "lang": "ko",
+    "turn": 383,
+    "speaker": "오이디푸스",
+    "group": 383
+  },
+  {
+    "text": "라이오스의 목자: 아기가 불쌍해서였습니다, 주인님.",
+    "lang": "ko",
+    "turn": 384,
+    "speaker": "라이오스의 목자",
+    "group": 384
+  },
+  {
+    "text": "이 사람이 자기가 온 나라로 데려갈 줄 알았습니다.",
+    "lang": "ko",
+    "turn": 384,
+    "speaker": "라이오스의 목자",
+    "group": 384
+  },
+  {
+    "text": "그러나 그는 가장 끔찍한 불행을 겪도록 아이를 살려두었습니다.",
+    "lang": "ko",
+    "turn": 384,
+    "speaker": "라이오스의 목자",
+    "group": 384
+  },
+  {
+    "text": "이 사람의 말대로 왕께서 정말 그 아이시라면, 신께서 불쌍히 여기시기를!",
+    "lang": "ko",
+    "turn": 384,
+    "speaker": "라이오스의 목자",
+    "group": 384
+  },
+  {
+    "text": "왕께서는 불행을 위해 태어나셨습니다.",
+    "lang": "ko",
+    "turn": 384,
+    "speaker": "라이오스의 목자",
+    "group": 384
+  },
+  {
+    "text": "오이디푸스: 아, 아!",
+    "lang": "ko",
+    "turn": 385,
+    "speaker": "오이디푸스",
+    "group": 385
+  },
+  {
+    "text": "모든 것이 이루어졌다.",
+    "lang": "ko",
+    "turn": 385,
+    "speaker": "오이디푸스",
+    "group": 385
+  },
+  {
+    "text": "모두 진실이다!",
+    "lang": "ko",
+    "turn": 385,
+    "speaker": "오이디푸스",
+    "group": 385
+  },
+  {
+    "text": "빛이여, 다시는 너를 보지 않기를!",
+    "lang": "ko",
+    "turn": 385,
+    "speaker": "오이디푸스",
+    "group": 385
+  },
+  {
+    "text": "나는 비참한 자다.",
+    "lang": "ko",
+    "turn": 385,
+    "speaker": "오이디푸스",
+    "group": 385
+  },
+  {
+    "text": "출생에서도 혼인에서도 저주받았다.",
+    "lang": "ko",
+    "turn": 385,
+    "speaker": "오이디푸스",
+    "group": 385
+  },
+  {
+    "text": "아버지를 죽이고 혈육과 몸을 섞은 자, 세 겹으로 저주받은 자다!",
+    "lang": "ko",
+    "turn": 385,
+    "speaker": "오이디푸스",
+    "group": 385
+  },
+  {
+    "text": "〈오이디푸스가 퇴장한다.〉",
+    "lang": "ko",
+    "turn": 385,
+    "speaker": "오이디푸스",
+    "group": 385
+  },
+  {
+    "text": "합창대: 〈첫째 정가〉 수명이 한 뼘에 지나지 않는 인간의 세대들이여.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "나는 너희를 그림자의 그림자에 불과하다고 헤아린다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "가장 큰 행복을 안다는 자에게도 그것의 겉모습만 있을 뿐이다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "잠깐이면 그 환영은 창백해지고 사라진다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "오이디푸스여, 그대의 추락, 가엾은 추락이 내게 경고한다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "여인에게서 태어난 누구도 행복하다 부르지 말라고.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "〈첫째 반정가〉 제우스여, 그는 과녁을 겨누는 사람 가운데 으뜸이어서 모든 사람보다 앞섰고, 부와 권력이라는 가장 높은 상을 얻었다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "독수리 같은 처녀의 마법을 잠재우고 그 괴물을 제압한 사람이었다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "우리의 구원자로, 나라의 든든한 탑으로 일어섰다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "우리는 그대를 왕으로 맞이했고, 그날부터 강대한 테바이 전체의 주인으로 경배했다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "〈둘째 정가〉 운명의 무거운 손이여!",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "이제 누구의 삶이 더 황폐한가?",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "누구의 이야기가 그대보다 슬프고, 누구의 몫이 더 끔찍한가?",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "왕관을 잃은 오이디푸스여, 그대의 요람이 그대의 혼인 침상이 되었다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "아버지와 아들이 같은 항구에 머물렀다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "그대의 아버지가 오랫동안 갈던 밭이 어떻게 그런 잘못을 침묵으로 견디며 품었는가?",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "〈둘째 반정가〉 모든 것을 보는 시간이 죄를 붙잡았다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "같은 침상에 뒤섞인 아들과 아버지를 정의 앞으로 데려왔다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "불운한 라이오스 집안의 아이여, 그대의 얼굴을 한 번도 보지 않았더라면!",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "죽은 사람을 위해 부르듯 그대를 위해 애가를 올린다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "그러나 사실대로 말하면, 그대를 통해 나는 새 숨을 쉬었고, 이제 그대를 통해 두 번째 죽음을 느낀다.",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "〈궁전의 사자가 들어온다.〉",
+    "lang": "ko",
+    "turn": 386,
+    "speaker": "합창대",
+    "group": 386
+  },
+  {
+    "text": "궁전의 사자: 테바이의 엄숙하고 존경받는 원로들이여.",
+    "lang": "ko",
+    "turn": 387,
+    "speaker": "궁전의 사자",
+    "group": 387
+  },
+  {
+    "text": "이제 어떤 행위를 듣고 어떤 광경을 보시겠습니까!",
+    "lang": "ko",
+    "turn": 387,
+    "speaker": "궁전의 사자",
+    "group": 387
+  },
+  {
+    "text": "진정 이 나라를 사랑하고 아직 라브다코스의 집안을 공경하신다면, 얼마나 슬퍼하시겠습니까!",
+    "lang": "ko",
+    "turn": 387,
+    "speaker": "궁전의 사자",
+    "group": 387
+  },
+  {
+    "text": "이스트로스의 물도, 파시스의 온 물줄기도 이 집의 핏자국을 씻어낼 수 없을 것입니다.",
+    "lang": "ko",
+    "turn": 387,
+    "speaker": "궁전의 사자",
+    "group": 387
+  },
+  {
+    "text": "이 집에 감추어진 불행과 곧 드러날 불행은, 모르고 저지른 일이 아니라 스스로 뜻하여 행한 일입니다.",
+    "lang": "ko",
+    "turn": 387,
+    "speaker": "궁전의 사자",
+    "group": 387
+  },
+  {
+    "text": "가장 견디기 어려운 상처는 자기 손으로 낸 상처입니다.",
+    "lang": "ko",
+    "turn": 387,
+    "speaker": "궁전의 사자",
+    "group": 387
+  },
+  {
+    "text": "합창대: 이미 지나간 재앙만으로도 우리의 눈물과 탄식이 충분히 무겁다.",
+    "lang": "ko",
+    "turn": 388,
+    "speaker": "합창대",
+    "group": 388
+  },
+  {
+    "text": "거기에 무엇을 더할 수 있는가?",
+    "lang": "ko",
+    "turn": 388,
+    "speaker": "합창대",
+    "group": 388
+  },
+  {
+    "text": "궁전의 사자: 제 이야기는 짧게 말하고 짧게 들으실 수 있습니다.",
+    "lang": "ko",
+    "turn": 389,
+    "speaker": "궁전의 사자",
+    "group": 389
+  },
+  {
+    "text": "우리의 군주인 이오카스테 왕비께서 죽었습니다.",
+    "lang": "ko",
+    "turn": 389,
+    "speaker": "궁전의 사자",
+    "group": 389
+  },
+  {
+    "text": "합창대: 아, 가엾은 왕비여!",
+    "lang": "ko",
+    "turn": 390,
+    "speaker": "합창대",
+    "group": 390
+  },
+  {
+    "text": "어떻게 죽음을 맞았는가?",
+    "lang": "ko",
+    "turn": 390,
+    "speaker": "합창대",
+    "group": 390
+  },
+  {
+    "text": "궁전의 사자: 자기 손으로 죽었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "여러분은 직접 보지 않았으니 그 모든 참상을 아직 이해하지 못하실 것입니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "그래도 제 빈약한 기억이 허락하는 만큼 불행한 왕비의 고통을 말씀드리겠습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "왕비는 격분한 채 현관 안으로 들어가자, 두 손으로 머리카락을 움켜쥐고 곧장 혼인의 방으로 달려갔습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "방에 들어가 뒤의 문을 세게 닫았습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "‘라이오스!’",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "하고 오래전에 죽은 남편을 불렀습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "마음은 그에게서 얻은 그 아이를 향하고 있었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "아버지를 죽이고, 어머니가 자기에게서 나온 씨앗으로 끔찍한 자식을 낳게 한 그 아들이었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "이어서 가엾은 자신이 두 겹의 자식을 잉태한 침상을 슬퍼했습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "남편에게서 또 다른 남편을, 자식에게서 또 다른 자식들을 얻은 침상이었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "그 뒤 무슨 일이 일어났는지, 끝이 어떻게 찾아왔는지는 말할 수 없습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "오이디푸스가 비명을 지르며 우리에게 들이닥쳤기 때문입니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "그가 이리저리 오가는 동안 모든 눈이 그에게 쏠려, 왕비의 마지막 고통을 볼 수 없었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "그는 오가며 ‘칼을 다오!’",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "하고 외쳤습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "‘아내이되 아내가 아닌 그 여자는 어디 있는가?",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "나와 내 자식이라는 두 번의 결실을 낳은 배는 어디 있는가?’",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "그리고 광기 속에서 어떤 초인적인 힘이 그의 발길을 이끌었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "인간은 아니었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "지켜보던 우리 중 누구도 아니었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "누군가 손짓하여 부르는 듯 무서운 비명을 지르며 문으로 달려들었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "빗장을 걸쇠에서 뜯어내고, 두 짝 문을 억지로 열어 안으로 몸을 던졌습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "그러자 왕비가 목에 올가미를 두른 채 매달린 모습이 보였습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "왕은 그것을 보고 미친 듯 울부짖으며 줄을 풀었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "가엾은 시신을 땅에 눕힌 다음 벌어진 일은, 아, 끔찍했습니다!",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "왕비의 옷을 여미던 황금 브로치를 뜯어 높이 들어 올리고, 자기 두 눈을 내리찔렀습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "이와 같은 말을 하면서요.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "‘너희는 더는 이런 불행한 광경을 보지 못할 것이다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "내가 당한 일과 내가 저지른 일을 보지 못할 것이다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "이제 어둠에 잠겨, 보아서는 안 되었던 사람들을 보아라.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "눈이 있을 때 알아보기를 헛되이 갈망했던 사람들에게는 이제 눈멀어라.’",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "그 탄식을 되풀이하며 한 번이 아니라 여러 번 손을 들어 눈을 찔렀습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "매번 피투성이 눈에서 흘러나온 피가 수염을 적셨습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "방울방울 떨어진 것이 아니라, 우박처럼 짙고 검은 피가 쏟아져 내렸습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "두 근원에서 솟은 이런 재앙이 부부를 뒤섞으며 두 사람 모두를 덮쳤습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "지금까지 전해진 이 집안의 행운은 참으로 행운이었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "그러나 오늘부터는 고통, 탄식, 파멸, 죽음, 불명예, 이름 붙일 수 있는 모든 재앙이 전부, 전부 이들의 것이 되었습니다.",
+    "lang": "ko",
+    "turn": 391,
+    "speaker": "궁전의 사자",
+    "group": 391
+  },
+  {
+    "text": "합창대: 그의 고통은 아직도 조금도 쉬지 못하는가?",
+    "lang": "ko",
+    "turn": 392,
+    "speaker": "합창대",
+    "group": 392
+  },
+  {
+    "text": "궁전의 사자: 왕은 ‘문을 열어라.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "테바이의 모든 사람이 보게 하라.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "아버지를 죽인 자이며, 자기 어머니의……’라고 외칩니다.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "그 부끄러운 말은 제 입으로 다시 말할 수 없습니다.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "스스로 추방되어 나라를 떠나겠다고 맹세합니다.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "자신이 내렸던 저주를 집안에 가져오면서 머물지는 않겠다고 합니다.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "그러나 힘도 없고 이끌어줄 사람도 없습니다.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "그 고통은 인간이 견딜 수 있는 것보다 큽니다.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "여러분도 곧 보실 것입니다.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "보십시오, 궁전의 문이 열립니다.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "가장 심하게 미워했던 사람조차 불쌍히 여길 슬픈 광경을 이제 보게 될 것입니다.",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "〈눈먼 오이디푸스가 들어온다.〉",
+    "lang": "ko",
+    "turn": 393,
+    "speaker": "궁전의 사자",
+    "group": 393
+  },
+  {
+    "text": "합창대: 비통한 광경이여!",
+    "lang": "ko",
+    "turn": 394,
+    "speaker": "합창대",
+    "group": 394
+  },
+  {
+    "text": "이 슬픈 눈이 지금껏 본 것 가운데 이보다 비통한 것은 없었다.",
+    "lang": "ko",
+    "turn": 394,
+    "speaker": "합창대",
+    "group": 394
+  },
+  {
+    "text": "이 광기는 어디에서 왔는가?",
+    "lang": "ko",
+    "turn": 394,
+    "speaker": "합창대",
+    "group": 394
+  },
+  {
+    "text": "누구도 말할 수 없다.",
+    "lang": "ko",
+    "turn": 394,
+    "speaker": "합창대",
+    "group": 394
+  },
+  {
+    "text": "어떤 신령이 그대의 일생을 맴돌며 숨어 기다리다가, 악귀처럼 뛰어들어 주문을 걸었는가?",
+    "lang": "ko",
+    "turn": 394,
+    "speaker": "합창대",
+    "group": 394
+  },
+  {
+    "text": "불운한 사람이여, 그대의 비참을 어떻게 바라볼 수 있겠는가?",
+    "lang": "ko",
+    "turn": 394,
+    "speaker": "합창대",
+    "group": 394
+  },
+  {
+    "text": "그대를 보고 싶고, 묻고 싶은 것도 배우고 싶은 것도 많지만, 두려움에 휩싸여 고개를 돌린다.",
+    "lang": "ko",
+    "turn": 394,
+    "speaker": "합창대",
+    "group": 394
+  },
+  {
+    "text": "오이디푸스: 아, 나여!",
+    "lang": "ko",
+    "turn": 395,
+    "speaker": "오이디푸스",
+    "group": 395
+  },
+  {
+    "text": "아, 불행한 나여!",
+    "lang": "ko",
+    "turn": 395,
+    "speaker": "오이디푸스",
+    "group": 395
+  },
+  {
+    "text": "어디로 실려 가는가!",
+    "lang": "ko",
+    "turn": 395,
+    "speaker": "오이디푸스",
+    "group": 395
+  },
+  {
+    "text": "버려진 유령처럼 내 목소리가 나를 떠나 공기 속을 떠돈다.",
+    "lang": "ko",
+    "turn": 395,
+    "speaker": "오이디푸스",
+    "group": 395
+  },
+  {
+    "text": "계속, 계속 신령이 나를 몰아간다.",
+    "lang": "ko",
+    "turn": 395,
+    "speaker": "오이디푸스",
+    "group": 395
+  },
+  {
+    "text": "끝은, 아, 어디에 있는가?",
+    "lang": "ko",
+    "turn": 395,
+    "speaker": "오이디푸스",
+    "group": 395
+  },
+  {
+    "text": "합창대: 말하기에 너무 두렵고, 보기에 너무 어두운 끝이다.",
+    "lang": "ko",
+    "turn": 396,
+    "speaker": "합창대",
+    "group": 396
+  },
+  {
+    "text": "오이디푸스: 〈첫째 정가〉 어둡다, 어둡다!",
+    "lang": "ko",
+    "turn": 397,
+    "speaker": "오이디푸스",
+    "group": 397
+  },
+  {
+    "text": "어둠의 공포가 수의처럼 나를 감싸, 안개와 구름 속으로 실어 간다.",
+    "lang": "ko",
+    "turn": 397,
+    "speaker": "오이디푸스",
+    "group": 397
+  },
+  {
+    "text": "아, 아!",
+    "lang": "ko",
+    "turn": 397,
+    "speaker": "오이디푸스",
+    "group": 397
+  },
+  {
+    "text": "어떤 경련이 나를 가로지르는가?",
+    "lang": "ko",
+    "turn": 397,
+    "speaker": "오이디푸스",
+    "group": 397
+  },
+  {
+    "text": "고통스럽게 떠오르는 기억은 얼마나 나를 찌르는가!",
+    "lang": "ko",
+    "turn": 397,
+    "speaker": "오이디푸스",
+    "group": 397
+  },
+  {
+    "text": "합창대: 그런 처지에서 과거와 현재의 불행이라는 두 겹의 무게를 느끼는 것은 놀라운 일이 아닙니다.",
+    "lang": "ko",
+    "turn": 398,
+    "speaker": "합창대",
+    "group": 398
+  },
+  {
+    "text": "오이디푸스: 〈첫째 반정가〉 아, 벗이여.",
+    "lang": "ko",
+    "turn": 399,
+    "speaker": "오이디푸스",
+    "group": 399
+  },
+  {
+    "text": "여전히 충실하고, 여전히 한결같고 다정하구나.",
+    "lang": "ko",
+    "turn": 399,
+    "speaker": "오이디푸스",
+    "group": 399
+  },
+  {
+    "text": "눈먼 사람을 돌보는구나.",
+    "lang": "ko",
+    "turn": 399,
+    "speaker": "오이디푸스",
+    "group": 399
+  },
+  {
+    "text": "그대가 가까이 있음을 안다.",
+    "lang": "ko",
+    "turn": 399,
+    "speaker": "오이디푸스",
+    "group": 399
+  },
+  {
+    "text": "눈을 잃었어도 그대의 목소리는 알아듣는다.",
+    "lang": "ko",
+    "turn": 399,
+    "speaker": "오이디푸스",
+    "group": 399
+  },
+  {
+    "text": "합창대: 두려운 일을 행한 사람이여, 어찌 그렇게 자신의 눈을 훼손할 수 있었습니까?",
+    "lang": "ko",
+    "turn": 400,
+    "speaker": "합창대",
+    "group": 400
+  },
+  {
+    "text": "어떤 신령이 그대를 몰아붙였습니까?",
+    "lang": "ko",
+    "turn": 400,
+    "speaker": "합창대",
+    "group": 400
+  },
+  {
+    "text": "오이디푸스: 〈둘째 정가〉 아폴론이다, 벗이여.",
+    "lang": "ko",
+    "turn": 401,
+    "speaker": "오이디푸스",
+    "group": 401
+  },
+  {
+    "text": "아폴론이 이 불행을 이루었다.",
+    "lang": "ko",
+    "turn": 401,
+    "speaker": "오이디푸스",
+    "group": 401
+  },
+  {
+    "text": "그러나 내리친 오른손은 내 손이었다.",
+    "lang": "ko",
+    "turn": 401,
+    "speaker": "오이디푸스",
+    "group": 401
+  },
+  {
+    "text": "다른 누구의 손도 아니었다.",
+    "lang": "ko",
+    "turn": 401,
+    "speaker": "오이디푸스",
+    "group": 401
+  },
+  {
+    "text": "보는 것이 아무 기쁨도 주지 않는데, 어떻게, 어떻게 내가 더 볼 수 있겠는가?",
+    "lang": "ko",
+    "turn": 401,
+    "speaker": "오이디푸스",
+    "group": 401
+  },
+  {
+    "text": "합창대: 아, 그대의 말씀대로입니다.",
+    "lang": "ko",
+    "turn": 402,
+    "speaker": "합창대",
+    "group": 402
+  },
+  {
+    "text": "오이디푸스: 벗들이여, 말해다오.",
+    "lang": "ko",
+    "turn": 403,
+    "speaker": "오이디푸스",
+    "group": 403
+  },
+  {
+    "text": "이제 어떤 모습이나 목소리, 사랑의 손길이 내 마음을 기쁘게 하겠는가?",
+    "lang": "ko",
+    "turn": 403,
+    "speaker": "오이디푸스",
+    "group": 403
+  },
+  {
+    "text": "서둘러라.",
+    "lang": "ko",
+    "turn": 403,
+    "speaker": "오이디푸스",
+    "group": 403
+  },
+  {
+    "text": "다정함 때문에 지체하지 마라.",
+    "lang": "ko",
+    "turn": 403,
+    "speaker": "오이디푸스",
+    "group": 403
+  },
+  {
+    "text": "두 번 저주받은 자를 모든 눈에서 멀리 데려가다오.",
+    "lang": "ko",
+    "turn": 403,
+    "speaker": "오이디푸스",
+    "group": 403
+  },
+  {
+    "text": "신들에게 미움받고 인간들에게 저주받은 이 사람을.",
+    "lang": "ko",
+    "turn": 403,
+    "speaker": "오이디푸스",
+    "group": 403
+  },
+  {
+    "text": "합창대: 아, 그 절망은 절망적인 처지에 어울립니다.",
+    "lang": "ko",
+    "turn": 404,
+    "speaker": "합창대",
+    "group": 404
+  },
+  {
+    "text": "그대의 얼굴을 한 번도 보지 않았더라면 좋았겠습니다!",
+    "lang": "ko",
+    "turn": 404,
+    "speaker": "합창대",
+    "group": 404
+  },
+  {
+    "text": "오이디푸스: 〈둘째 반정가〉 버려진 아이의 무서운 족쇄를 풀어 내 목숨을 되살린 사람이 누구든 저주받기를!",
+    "lang": "ko",
+    "turn": 405,
+    "speaker": "오이디푸스",
+    "group": 405
+  },
+  {
+    "text": "좋은 뜻으로 그랬겠지만, 그곳에 내버려두었더라면 내 벗들과 나는 이 많은 고통에서 구원받았을 것이다.",
+    "lang": "ko",
+    "turn": 405,
+    "speaker": "오이디푸스",
+    "group": 405
+  },
+  {
+    "text": "합창대: 저도 그렇게 되었기를 바랍니다.",
+    "lang": "ko",
+    "turn": 406,
+    "speaker": "합창대",
+    "group": 406
+  },
+  {
+    "text": "오이디푸스: 그랬다면 나는 아버지의 피를 흘리지도, 어머니의 침상에 오르지도 않았을 것이다.",
+    "lang": "ko",
+    "turn": 407,
+    "speaker": "오이디푸스",
+    "group": 407
+  },
+  {
+    "text": "더럽혀진 배에서 나온 괴물 같은 자식, 나를 낳은 사람과 같은 아내를 둔 아들이 되지 않았을 것이다.",
+    "lang": "ko",
+    "turn": 407,
+    "speaker": "오이디푸스",
+    "group": 407
+  },
+  {
+    "text": "전에 어떤 인간이 오이디푸스처럼 이런 재앙을 겪었는가?",
+    "lang": "ko",
+    "turn": 407,
+    "speaker": "오이디푸스",
+    "group": 407
+  },
+  {
+    "text": "합창대: 그대의 판단이 옳다고 말할 수는 없습니다.",
+    "lang": "ko",
+    "turn": 408,
+    "speaker": "합창대",
+    "group": 408
+  },
+  {
+    "text": "눈먼 채 사는 것보다 죽는 것이 나았을 테니까요.",
+    "lang": "ko",
+    "turn": 408,
+    "speaker": "합창대",
+    "group": 408
+  },
+  {
+    "text": "오이디푸스: 행한 일은 옳게 행한 것이다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "그대는 나의 확고한 믿음을 흔들 수 없다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "논쟁은 그만두자.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "눈이 있다면 저승에서 어떤 눈으로 아버지나 가엾은 어머니를 마주할지 알 수 없다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "두 분께 저지른 죄는 목매달려 죽어도 속죄할 수 없는 죄이기 때문이다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "그러나 그대들은 자녀를 보는 것이 부모의 눈을 기쁘게 한다고 말하겠지.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "내 아이들처럼 태어난 자식도 그런가?",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "아니다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "그런 광경은 나를 기쁘게 할 수 없다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "이 아름다운 도시와 성벽, 신전과 신들의 조각상도 마찬가지다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "한때 온 테바이에서 으뜸이던 나는 이제 모든 사람 가운데 가장 비참한 자가 되었다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "내 선고로 그 모든 광경에서 끊어져 있다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "하늘이 더럽다고 선언한 악인, 라이오스의 핏줄인 그 비참한 자에게 내렸던 내 포고로 내가 단죄되었다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "스스로 범죄자의 낙인을 찍었는데 어떻게 감히 그대들의 얼굴을 바라보겠는가?",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "아니, 듣는 샘까지 막을 방법을 알았다면, 이 비참한 몸을 감옥으로 만드는 것도 망설이지 않았을 것이다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "보지도 듣지도 못하게 하였을 것이다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "슬픔이 닿지 못하는 곳에 머무는 것은 행복이니까.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "키타이론이여, 왜 나를 품었는가?",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "왜 나를 붙잡아 죽이지 않았는가?",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "그랬다면 내 출생의 비밀을 사람들에게 드러내지 않았을 것이다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "폴뤼보스여, 코린토스여, 나의 집이여!",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "내 조상들의 집이라고 불리던 집이여!",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "그때 나는 얼마나 아름다운 양자로 보였는가?",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "그러나 그 싹 속에는 얼마나 추악한 병이 곪고 있었는가?",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "이제 뿌리와 열매의 병이 드러났다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "세 갈래의 큰길과 숨겨진 골짜기, 숲과 갈림길의 고개여.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "너희는 내 피를 마셨다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "이 손이 쏟은 피, 내 아버지의 생명의 피를 마셨다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "너희가 목격한 나의 행위를 기억하는가?",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "그 뒤 테바이에 와서 내가 행한 일을 기억하는가?",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "치명적인 혼인이여!",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "너는 나를 낳았고, 낳은 뒤 다시 내 씨앗을 뿌렸다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "아버지와 형제와 자식, 신부와 아내와 어머니의 피를 뒤섞어 근친의 자손을 만들었다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "태양 아래 벌어지는 모든 공포, 이름을 부르기에도 더러운 공포를 이루었다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "아, 간청하니 이 땅에서 멀리 어디에든 나를 숨겨다오.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "곧바로 죽이거나, 보이지 않도록 바다 깊은 곳에 던져다오.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "이리 와서 이 비천한 자를 만져다오.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "가까이 오라, 두려워하지 마라.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "나 외에는 아무도 나눌 수 없는 죄의 짐은 나 혼자 져야 한다.",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "〈크레온이 들어온다.〉",
+    "lang": "ko",
+    "turn": 409,
+    "speaker": "오이디푸스",
+    "group": 409
+  },
+  {
+    "text": "합창대: 보십시오, 여기 크레온이 왔습니다.",
+    "lang": "ko",
+    "turn": 410,
+    "speaker": "합창대",
+    "group": 410
+  },
+  {
+    "text": "그대 대신 나라의 유일한 수호자로 남았으니, 행동이나 충고로 그대의 청을 들어줄 사람은 그뿐입니다.",
+    "lang": "ko",
+    "turn": 410,
+    "speaker": "합창대",
+    "group": 410
+  },
+  {
+    "text": "오이디푸스: 아, 그에게 건넬 어떤 말을 찾을 수 있을까?",
+    "lang": "ko",
+    "turn": 411,
+    "speaker": "오이디푸스",
+    "group": 411
+  },
+  {
+    "text": "그가 무엇 때문에 나를 믿겠는가?",
+    "lang": "ko",
+    "turn": 411,
+    "speaker": "오이디푸스",
+    "group": 411
+  },
+  {
+    "text": "지난날 내가 그의 악의에 찬 원수였음이 드러났는데.",
+    "lang": "ko",
+    "turn": 411,
+    "speaker": "오이디푸스",
+    "group": 411
+  },
+  {
+    "text": "크레온: 오이디푸스여, 조롱하려고 온 것이 아니오.",
+    "lang": "ko",
+    "turn": 412,
+    "speaker": "크레온",
+    "group": 412
+  },
+  {
+    "text": "지난 잘못을 책망하려고 온 것도 아니오.",
+    "lang": "ko",
+    "turn": 412,
+    "speaker": "크레온",
+    "group": 412
+  },
+  {
+    "text": "〈주변 사람들에게〉 그러나 그대들은 부끄러운 줄 아시오!",
+    "lang": "ko",
+    "turn": 412,
+    "speaker": "크레온",
+    "group": 412
+  },
+  {
+    "text": "인간으로서의 예의를 느끼지 못한다면, 적어도 모든 것을 비추고 기르는 태양을 공경하시오.",
+    "lang": "ko",
+    "turn": 412,
+    "speaker": "크레온",
+    "group": 412
+  },
+  {
+    "text": "땅도 하늘의 비도 빛도 견디지 못할 공포를, 모든 사람이 보도록 이렇게 그대로 드러내놓지 마시오.",
+    "lang": "ko",
+    "turn": 412,
+    "speaker": "크레온",
+    "group": 412
+  },
+  {
+    "text": "곧 안으로 모시오.",
+    "lang": "ko",
+    "turn": 412,
+    "speaker": "크레온",
+    "group": 412
+  },
+  {
+    "text": "친족의 불행은 친족만 듣고 보는 것이 합당하오.",
+    "lang": "ko",
+    "turn": 412,
+    "speaker": "크레온",
+    "group": 412
+  },
+  {
+    "text": "오이디푸스: 아, 들어주시오.",
+    "lang": "ko",
+    "turn": 413,
+    "speaker": "오이디푸스",
+    "group": 413
+  },
+  {
+    "text": "그대가 온 것은 놀랍도록 기쁜 뜻밖의 일이오.",
+    "lang": "ko",
+    "turn": 413,
+    "speaker": "오이디푸스",
+    "group": 413
+  },
+  {
+    "text": "그대는 이토록 고귀하고 나는 이토록 비천하니, 작은 은혜 하나를 베풀어주시오.",
+    "lang": "ko",
+    "turn": 413,
+    "speaker": "오이디푸스",
+    "group": 413
+  },
+  {
+    "text": "나 자신을 위해서가 아니라 그대를 위해 청하오.",
+    "lang": "ko",
+    "turn": 413,
+    "speaker": "오이디푸스",
+    "group": 413
+  },
+  {
+    "text": "크레온: 내게 어떤 은혜를 구하려 하오?",
+    "lang": "ko",
+    "turn": 414,
+    "speaker": "크레온",
+    "group": 414
+  },
+  {
+    "text": "오이디푸스: 그대의 땅 밖으로 나를 서둘러 내쫓아주시오.",
+    "lang": "ko",
+    "turn": 415,
+    "speaker": "오이디푸스",
+    "group": 415
+  },
+  {
+    "text": "인간의 목소리가 더는 나를 맞이하지 않을 넓은 황야에 놓아주시오.",
+    "lang": "ko",
+    "turn": 415,
+    "speaker": "오이디푸스",
+    "group": 415
+  },
+  {
+    "text": "크레온: 이미 그렇게 했을 것이오.",
+    "lang": "ko",
+    "turn": 416,
+    "speaker": "크레온",
+    "group": 416
+  },
+  {
+    "text": "그러나 먼저 신께 여쭈는 것이 마땅하다고 생각했소.",
+    "lang": "ko",
+    "turn": 416,
+    "speaker": "크레온",
+    "group": 416
+  },
+  {
+    "text": "오이디푸스: 신의 뜻은 분명히 밝혀졌소.",
+    "lang": "ko",
+    "turn": 417,
+    "speaker": "오이디푸스",
+    "group": 417
+  },
+  {
+    "text": "아버지를 죽인 자, 그 악인을 없애라는 것이었소.",
+    "lang": "ko",
+    "turn": 417,
+    "speaker": "오이디푸스",
+    "group": 417
+  },
+  {
+    "text": "그가 바로 나요.",
+    "lang": "ko",
+    "turn": 417,
+    "speaker": "오이디푸스",
+    "group": 417
+  },
+  {
+    "text": "크레온: 그렇게 말씀하셨소.",
+    "lang": "ko",
+    "turn": 418,
+    "speaker": "크레온",
+    "group": 418
+  },
+  {
+    "text": "그러나 지금 처지에서는 신께 다시 묻는 것이 좋겠소.",
+    "lang": "ko",
+    "turn": 418,
+    "speaker": "크레온",
+    "group": 418
+  },
+  {
+    "text": "오이디푸스: 이런 비참한 자에 관해 감히 물으려 하오?",
+    "lang": "ko",
+    "turn": 419,
+    "speaker": "오이디푸스",
+    "group": 419
+  },
+  {
+    "text": "크레온: 그렇소.",
+    "lang": "ko",
+    "turn": 420,
+    "speaker": "크레온",
+    "group": 420
+  },
+  {
+    "text": "이제는 그대 자신도 신의 말씀을 믿을 테니까.",
+    "lang": "ko",
+    "turn": 420,
+    "speaker": "크레온",
+    "group": 420
+  },
+  {
+    "text": "오이디푸스: 그렇소.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "겸손히 그대에게 부탁하오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "안에 누워 있는 그녀에게 그대가 정하는 장례를 베풀어주시오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "오라비인 그대가 맡아야 할 의식이오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "그러나 나에 대해서는, 내가 살아 있는 동안 나의 테바이, 내 조상들의 도시가 내 존재의 짐을 지게 하지 마시오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "산에서 살게 해주시오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "내 산으로 알려진 저 키타이론에서 살게 하시오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "아버지와 어머니가 살아 계실 때 내 무덤으로 정한 곳이니, 두 분이 나를 죽이려 하셨던 그대로 그곳에서 죽게 하시오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "이것만은 분명히 알고 있소.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "병도 평범한 우연도 내 생애를 끝내지 못할 것이오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "무서운 운명을 위해 정해지지 않았다면, 나는 죽음에서 구출되지 않았을 테니까.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "그렇게 되게 두시오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "운명이 나를 어떻게 다루든 마음 쓰지 않겠소.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "그러나 불행한 내 자녀들은 부탁하오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "크레온, 내 아들들을 걱정할 필요는 없소.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "그들은 남자이니 어디에 있든 자신을 지킬 수 있을 것이오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "그러나 두 딸, 가엾고 죄 없는 아이들을 돌보아주시오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "언제나 식탁에서 내 곁에 앉아 내 음식을 나누고 내 잔으로 마시던 아이들이오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "그들을 부탁하오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "허락한다면 손으로 그들을 느끼며 슬퍼할 수 있게 해주시오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "군주여, 고귀한 마음의 군주여, 내 말을 들어주시오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "보지 못해도 손으로 만질 수만 있다면, 눈이 있을 때처럼 여전히 내 자식이라고 생각할 수 있을 것이오.",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "〈안티고네와 이스메네가 이끌려 들어온다.〉",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "무엇인가?",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "내가 듣는 이 흐느낌이 내 예쁜 아이들의 소리인가?",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "크레온이 나를 불쌍히 여겨 두 사랑스러운 아이들을 보내주었는가?",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "정말 그런가?",
+    "lang": "ko",
+    "turn": 421,
+    "speaker": "오이디푸스",
+    "group": 421
+  },
+  {
+    "text": "크레온: 그렇소.",
+    "lang": "ko",
+    "turn": 422,
+    "speaker": "크레온",
+    "group": 422
+  },
+  {
+    "text": "내가 그대에게 이 기쁨을 마련했소.",
+    "lang": "ko",
+    "turn": 422,
+    "speaker": "크레온",
+    "group": 422
+  },
+  {
+    "text": "아이들이 예전에 그대에게 얼마나 큰 기쁨이었는지 알고 있으니까.",
+    "lang": "ko",
+    "turn": 422,
+    "speaker": "크레온",
+    "group": 422
+  },
+  {
+    "text": "오이디푸스: 신께서 그대를 잘되게 하시기를!",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "아이들을 데려온 보답으로, 섭리가 나를 대했던 것보다 그대를 더 너그럽게 대하기를!",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "내 아이들아, 어디 있느냐?",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "이 손으로 너희를 끌어안게 해다오.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "형제의 손이자 아버지의 손이다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "한때 밝았던 두 눈을 빛 없는 구멍으로 만든 손이다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "앞을 보지 못하고 무모하게, 자신을 낳은 여자에게서 너희의 아버지가 된 사람의 손이다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "너희를 볼 수 없어도 앞으로 닥칠 나쁜 날들을 생각하며 울어야 한다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "사람들이 너희에게 가할 모욕과 부당한 대우를 생각한다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "어느 잔치나 축제에 가든 너희에게는 즐거운 자리가 되지 않을 것이다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "자주 부끄러움 속에서 눈물을 흘리며 돌아올 것이다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "혼인할 나이가 되면, 어떤 용감한 구혼자가 너희 자식의 자식에게까지 붙어 있을 나쁜 평판을 감수하고 너희를 데려가겠느냐?",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "여기에는 없는 불명예가 무엇이냐?",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "‘저 아이들의 아버지는 제 아버지를 죽이고, 자신이 태어난 곳에 씨앗을 뿌려, 자신이 나온 근원에서 이 딸들을 낳았다.’",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "사람들이 너희에게 이런 비웃음을 던질 것이다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "그렇다면 누가 너희와 결혼하겠느냐?",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "아무도 없을 듯하다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "가엾은 아이들아, 너희는 혼자 자식 없이 쇠잔할 것이다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "메노이케우스의 아들인 군주여, 그대에게 돌아서오.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "아이들의 친부모인 우리는 둘 다 사라졌으니, 그대가 아버지 노릇을 맡아야 하오.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "그대의 친족인 아이들이 가난하고 결혼도 못 한 채 떠돌게 하지 마시오.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "나의 낮은 처지를 함께 겪게 하지 마시오.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "너무 어리고, 그대가 아니면 아무도 없는 아이들을 불쌍히 여기시오.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "군주여, 손을 내밀어 약속해주시오.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "내 아이들아, 너희가 알아들을 만큼 자랐다면 할 말이 많다.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "그러나 이것으로 충분하리라.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "어딘가 집을 얻어 만족하며 살기를 빌어라.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "너희의 운명이 아버지의 운명보다 행복하기를.",
+    "lang": "ko",
+    "turn": 423,
+    "speaker": "오이디푸스",
+    "group": 423
+  },
+  {
+    "text": "크레온: 울 만큼 울었소.",
+    "lang": "ko",
+    "turn": 424,
+    "speaker": "크레온",
+    "group": 424
+  },
+  {
+    "text": "안으로 들어가시오.",
+    "lang": "ko",
+    "turn": 424,
+    "speaker": "크레온",
+    "group": 424
+  },
+  {
+    "text": "오이디푸스: 몹시 괴롭지만 따라야겠지.",
+    "lang": "ko",
+    "turn": 425,
+    "speaker": "오이디푸스",
+    "group": 425
+  },
+  {
+    "text": "크레온: 울지 마시오.",
+    "lang": "ko",
+    "turn": 426,
+    "speaker": "크레온",
+    "group": 426
+  },
+  {
+    "text": "모든 일에는 그때가 있소.",
+    "lang": "ko",
+    "turn": 426,
+    "speaker": "크레온",
+    "group": 426
+  },
+  {
+    "text": "오이디푸스: 좋소.",
+    "lang": "ko",
+    "turn": 427,
+    "speaker": "오이디푸스",
+    "group": 427
+  },
+  {
+    "text": "가겠소.",
+    "lang": "ko",
+    "turn": 427,
+    "speaker": "오이디푸스",
+    "group": 427
+  },
+  {
+    "text": "그러나 조건이 있소.",
+    "lang": "ko",
+    "turn": 427,
+    "speaker": "오이디푸스",
+    "group": 427
+  },
+  {
+    "text": "크레온: 들어갈 조건이 무엇인지 말하시오.",
+    "lang": "ko",
+    "turn": 428,
+    "speaker": "크레온",
+    "group": 428
+  },
+  {
+    "text": "오이디푸스: 나를 나라에서 추방해주시오.",
+    "lang": "ko",
+    "turn": 429,
+    "speaker": "오이디푸스",
+    "group": 429
+  },
+  {
+    "text": "크레온: 그 일은 내가 아니라 신들께 청하시오.",
+    "lang": "ko",
+    "turn": 430,
+    "speaker": "크레온",
+    "group": 430
+  },
+  {
+    "text": "오이디푸스: 그러나 나는 신들이 미워하는 자요.",
+    "lang": "ko",
+    "turn": 431,
+    "speaker": "오이디푸스",
+    "group": 431
+  },
+  {
+    "text": "크레온: 그렇다면 곧 그대의 청을 들어주실 것이오.",
+    "lang": "ko",
+    "turn": 432,
+    "speaker": "크레온",
+    "group": 432
+  },
+  {
+    "text": "오이디푸스: 그러면 나를 데려가시오.",
+    "lang": "ko",
+    "turn": 433,
+    "speaker": "오이디푸스",
+    "group": 433
+  },
+  {
+    "text": "기꺼이 가겠소.",
+    "lang": "ko",
+    "turn": 433,
+    "speaker": "오이디푸스",
+    "group": 433
+  },
+  {
+    "text": "크레온: 오시오.",
+    "lang": "ko",
+    "turn": 434,
+    "speaker": "크레온",
+    "group": 434
+  },
+  {
+    "text": "그러나 아이들은 놓아주시오.",
+    "lang": "ko",
+    "turn": 434,
+    "speaker": "크레온",
+    "group": 434
+  },
+  {
+    "text": "오이디푸스: 내게서 이 아이들을 빼앗지 마시오!",
+    "lang": "ko",
+    "turn": 435,
+    "speaker": "오이디푸스",
+    "group": 435
+  },
+  {
+    "text": "크레온: 모든 것을 지배하려 하지 마시오.",
+    "lang": "ko",
+    "turn": 436,
+    "speaker": "크레온",
+    "group": 436
+  },
+  {
+    "text": "그대를 높이 올린 바로 그 지배가 그대의 재앙이었고, 그대를 무너뜨렸으니까.",
+    "lang": "ko",
+    "turn": 436,
+    "speaker": "크레온",
+    "group": 436
+  },
+  {
+    "text": "합창대: 동포들이여, 테바이 사람들이여, 보라.",
+    "lang": "ko",
+    "turn": 437,
+    "speaker": "합창대",
+    "group": 437
+  },
+  {
+    "text": "이 사람이 위대한 오이디푸스다.",
+    "lang": "ko",
+    "turn": 437,
+    "speaker": "합창대",
+    "group": 437
+  },
+  {
+    "text": "스핑크스의 수수께끼를 알았고, 우리 나라에서 가장 강했던 사람이다.",
+    "lang": "ko",
+    "turn": 437,
+    "speaker": "합창대",
+    "group": 437
+  },
+  {
+    "text": "시민 가운데 누가 그의 명성을 부러운 눈으로 바라보지 않았는가?",
+    "lang": "ko",
+    "turn": 437,
+    "speaker": "합창대",
+    "group": 437
+  },
+  {
+    "text": "그런데 이제 얼마나 큰 재앙의 바다에 가라앉아 압도되어 있는가!",
+    "lang": "ko",
+    "turn": 437,
+    "speaker": "합창대",
+    "group": 437
+  },
+  {
+    "text": "그러므로 한 인간을 행복하다 헤아리기 전에, 그 삶의 끝을 기다려 보라.",
+    "lang": "ko",
+    "turn": 437,
+    "speaker": "합창대",
+    "group": 437
+  },
+  {
+    "text": "고통과 슬픔에서 벗어나 마지막 안식에 이르기 전까지는 기다려라.",
+    "lang": "ko",
+    "turn": 437,
+    "speaker": "합창대",
+    "group": 437
+  }
+];
