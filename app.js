@@ -1,7 +1,7 @@
 'use strict';
 const $=s=>document.querySelector(s),canvas=$('#poster'),ctx=canvas.getContext('2d'),posterScroller=$('#posterScroller'),posterSurface=$('#posterSurface'),posterScale=440/840;
 const palettes=[['#0047AB','#FFFFFF','#00FF66'],['#FF0033','#FFFFFF','#00FFFF'],['#CCFF00','#191970','#8A2BE2'],['#39FF14','#191970','#FF0033'],['#8A2BE2','#FFFFFF','#FFD700'],['#E30B5C','#FFFFFF','#7FFFD4'],['#FFA500','#191970','#0047AB'],['#00FFFF','#191970','#E30B5C']];
-let background='#0047AB',point='#00FF66',textInk='#FFFFFF',paletteIndex=0;
+let background='#CCFF00',point='#8A2BE2',textInk='#191970',paletteIndex=2;
 function luminance(hex){const c=hex.match(/\w\w/g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722}
 function contrast(a,b){const x=luminance(a),y=luminance(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
 function setPalette(index){paletteIndex=index;[background,textInk,point]=palettes[index];const root=document.documentElement;root.style.setProperty('--paper',background);root.style.setProperty('--ink',textInk);root.style.setProperty('--hover',point);root.style.setProperty('--hover-ink',contrast(point,background)>contrast(point,textInk)?background:textInk);document.querySelector('meta[name="theme-color"]').content=background;for(const item of items)item.ink=textInk;PrintFlow.recolor(flow,textInk)}
@@ -47,4 +47,4 @@ canvas.addEventListener('dblclick',claim);document.addEventListener('keydown',e=
 document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $('#receiptDialog').addEventListener('close',()=>PrintReceipt.stop());
 function download(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove()}$('#savePoster').onclick=async()=>{const button=$('#savePoster');button.disabled=true;try{const result=await PrintExport.make(receipt);const url=URL.createObjectURL(result.blob);download(url,`ST0L3N_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false;draw()}};$('#saveReceipt').onclick=async()=>{const button=$('#saveReceipt');button.disabled=true;try{const result=await PrintReceipt.export(receipt);const url=URL.createObjectURL(result.blob);download(url,`RECEIPT_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false}};
-setPalette(0);render();draw();document.fonts.ready.then(()=>{for(const row of flow.rows)for(const token of row.tokens)delete token.tile;draw()});
+setPalette(2);render();draw();document.fonts.ready.then(()=>{for(const row of flow.rows)for(const token of row.tokens)delete token.tile;draw()});
