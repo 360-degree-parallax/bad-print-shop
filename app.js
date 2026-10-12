@@ -1,24 +1,52 @@
 'use strict';
-const $=s=>document.querySelector(s),canvas=$('#poster'),ctx=canvas.getContext('2d'),posterScroller=$('#posterScroller'),posterSurface=$('#posterSurface'),posterScale=440/840;
-const palettes=[['#0047AB','#FFFFFF','#00FF66'],['#FF0033','#FFFFFF','#00FFFF'],['#CCFF00','#191970','#8A2BE2'],['#39FF14','#191970','#FF0033'],['#8A2BE2','#FFFFFF','#FFD700'],['#E30B5C','#FFFFFF','#7FFFD4'],['#FFA500','#191970','#0047AB'],['#00FFFF','#191970','#E30B5C']];
-let background='#CCFF00',point='#8A2BE2',textInk='#191970',paletteIndex=2;
+const $=s=>document.querySelector(s),canvas=$('#poster'),ctx=canvas.getContext('2d'),posterScroller=$('#posterScroller'),posterSurface=$('#posterSurface'),posterScale=438/840;
+const palettes=[['#FFFFFF','#111111','#111111'],['#111111','#F2F2F2','#F2F2F2'],['#DADADA','#111111','#111111'],['#8E8E8E','#FFFFFF','#FFFFFF'],['#F4F4F0','#4A4A4A','#4A4A4A'],['#2B2B2B','#BDBDBD','#BDBDBD']];
+let background='#FFFFFF',point='#111111',textInk='#111111',paletteIndex=0;
 function luminance(hex){const c=hex.match(/\w\w/g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722}
 function contrast(a,b){const x=luminance(a),y=luminance(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
-function setPalette(index){paletteIndex=index;[background,textInk,point]=palettes[index];const root=document.documentElement;root.style.setProperty('--paper',background);root.style.setProperty('--ink',textInk);root.style.setProperty('--hover',point);root.style.setProperty('--hover-ink',contrast(point,background)>contrast(point,textInk)?background:textInk);document.querySelector('meta[name="theme-color"]').content=background;for(const item of items)item.ink=textInk;PrintFlow.recolor(flow,textInk)}
+function setPalette(index){paletteIndex=index;[background,textInk,point]=palettes[index];const root=document.documentElement;root.style.setProperty('--paper',background);root.style.setProperty('--ink',textInk);for(const item of items)item.ink=textInk;PrintFlow.recolor(flow,textInk)}
 function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIndex);setPalette(pool[Math.floor(Math.random()*pool.length)])}
 
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 const sentences=BookText.map(entry=>entry.text);
-function render(){const prose=$('#prose');sentences.forEach((text,index)=>{const sentence=document.createElement('span');sentence.className='sentence';sentence.lang=BookText[index].lang;sentence.tabIndex=0;sentence.setAttribute('role','button');sentence.setAttribute('aria-label',text+' 수집');sentence.textContent=text;const collect=()=>steal(text,index);bindPress(sentence,text,index);sentence.addEventListener('click',e=>{if(sentence.suppressClick){sentence.suppressClick=false;e.preventDefault();return}collect()});sentence.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();collect()}});const note=document.createElement('button');note.className='footnote';note.textContent=`[${index+1}]`;note.setAttribute('aria-label',`각주 ${index+1}`);note.onclick=()=>{$('#noteText').textContent=`[${index+1}] ${BookMeta.title} · ${BookText[index].turn===0?'첫 무대 지시':'대사 '+BookText[index].turn} · ${BookText[index].speaker}. ${BookMeta.translation}. 대조 저본: ${BookMeta.basis}. ${BookMeta.source} 이 브라우저에서 수집한 횟수: ${history.filter(h=>h.index===index).length}.` ;$('#note').showModal()};prose.append(sentence,note,document.createTextNode(' '))})}
-function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/440));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore()}
+const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
+const book=$('#book'),sentenceNodes=[];
+function heading(level,num,title,id){const h=el(level,'wiki-h');h.id=id;const a=el('span','num',num+'.');a.onclick=()=>scrollToId('toc');h.append(a,document.createTextNode(' '+title),el('span','edit','[편집]'));return h}
+function scrollToId(id){const target=document.getElementById(id);if(target)book.scrollTo({top:target.offsetTop-12,behavior:'smooth'})}
+function figure(number,caption){const f=el('figure','figure'),code=String(number).padStart(2,'0'),img=new Image();img.alt=caption;img.loading='lazy';img.src=`images/${code}.png`;img.onerror=()=>{const ph=el('div','ph');ph.append(el('span','',`IMG ${code}`));img.replaceWith(ph)};f.append(img,el('figcaption','',caption));return f}
+function sentenceNode(entry,index){const span=el('span','sentence');span.lang=entry.lang;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label',entry.text+' 수집');const prefix=entry.speaker+': ';
+ if(entry.text.startsWith(prefix)){span.append(el('b','who',entry.speaker+': '),document.createTextNode(entry.text.slice(prefix.length)))}else span.textContent=entry.text;
+ const collect=()=>steal(entry.text,index);bindPress(span,entry.text,index);span.addEventListener('click',e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
+function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index].turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`;$('#note').showModal()};return n}
+function render(){const W=window.WikiDoc,prose=$('#prose');
+ const cats=$('#categories');cats.append(el('b','','분류'));for(const c of W.categories)cats.append(el('span','',c));
+ const notice=el('div','notice');notice.append(el('i','','ⓘ'),el('span','',W.notice));prose.append(notice);
+ const box=el('table','infobox'),cap=el('caption');cap.append(document.createTextNode('오이디푸스 왕'),el('small','','Οἰδίπους Τύραννος | Oedipus the King'));box.append(cap);for(const [k,v] of W.infobox){const tr=el('tr');tr.append(el('th','',k),el('td','',v));box.append(tr)}prose.append(box);
+ const toc=el('div','toc');toc.id='toc';toc.append(el('div','toc-title','목차'));
+ const tocLine=(num,title,id,sub)=>{const d=el('div',sub?'sub':'');const a=el('a');a.href='#'+id;a.onclick=e=>{e.preventDefault();scrollToId(id)};a.append(el('span','num',num+'.'),document.createTextNode(title));d.append(a);toc.append(d)};
+ tocLine('1','개요','s-1');tocLine('2','본문','s-2');W.sections.forEach((s,i)=>tocLine('2.'+(i+1),s.title,'s-2-'+(i+1),true));tocLine('3','관련 문서','s-3');prose.append(toc);
+ prose.append(heading('h2','1','개요','s-1'));const ov=el('p');W.overview.forEach(t=>{ov.append(el('span','',t),document.createTextNode(' '))});prose.append(ov);
+ prose.append(heading('h2','2','본문','s-2'));
+ const byTurn=new Map();BookText.forEach((entry,index)=>{if(!byTurn.has(entry.turn))byTurn.set(entry.turn,[]);byTurn.get(entry.turn).push(index)});
+ const figs=new Map(W.figures.map((f,i)=>[f.after,{...f,number:i+1}]));
+ W.sections.forEach((s,i)=>{prose.append(heading('h3','2.'+(i+1),s.title,'s-2-'+(i+1)));
+  for(let turn=s.from;turn<=s.to;turn++){const list=byTurn.get(turn);if(!list)continue;const first=BookText[list[0]],p=el('p','turn'+(first.speaker==='지문'?' stage':''));
+   list.forEach(index=>{p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));prose.append(p);
+   const f=figs.get(turn);if(f)prose.append(figure(f.number,f.caption))}
+ });
+ prose.append(heading('h2','3','관련 문서','s-3'));const rel=el('p');rel.textContent='오이디푸스 · 테이레시아스 · 이오카스테 · 자기 실현적 예언 · 오이디푸스 콤플렉스';prose.append(rel);
+ updateMeta();
+}
+function updateMeta(){const d=history.length?new Date():WikiDoc.updated,pad=n=>String(n).padStart(2,'0');$('#updatedAt').textContent=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;$('#updatedBy').textContent=history.length?`(익명 방문자가 문장 ${history.length}개를 가져감)`:'';$('#printCount').textContent=history.length;$('#starCount').textContent=history.length}
+function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore()}
 posterScroller.addEventListener('scroll',()=>draw());window.addEventListener('resize',()=>draw());
 function makeItem(text,index){
  const previous=items.filter(o=>o.index===index).at(-1),effects=PrintEffects.names.filter(name=>name!==previous?.effect);
  const item={text,index,ink:textInk,size:settings.size*840/440,blockWidth:Math.min(756,settings.width*840/440),intensity:settings.intensity,seed:Math.floor(Math.random()*1000000),effect:effects[Math.floor(Math.random()*effects.length)]};
  item.words=PrintFlow.words(text,item);return item;
 }
-function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});nextPalette()}
+function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});sentenceNodes[item.index]?.classList.add('taken');updateMeta();nextPalette()}
 function steal(text,index){const item=makeItem(text,index);PrintFlow.append(flow,item);items.push(item);remember(item);delete item.words;draw(true)}
 let press=null;
 function finishPress(commit){if(!press)return;const p=press;press=null;clearTimeout(p.timer);clearInterval(p.cycle);
@@ -47,4 +75,4 @@ canvas.addEventListener('dblclick',claim);document.addEventListener('keydown',e=
 document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $('#receiptDialog').addEventListener('close',()=>PrintReceipt.stop());
 function download(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove()}$('#savePoster').onclick=async()=>{const button=$('#savePoster');button.disabled=true;try{const result=await PrintExport.make(receipt);const url=URL.createObjectURL(result.blob);download(url,`ST0L3N_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false;draw()}};$('#saveReceipt').onclick=async()=>{const button=$('#saveReceipt');button.disabled=true;try{const result=await PrintReceipt.export(receipt);const url=URL.createObjectURL(result.blob);download(url,`RECEIPT_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false}};
-setPalette(2);render();draw();document.fonts.ready.then(()=>{for(const row of flow.rows)for(const token of row.tokens)delete token.tile;draw()});
+setPalette(0);render();draw();document.fonts.ready.then(()=>{for(const row of flow.rows)for(const token of row.tokens)delete token.tile;draw()});
