@@ -14,7 +14,7 @@ const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className
 const book=$('#book'),sentenceNodes=[];
 function heading(level,num,title,id){const h=el(level,'wiki-h');h.id=id;const a=el('span','num',num+'.');a.onclick=()=>scrollToId('toc');h.append(a,document.createTextNode(' '+title),el('span','edit','[편집]'));return h}
 function scrollToId(id){const target=document.getElementById(id);if(target)book.scrollTo({top:target.offsetTop-12,behavior:'smooth'})}
-const figureModes=['left','right','center','inline','left','right'];
+const figureModes=['left','right','inline','left','right'];
 function figure(number,caption){const code=String(number).padStart(2,'0'),mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;
  const width=mode==='inline'?64+Math.round(Math.random()*48):mode==='center'?30+Math.round(Math.random()*20):24+Math.round(Math.random()*16);
  f.style.width=mode==='inline'?width+'px':width+'%';if(mode==='center')f.style.marginLeft=Math.round(Math.random()*(100-width))+'%';
