@@ -34,8 +34,6 @@ function sentenceNode(entry,index){const span=el('span','sentence');span.lang=en
  const collect=()=>steal(entry.text,index);bindPress(span,entry.text,index);span.addEventListener('click',e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
 function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index].turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`;$('#note').showModal()};return n}
 function render(){const W=window.WikiDoc,prose=$('#prose');
- const cats=$('#categories');cats.append(el('b','','분류:'));W.categories.forEach((c,i)=>{if(i)cats.append(el('span','sep','|'));cats.append(el('span','cat',c))});
- const notice=el('div','notice');notice.append(el('span','notice-icon','→'),el('span','',W.notice));prose.append(notice);
  const fold=(label)=>{const r=el('button','foldbar',label||'[ 펼치기 · 접기 ]');r.type='button';return r};
  {const nb=el('div','navbox');nb.append(el('div','navbox-title',W.navbox.title));const t=fold(),list=el('div','navbox-list');list.hidden=true;t.onclick=()=>{list.hidden=!list.hidden};
   for(const [name,year] of W.navbox.rows){const row=el('div','navbox-row');row.append(el('span','',name),el('span','',year));list.append(row)}nb.append(t,list);prose.append(nb)}
@@ -64,7 +62,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  {const [h,b]=heading('h2','3','관련 문서','s-3');prose.append(h,b);const rel=el('p');rel.textContent='오이디푸스 · 테이레시아스 · 이오카스테 · 자기 실현적 예언 · 오이디푸스 콤플렉스';b.append(rel)}
  updateMeta();
 }
-function updateMeta(){const d=history.length?new Date():WikiDoc.updated,pad=n=>String(n).padStart(2,'0');$('#updatedAt').textContent=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;$('#updatedBy').textContent=history.length?`(익명 방문자가 문장 ${history.length}개를 가져감)`:''}
+function updateMeta(){}
 function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore()}
 posterScroller.addEventListener('scroll',()=>draw());window.addEventListener('resize',()=>draw());
 function makeItem(text,index){
@@ -96,7 +94,13 @@ function claim(){finishPress(true);receipt={id:crypto.randomUUID().slice(0,8).to
  receipt.printFlow.rows=receipt.printFlow.rows.map(row=>({...row,tokens:row.tokens.map(token=>({...token,tile:null,staticTile:null,ink:receipt.ink}))}));
  $('#receiptDialog').showModal();PrintReceipt.start($('#receiptRibbon'),receipt);
 }
-canvas.addEventListener('dblclick',claim);document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='s'&&!e.ctrlKey&&!e.metaKey&&!document.querySelector('dialog[open]')){e.preventDefault();claim()}});
+canvas.addEventListener('dblclick',claim);
+// Leaving settles the account: switching tabs, moving to close the window, or unloading prints the receipt.
+const receiptOpen=()=>$('#receiptDialog').open;
+function settleOnLeave(){if(history.length&&!receiptOpen())claim()}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)settleOnLeave()});
+document.addEventListener('mouseout',e=>{if(!e.relatedTarget&&e.clientY<=0)settleOnLeave()});
+window.addEventListener('beforeunload',e=>{if(!history.length)return;settleOnLeave();e.preventDefault();e.returnValue=''});document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='s'&&!e.ctrlKey&&!e.metaKey&&!document.querySelector('dialog[open]')){e.preventDefault();claim()}});
 document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $('#receiptDialog').addEventListener('close',()=>PrintReceipt.stop());
 function download(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove()}$('#savePoster').onclick=async()=>{const button=$('#savePoster');button.disabled=true;try{const result=await PrintExport.make(receipt);const url=URL.createObjectURL(result.blob);download(url,`ST0L3N_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false;draw()}};$('#saveReceipt').onclick=async()=>{const button=$('#saveReceipt');button.disabled=true;try{const result=await PrintReceipt.export(receipt);const url=URL.createObjectURL(result.blob);download(url,`RECEIPT_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false}};
