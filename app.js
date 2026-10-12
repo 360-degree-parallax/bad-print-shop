@@ -12,7 +12,8 @@ const settings={size:32,width:396,intensity:.55};
 const sentences=BookText.map(entry=>entry.text);
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
 const book=$('#book'),sentenceNodes=[];
-function heading(level,num,title,id){const h=el(level,'wiki-h');h.id=id;const a=el('span','num',num+'.');a.onclick=()=>scrollToId('toc');h.append(a,document.createTextNode(' '+title),el('span','edit','[편집]'));return h}
+function heading(level,num,title,id){const h=el(level,'wiki-h');h.id=id;const fold=el('span','fold');fold.setAttribute('aria-hidden','true');const a=el('span','num',num+'.');a.onclick=e=>{e.stopPropagation();scrollToId('toc')};h.append(fold,a,el('span','title',title),el('span','edit','[편집]'));
+ const body=el('div','wiki-sec');h.tabIndex=0;h.setAttribute('role','button');h.setAttribute('aria-expanded','true');const toggle=()=>{body.hidden=!body.hidden;h.classList.toggle('folded',body.hidden);h.setAttribute('aria-expanded',String(!body.hidden))};h.addEventListener('click',toggle);h.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();toggle()}});return [h,body]}
 function scrollToId(id){const target=document.getElementById(id);if(target)book.scrollTo({top:target.offsetTop-12,behavior:'smooth'})}
 const figureModes=['left','right','inline','left','right'];
 function figure(number,caption){const code=String(number).padStart(2,'0'),mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;
@@ -31,16 +32,16 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  const toc=el('div','toc');toc.id='toc';toc.append(el('div','toc-title','목차'));
  const tocLine=(num,title,id,sub)=>{const d=el('div',sub?'sub':'');const a=el('a');a.href='#'+id;a.onclick=e=>{e.preventDefault();scrollToId(id)};a.append(el('span','num',num+'.'),document.createTextNode(title));d.append(a);toc.append(d)};
  tocLine('1','개요','s-1');tocLine('2','본문','s-2');W.sections.forEach((s,i)=>tocLine('2.'+(i+1),s.title,'s-2-'+(i+1),true));tocLine('3','관련 문서','s-3');prose.append(toc);
- prose.append(heading('h2','1','개요','s-1'));const ov=el('p');W.overview.forEach(t=>{ov.append(el('span','',t),document.createTextNode(' '))});prose.append(ov);
- prose.append(heading('h2','2','본문','s-2'));
+ {const [h,b]=heading('h2','1','개요','s-1');prose.append(h,b);const ov=el('p');W.overview.forEach(t=>{ov.append(el('span','',t),document.createTextNode(' '))});b.append(ov)}
+ const [mainH,mainB]=heading('h2','2','본문','s-2');prose.append(mainH,mainB);
  const byTurn=new Map();BookText.forEach((entry,index)=>{if(!byTurn.has(entry.turn))byTurn.set(entry.turn,[]);byTurn.get(entry.turn).push(index)});
  const figs=new Map(W.figures.map((f,i)=>[f.after,{...f,number:i+1}]));
- W.sections.forEach((s,i)=>{prose.append(heading('h3','2.'+(i+1),s.title,'s-2-'+(i+1)));
+ W.sections.forEach((s,i)=>{const [sh,sb]=heading('h3','2.'+(i+1),s.title,'s-2-'+(i+1));mainB.append(sh,sb);
   for(let turn=s.from;turn<=s.to;turn++){const list=byTurn.get(turn);if(!list)continue;const first=BookText[list[0]],p=el('p','turn'+(first.speaker==='지문'?' stage':''));
    const f=figs.get(turn),at=f?Math.floor(Math.random()*list.length):-1;
-   list.forEach((index,k)=>{if(k===at)p.append(figure(f.number,f.caption));p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));prose.append(p)}
+   list.forEach((index,k)=>{if(k===at)p.append(figure(f.number,f.caption));p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));sb.append(p)}
  });
- prose.append(heading('h2','3','관련 문서','s-3'));const rel=el('p');rel.textContent='오이디푸스 · 테이레시아스 · 이오카스테 · 자기 실현적 예언 · 오이디푸스 콤플렉스';prose.append(rel);
+ {const [h,b]=heading('h2','3','관련 문서','s-3');prose.append(h,b);const rel=el('p');rel.textContent='오이디푸스 · 테이레시아스 · 이오카스테 · 자기 실현적 예언 · 오이디푸스 콤플렉스';b.append(rel)}
  updateMeta();
 }
 function updateMeta(){const d=history.length?new Date():WikiDoc.updated,pad=n=>String(n).padStart(2,'0');$('#updatedAt').textContent=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;$('#updatedBy').textContent=history.length?`(익명 방문자가 문장 ${history.length}개를 가져감)`:''}

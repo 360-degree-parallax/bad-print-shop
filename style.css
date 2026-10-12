@@ -36,12 +36,17 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .toc .num{color:var(--muted);display:inline-block;min-width:64px}
 .toc .sub .num{min-width:64px}
 
-/* Headings */
-.wiki-h{display:block;margin:160px 0 32px;font-weight:400;line-height:1;letter-spacing:0}
-h2.wiki-h{font-size:64px}
-h3.wiki-h{font-size:48px;margin-top:120px}
-.wiki-h .num{display:block;color:var(--muted);font-size:20px;line-height:1;margin-bottom:12px;cursor:pointer}
-.wiki-h .edit{display:none}
+/* Headings: wiki title row with fold mark, number, title, [편집] and a rule */
+.wiki-h{clear:both;display:flex;align-items:center;gap:14px;margin:120px 0 28px;padding-bottom:14px;border-bottom:1px solid var(--text);font-weight:400;line-height:1;letter-spacing:0;cursor:pointer;user-select:none}
+h2.wiki-h{font-size:48px}
+h3.wiki-h{font-size:36px;margin-top:88px}
+.wiki-h .fold{flex:none;width:.34em;height:.34em;border-right:2px solid var(--text);border-bottom:2px solid var(--text);transform:translateY(-.12em) rotate(45deg);margin:0 .08em 0 .06em;transition:transform 120ms linear}
+.wiki-h.folded .fold{transform:rotate(-45deg)}
+.wiki-h .num{flex:none}
+.wiki-h .title{flex:1;min-width:0}
+.wiki-h .edit{flex:none;align-self:flex-start;font-size:16px;line-height:1}
+.wiki-h:hover .title{text-decoration:underline;text-underline-offset:.12em;text-decoration-thickness:2px}
+.wiki-sec[hidden]{display:none}
 
 /* Body text: the same setting as the print */
 .wiki-body{font-size:32px;line-height:1;text-align:justify;text-align-last:left;text-justify:inter-character;word-break:normal;overflow-wrap:break-word}
