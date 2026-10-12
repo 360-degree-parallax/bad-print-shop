@@ -1,6 +1,6 @@
 # 픽셀 이미지 프롬프트 (미드저니)
 
-결과물을 `01.png` ~ `20.png` 이름으로 이 폴더에 넣으면 본문의 회색 자리표시가 자동으로 교체됩니다. 비율은 4:5(세로)입니다. 본문 한 단 폭을 꽉 채웁니다.
+결과물을 `00.png` ~ `20.png` 이름으로 이 폴더에 넣으면 본문의 회색 자리표시가 자동으로 교체됩니다. 비율은 4:5(세로)입니다. 본문 한 단 폭을 꽉 채웁니다.
 
 모든 프롬프트 끝에 같은 꼬리를 붙입니다.
 
@@ -10,6 +10,7 @@
 
 | # | 장면 | 프롬프트 (꼬리 앞부분) |
 |---|---|---|
+| 00 | 정보 상자 대표 이미지 | a king standing alone before tall palace doors, holding a staff, suppliants kneeling small at his feet, frontal symmetrical portrait composition |
 | 01 | 궁전 앞 제단에 모인 탄원자들 | crowd of kneeling suppliants of all ages holding olive branches wrapped in wool, gathered around a stone altar before palace columns, priest standing in front |
 | 02 | 역병이 덮친 테바이 | ancient Thebes under plague, empty city street with smoke rising from altars, withered wheat field outside the walls, vultures circling, desolate wide shot |
 | 03 | 월계관을 쓰고 돌아온 크레온 | a man in a long cloak returning on a dusty road toward the city gate, wearing a laurel wreath heavy with berries, seen from behind the waiting king |

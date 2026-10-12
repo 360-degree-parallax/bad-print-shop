@@ -21,17 +21,37 @@ function figure(number,caption){const code=String(number).padStart(2,'0'),mode=f
  f.style.width=mode==='inline'?width+'px':width+'%';if(mode==='center')f.style.marginLeft=Math.round(Math.random()*(100-width))+'%';
  f.style.aspectRatio=['4/5','1/1','3/4','4/5'][Math.floor(Math.random()*4)];
  const img=new Image();img.alt=caption;img.loading='lazy';img.src=`images/${code}.png`;img.onerror=()=>{const ph=el('span','ph');img.replaceWith(ph)};f.append(img);return f}
+const firstLine=new Map();BookText.forEach((x,i)=>{if(!firstLine.has(x.speaker))firstLine.set(x.speaker,i)});
+const charNames=(window.WikiDoc.characters||[]).map(c=>c.name).sort((a,b)=>b.length-a.length);
+const charPattern=new RegExp('('+charNames.map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','g');
+function charLink(name,label){const a=el('a','char',label||name);a.href='#';a.title=name;a.addEventListener('pointerdown',e=>e.stopPropagation());a.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();gotoCharacter(name)});return a}
+function linkify(target,text){let last=0;text.replace(charPattern,(m,_,at)=>{if(at>last)target.append(document.createTextNode(text.slice(last,at)));target.append(charLink(m));last=at+m.length;return m});if(last<text.length)target.append(document.createTextNode(text.slice(last)))}
+function gotoCharacter(name){const index=firstLine.get(name);const node=sentenceNodes[index];if(!node)return;
+ for(let sec=node.closest('.wiki-sec');sec;sec=sec.parentElement.closest('.wiki-sec')){if(sec.hidden){sec.hidden=false;const h=sec.previousElementSibling;h?.classList.remove('folded');h?.setAttribute('aria-expanded','true')}}
+ const r=node.getBoundingClientRect(),b=book.getBoundingClientRect();book.scrollTo({top:book.scrollTop+r.top-b.top-120,behavior:'smooth'});node.classList.remove('flash');void node.offsetWidth;node.classList.add('flash');setTimeout(()=>node.classList.remove('flash'),1600)}
 function sentenceNode(entry,index){const span=el('span','sentence');span.lang=entry.lang;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label',entry.text+' 수집');const prefix=entry.speaker+': ';
- if(entry.text.startsWith(prefix)){span.append(el('b','who',entry.speaker+': '),document.createTextNode(entry.text.slice(prefix.length)))}else span.textContent=entry.text;
+ if(entry.text.startsWith(prefix)){const who=el('b','who');linkify(who,entry.speaker);who.append(': ');span.append(who);linkify(span,entry.text.slice(prefix.length))}else linkify(span,entry.text);
  const collect=()=>steal(entry.text,index);bindPress(span,entry.text,index);span.addEventListener('click',e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
 function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index].turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`;$('#note').showModal()};return n}
 function render(){const W=window.WikiDoc,prose=$('#prose');
- const cats=$('#categories');cats.append(el('b','','분류'));for(const c of W.categories)cats.append(el('span','',c));
- const notice=el('div','notice');notice.append(el('i','','ⓘ'),el('span','',W.notice));prose.append(notice);
- const box=el('table','infobox'),cap=el('caption');cap.append(document.createTextNode('오이디푸스 왕'),el('small','','Οἰδίπους Τύραννος | Oedipus the King'));box.append(cap);for(const [k,v] of W.infobox){const tr=el('tr');tr.append(el('th','',k),el('td','',v));box.append(tr)}prose.append(box);
- const toc=el('div','toc');toc.id='toc';toc.append(el('div','toc-title','목차'));
- const tocLine=(num,title,id,sub)=>{const d=el('div',sub?'sub':'');const a=el('a');a.href='#'+id;a.onclick=e=>{e.preventDefault();scrollToId(id)};a.append(el('span','num',num+'.'),document.createTextNode(title));d.append(a);toc.append(d)};
- tocLine('1','개요','s-1');tocLine('2','본문','s-2');W.sections.forEach((s,i)=>tocLine('2.'+(i+1),s.title,'s-2-'+(i+1),true));tocLine('3','관련 문서','s-3');prose.append(toc);
+ const cats=$('#categories');cats.append(el('b','','분류:'));W.categories.forEach((c,i)=>{if(i)cats.append(el('span','sep','|'));cats.append(el('span','cat',c))});
+ const notice=el('div','notice');notice.append(el('span','notice-icon','→'),el('span','',W.notice));prose.append(notice);
+ const fold=(label)=>{const r=el('button','foldbar',label||'[ 펼치기 · 접기 ]');r.type='button';return r};
+ {const nb=el('div','navbox');nb.append(el('div','navbox-title',W.navbox.title));const t=fold(),list=el('div','navbox-list');list.hidden=true;t.onclick=()=>{list.hidden=!list.hidden};
+  for(const [name,year] of W.navbox.rows){const row=el('div','navbox-row');row.append(el('span','',name),el('span','',year));list.append(row)}nb.append(t,list);prose.append(nb)}
+ const pair=el('div','top-pair');
+ const toc=el('div','toc');toc.id='toc';const tt=el('button','toc-title');tt.type='button';tt.append(el('span','','목차'),el('span','toc-fold'));const tl=el('div','toc-list');tt.onclick=()=>{tl.hidden=!tl.hidden;toc.classList.toggle('folded',tl.hidden)};toc.append(tt,tl);
+ const tocLine=(num,title,id,depth)=>{const d=el('div','d'+depth);const a=el('a');a.href='#'+id;a.onclick=e=>{e.preventDefault();scrollToId(id)};a.append(el('span','num',num+'.'),document.createTextNode(' '+title));d.append(a);tl.append(d)};
+ tocLine('1','개요','s-1',0);tocLine('2','본문','s-2',0);W.sections.forEach((x,i)=>tocLine('2.'+(i+1),x.title,'s-2-'+(i+1),1));tocLine('3','관련 문서','s-3',0);
+ const info=el('div','infobox'),I=W.infoTop,head=el('div','info-head');head.append(el('div','info-eyebrow',I.eyebrow),el('div','info-title',I.title),el('div','info-sub',I.sub.join('  |  ')));info.append(head);
+ const pic=el('div','info-pic'),img=new Image();img.alt=I.caption;img.src='images/00.png';img.onerror=()=>{img.replaceWith(el('span','ph'))};pic.append(img);info.append(pic,el('div','info-caption',I.caption));
+ const row=(k,v)=>{const r=el('div','info-row');const th=el('div','info-k',k),td=el('div','info-v');if(typeof v==='string')td.textContent=v;else td.append(...v);r.append(th,td);return r};
+ const get=k=>(W.infobox.find(x=>x[0]===k)||[])[1]||'';
+ info.append(row('작가',get('작가')),row('초연',get('초연')),row('장르',get('장르')));
+ const ft=fold(),cast=el('div','info-cast');ft.onclick=()=>{cast.hidden=!cast.hidden};
+ const castList=W.characters.map(c=>{const line=el('div','cast-line');line.append(charLink(c.name),el('small','',' ('+c.role+')'));return line});cast.append(row('등장인물',castList));info.append(ft,cast);
+ info.append(row('영문 저본',get('영문 저본')),row('한국어 번역',get('한국어 번역')),row('문장 수',get('문장 수')));
+ pair.append(toc,info);prose.append(pair);
  {const [h,b]=heading('h2','1','개요','s-1');prose.append(h,b);const ov=el('p');W.overview.forEach(t=>{ov.append(el('span','',t),document.createTextNode(' '))});b.append(ov)}
  const [mainH,mainB]=heading('h2','2','본문','s-2');prose.append(mainH,mainB);
  const byTurn=new Map();BookText.forEach((entry,index)=>{if(!byTurn.has(entry.turn))byTurn.set(entry.turn,[]);byTurn.get(entry.turn).push(index)});

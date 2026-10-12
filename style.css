@@ -16,25 +16,57 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 /* Document head */
 .doc-title{font-size:64px;font-weight:400;line-height:1;margin:0;letter-spacing:0}
 .doc-updated{font-size:16px;color:var(--muted);margin:20px 0 0;line-height:1.3}
-.categories{font-size:16px;color:var(--muted);margin:4px 0 72px;line-height:1.3}
-.categories b{font-weight:400;margin-right:8px}
-.categories span+span::before{content:' · '}
+.categories{border:1px solid var(--text);padding:8px 12px;font-size:16px;line-height:1.4;margin:16px 0 14px}
+.categories b{font-weight:400;margin-right:6px}
+.categories .sep{margin:0 6px}
 
-/* Notice and info: plain aligned text */
-.notice{font-size:20px;line-height:1.25;color:var(--muted);margin:0 0 56px}
-.notice i{display:none}
-.infobox{border-collapse:collapse;font-size:20px;line-height:1.25;margin:0 0 72px;width:100%}
-.infobox caption{display:none}
-.infobox th,.infobox td{padding:0 0 4px;text-align:left;vertical-align:top;font-weight:400}
-.infobox th{color:var(--muted);padding-right:24px;white-space:nowrap;width:1%}
+/* Wiki top block: lines only */
+.notice{display:flex;gap:10px;align-items:flex-start;font-size:16px;line-height:1.4;margin:0 0 18px}
+.notice-icon{flex:none;width:22px;height:22px;border:1px solid var(--text);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1;font-family:Pretendard,sans-serif}
+.foldbar{display:block;width:100%;padding:8px;font-size:16px;line-height:1;text-align:center;border-top:1px solid var(--text)}
+.foldbar:hover{background:var(--hl);color:var(--hl-ink)}
+.navbox{border:1px solid var(--text);margin:0 0 28px}
+.navbox-title{text-align:center;font-size:20px;padding:10px 8px;line-height:1.1}
+.navbox-list{border-top:1px solid var(--text)}
+.navbox-row{display:flex;justify-content:space-between;gap:12px;padding:6px 12px;font-size:16px;line-height:1.3}
+.navbox-row+.navbox-row{border-top:1px solid var(--text)}
 
-/* TOC */
-.toc{font-size:24px;line-height:1.25;margin:0 0 120px}
-.toc-title{color:var(--muted);margin-bottom:12px}
-.toc a{color:var(--text);text-decoration:none}
+.top-pair{display:flex;align-items:flex-start;gap:16px;margin:0 0 40px}
+.toc{flex:0 0 160px;border:1px solid var(--text);padding:12px 12px 14px;font-size:15px;line-height:1.45}
+.toc-title{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:20px;line-height:1;margin-bottom:10px}
+.toc-fold{width:8px;height:8px;border-right:1px solid var(--text);border-bottom:1px solid var(--text);transform:translateY(-3px) rotate(45deg)}
+.toc.folded .toc-fold{transform:rotate(-135deg)}
+.toc.folded .toc-title{margin-bottom:0}
+.toc-list[hidden]{display:none}
+.toc a{color:var(--text);text-decoration:none;display:block}
 .toc a:hover{background:var(--hl);color:var(--hl-ink)}
-.toc .num{color:var(--muted);display:inline-block;min-width:64px}
-.toc .sub .num{min-width:64px}
+.toc .d1{padding-left:14px}
+
+.infobox{flex:1;min-width:0;border:1px solid var(--text);font-size:15px;line-height:1.35}
+.info-head{text-align:center;padding:10px 8px 12px;border-bottom:1px solid var(--text)}
+.info-eyebrow{font-size:13px}
+.info-title{font-size:24px;line-height:1.1;margin:6px 0}
+.info-sub{font-size:13px;font-family:Pretendard,sans-serif;white-space:pre}
+.info-pic{aspect-ratio:4/5;border-bottom:1px solid var(--text)}
+.info-pic img,.info-pic .ph{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.info-pic .ph{background-color:#4A4A4A;background-image:radial-gradient(#000 1.4px,transparent 1.6px);background-size:5px 5px}
+.info-caption{text-align:center;font-size:13px;padding:6px 8px;border-bottom:1px solid var(--text)}
+.info-row{display:grid;grid-template-columns:72px 1fr}
+.info-row+.info-row,.info-cast+.info-row{border-top:1px solid var(--text)}
+.info-k{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 4px;border-right:1px solid var(--text);font-size:14px}
+.info-v{padding:6px 8px;min-width:0;overflow-wrap:anywhere}
+.info-cast[hidden]{display:none}
+.info-cast{border-top:1px solid var(--text)}
+.cast-line small{font-size:11px}
+.infobox .foldbar{font-size:14px}
+
+.notice,.navbox,.top-pair{text-align:left;text-align-last:auto}
+.navbox-title,.info-head,.info-caption,.foldbar{text-align:center!important}
+
+/* Character links */
+a.char{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.15em}
+a.char:hover{text-decoration-thickness:3px}
+.sentence.flash,.sentence.flash .who{background:var(--hl);color:var(--hl-ink)}
 
 /* Headings: wiki title row with fold mark, number, title, [편집] and a rule */
 .wiki-h{clear:both;display:flex;align-items:center;gap:14px;margin:120px 0 28px;padding-bottom:14px;border-bottom:1px solid var(--text);font-weight:400;line-height:1;letter-spacing:0;cursor:pointer;user-select:none}
