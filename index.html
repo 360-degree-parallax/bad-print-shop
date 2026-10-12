@@ -1,20 +1,9 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1A1A1A"><meta name="description" content="오이디푸스 왕 문서. 문장을 누르면 오른쪽 포스터로 옮겨집니다. 불량 인쇄소."><title>오이디푸스 왕 - 불량 인쇄소</title><link rel="preload" href="assets/DreamHeumulPrint.ttf" as="font" type="font/ttf" crossorigin><link rel="stylesheet" href="style.css"></head><body>
-<nav class="navbar">
- <div class="nav-inner">
-  <span class="brand">불량 인쇄소</span>
-  <span class="nav-link">최근 변경</span><span class="nav-link">최근 토론</span><button class="nav-link" id="settingsButton" aria-haspopup="dialog">특수 기능</button>
-  <span class="nav-search"><input type="search" placeholder="여기에서 검색" aria-label="검색" disabled></span>
-  <button class="nav-link" id="settleButton" aria-haspopup="dialog">정산</button>
- </div>
-</nav>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="description" content="오이디푸스 왕 문서. 문장을 누르면 오른쪽 포스터로 옮겨집니다. 불량 인쇄소."><title>불량 인쇄소</title><link rel="preload" href="assets/DreamHeumulPrint.ttf" as="font" type="font/ttf" crossorigin><link rel="stylesheet" href="style.css"></head><body>
 <main class="layout">
  <article class="book" id="book" aria-label="수집할 문장">
   <div class="wiki-card">
-   <header class="doc-head">
-    <h1 class="doc-title">오이디푸스 왕</h1>
-    <div class="doc-tools"><span>☆ <b id="starCount">0</b></span><span>편집</span><span>토론</span><span>역사</span></div>
-   </header>
+   <h1 class="doc-title">오이디푸스 왕</h1>
    <p class="doc-updated">최근 수정 시각: <span id="updatedAt"></span> <span id="updatedBy"></span></p>
    <div class="categories" id="categories"></div>
    <div id="prose" class="wiki-body"></div>
@@ -25,7 +14,6 @@
   </footer>
  </article>
  <aside class="side">
-  <div class="side-head"><span>최근 인쇄</span><span id="printCount">0</span></div>
   <section id="posterScroller" class="print" aria-label="수집한 문장으로 만든 포스터"><div id="posterSurface"><canvas id="poster" width="840" height="1188" tabindex="0" aria-label="문장을 클릭하면 인쇄됩니다. 포스터를 두 번 누르거나 S 키를 누르면 정산합니다."></canvas></div></section>
  </aside>
 </main>

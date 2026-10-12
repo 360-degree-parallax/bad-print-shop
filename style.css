@@ -1,108 +1,88 @@
 @font-face{font-family:DreamHeumul;src:url('assets/DreamHeumulPrint.ttf') format('truetype');font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:Pretendard;src:url('assets/PretendardVariable.woff2') format('woff2');font-weight:45 920;font-style:normal;font-display:swap}
 *{box-sizing:border-box}
-:root{--bg:#F0F0F0;--card:#FFFFFF;--text:#212121;--muted:#7A7A7A;--line:#D6D6D6;--soft:#F7F7F7;--nav:#1A1A1A;--hl:#111111;--hl-ink:#FFFFFF;--paper:#FFFFFF;--ink:#111111}
-html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px;line-height:1.7}
-body{min-width:1240px}
+/* Black page, white text. Space is divided by position only: no boxes, borders or rules. */
+:root{--bg:#000000;--text:#F2F2F2;--muted:#7C7C7C;--faint:#3A3A3A;--hl:#F2F2F2;--hl-ink:#000000;--paper:#000000;--ink:#F2F2F2;color-scheme:dark}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px;line-height:1.75}
+body{min-width:1180px}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;padding:0}
-button:focus-visible,canvas:focus-visible{outline:1px solid var(--text);outline-offset:3px}
+:focus-visible{outline:1px solid var(--muted);outline-offset:3px}
 
-/* Navbar */
-.navbar{height:56px;background:var(--nav);color:#fff}
-.nav-inner{width:1240px;margin:0 auto;height:100%;display:flex;align-items:center;gap:22px;padding:0 4px}
-.brand{font-weight:800;font-size:19px;letter-spacing:-.02em;margin-right:12px}
-.nav-link{font-size:14px;color:#E6E6E6}
-button.nav-link:hover{text-decoration:underline;text-underline-offset:4px}
-.nav-search{margin-left:auto}
-.nav-search input{width:280px;height:34px;border:0;border-radius:4px;padding:0 12px;font:inherit;font-size:14px;background:#fff;color:var(--text)}
-.nav-search input::placeholder{color:#9A9A9A}
-
-/* Two surfaces */
-.layout{width:1240px;margin:0 auto;height:calc(100dvh - 56px);display:grid;grid-template-columns:1fr 440px;gap:20px;padding-top:20px}
-.book{height:100%;overflow-y:auto;overscroll-behavior:contain;padding-bottom:40px;scrollbar-width:thin}
-.wiki-card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:28px 32px 36px}
+.layout{width:1180px;margin:0 auto;height:100dvh;display:grid;grid-template-columns:620px 440px;justify-content:space-between}
+.book{height:100%;overflow-y:auto;overscroll-behavior:contain;padding:72px 0 120px;scrollbar-width:none}
+.book::-webkit-scrollbar{display:none}
 
 /* Document head */
-.doc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
-.doc-title{font-size:34px;font-weight:700;line-height:1.25;margin:0;letter-spacing:-.02em}
-.doc-tools{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;font-size:13px;flex:none}
-.doc-tools span{padding:6px 12px;border-left:1px solid var(--line);color:var(--text);background:#fff}
-.doc-tools span:first-child{border-left:0}
-.doc-updated{text-align:right;font-size:12.5px;color:var(--muted);margin:10px 0 16px}
-.categories{border:1px solid var(--line);border-radius:4px;padding:7px 12px;font-size:13px;margin-bottom:22px}
-.categories b{font-weight:600;margin-right:8px}
-.categories span{color:var(--text)}
-.categories span+span::before{content:'|';color:var(--line);margin:0 9px}
+.doc-title{font-size:30px;font-weight:600;line-height:1.3;margin:0;letter-spacing:-.02em}
+.doc-updated{font-size:12px;color:var(--muted);margin:6px 0 0}
+.categories{font-size:12px;color:var(--muted);margin:2px 0 48px}
+.categories b{font-weight:400;margin-right:6px}
+.categories span+span::before{content:' · '}
 
-/* Notice and infobox */
-.notice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-left:4px solid var(--text);background:var(--soft);padding:10px 14px;font-size:14px;margin:0 0 20px}
-.notice i{font-style:normal;font-weight:700}
-.infobox{margin:0 auto 26px;border-collapse:collapse;width:420px;font-size:14px}
-.infobox caption{background:var(--text);color:#fff;font-weight:700;padding:10px;border-radius:4px 4px 0 0}
-.infobox caption small{display:block;font-weight:400;font-size:12px;opacity:.75}
-.infobox th,.infobox td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
-.infobox th{width:34%;background:var(--soft);font-weight:600;text-align:center}
+/* Notice and info: plain aligned text */
+.notice{font-size:13px;color:var(--muted);margin:0 0 40px;max-width:520px}
+.notice i{display:none}
+.infobox{border-collapse:collapse;font-size:13px;margin:0 0 48px}
+.infobox caption{display:none}
+.infobox th,.infobox td{padding:1px 0;text-align:left;vertical-align:top;font-weight:400}
+.infobox th{color:var(--muted);padding-right:28px;white-space:nowrap}
 
 /* TOC */
-.toc{display:inline-block;border:1px solid var(--line);border-radius:4px;padding:12px 22px 14px 16px;margin:4px 0 28px;font-size:14px;line-height:1.85}
-.toc-title{font-weight:700;margin-bottom:4px}
+.toc{font-size:13px;line-height:1.9;margin:0 0 72px}
+.toc-title{color:var(--muted);margin-bottom:6px}
 .toc a{color:var(--text);text-decoration:none}
-.toc a:hover{text-decoration:underline}
-.toc .num{color:var(--muted);margin-right:6px}
-.toc .sub{padding-left:22px}
+.toc a:hover{color:var(--muted)}
+.toc .num{color:var(--muted);display:inline-block;min-width:36px}
+.toc .sub{padding-left:20px}
 
 /* Headings */
-.wiki-h{display:flex;align-items:baseline;gap:8px;border-bottom:1px solid var(--line);padding-bottom:6px;margin:36px 0 14px;font-weight:700;letter-spacing:-.01em}
-h2.wiki-h{font-size:26px}
-h3.wiki-h{font-size:21px;margin-top:28px}
-.wiki-h .num{color:var(--muted);font-weight:700;cursor:pointer}
-.wiki-h .edit{margin-left:auto;font-size:12.5px;font-weight:400;color:var(--muted)}
+.wiki-h{display:flex;align-items:baseline;gap:10px;margin:88px 0 20px;font-weight:600;letter-spacing:-.01em;line-height:1.35}
+h2.wiki-h{font-size:22px}
+h3.wiki-h{font-size:17px;margin-top:64px}
+.wiki-h .num{color:var(--muted);font-weight:400;cursor:pointer;min-width:36px}
+.wiki-h .edit{display:none}
 
 /* Body text */
-.wiki-body{font-size:15.5px;line-height:1.85;word-break:keep-all;overflow-wrap:break-word}
-.wiki-body p{margin:0 0 12px}
-.turn .who{font-weight:700}
-.turn.stage{color:var(--muted);font-style:normal}
-.sentence{cursor:pointer;border-radius:1px;box-decoration-break:clone;-webkit-box-decoration-break:clone;user-select:none;-webkit-user-select:none;touch-action:pan-y;transition:background-color 80ms linear,color 80ms linear}
+.wiki-body{font-size:15px;line-height:1.95;word-break:keep-all;overflow-wrap:break-word}
+.wiki-body p{margin:0 0 18px}
+.turn .who{font-weight:600}
+.turn.stage{color:var(--muted)}
+.sentence{cursor:pointer;box-decoration-break:clone;-webkit-box-decoration-break:clone;user-select:none;-webkit-user-select:none;touch-action:pan-y}
 .sentence:hover,.sentence:focus-visible{background:var(--hl);color:var(--hl-ink);outline:none}
-.sentence.taken{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
-.fn{font-size:11px;vertical-align:super;line-height:0;margin-left:2px;color:var(--muted);cursor:pointer;white-space:nowrap}
-.fn:hover{color:var(--text);text-decoration:underline}
+.fn{font-size:10px;vertical-align:super;line-height:0;margin-left:3px;color:var(--muted);cursor:pointer;white-space:nowrap}
+.fn:hover{color:var(--text)}
 
 /* Pixel figures */
-.figure{margin:22px auto 26px;text-align:center}
-.figure img,.figure .ph{display:block;margin:0 auto;width:100%;max-width:440px;aspect-ratio:4/3;image-rendering:pixelated;border:1px solid var(--line);background:#fff}
-.figure .ph{display:flex;align-items:flex-end;justify-content:flex-start;padding:8px 10px;font-size:12px;color:#fff;background-color:#9A9A9A;background-image:radial-gradient(#5A5A5A 1px,transparent 1.2px);background-size:4px 4px}
-.figure .ph span{background:#111;padding:1px 6px}
-.figure figcaption{font-size:13px;color:var(--muted);margin-top:6px}
+.figure{margin:48px 0 56px}
+.figure img,.figure .ph{display:block;width:100%;max-width:440px;aspect-ratio:4/3;image-rendering:pixelated}
+.figure .ph{display:flex;align-items:flex-end;padding:8px;font-size:11px;color:var(--muted);background-image:radial-gradient(var(--faint) 1px,transparent 1.3px);background-size:4px 4px}
+.figure figcaption{font-size:12px;color:var(--muted);margin-top:8px}
 
-.wiki-foot{font-size:12.5px;color:var(--muted);padding:18px 4px 0;line-height:1.6}
-.wiki-foot p{margin:0 0 4px}
+.wiki-foot{font-size:12px;color:var(--muted);margin-top:96px;line-height:1.7}
+.wiki-foot p{margin:0}
 
-/* Poster side */
-.side{height:100%;display:flex;flex-direction:column;min-height:0}
-.side-head{display:flex;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-bottom:0;border-radius:6px 6px 0 0;padding:8px 14px;font-size:14px;font-weight:700}
-.side-head span:last-child{font-weight:400;color:var(--muted);font-variant-numeric:tabular-nums}
-.print{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none;position:relative;border:1px solid var(--line);background:var(--card)}
+/* Poster */
+.side{height:100%;padding:72px 0 40px;display:flex;flex-direction:column;min-height:0}
+.print{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:none;position:relative}
 .print::-webkit-scrollbar{display:none}
 #posterSurface{position:relative;min-height:100%}
-canvas#poster{display:block;width:438px;height:auto;position:sticky;top:0;image-rendering:pixelated;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+canvas#poster{display:block;width:440px;height:auto;position:sticky;top:0;image-rendering:pixelated;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 
 /* Dialogs */
-dialog{background:#fff;color:var(--text);border:1px solid var(--line);border-radius:6px;padding:30px;width:min(440px,calc(100% - 32px));max-height:90dvh;font-size:15px;line-height:1.6}
-dialog::backdrop{background:#0006}
-.close{position:absolute;right:14px;top:8px;font-size:24px}
-h2{font-size:22px;font-weight:700;margin:0 0 18px}
-.setting{display:grid;grid-template-columns:1fr auto;gap:8px;margin:18px 0;font-size:15px}
-.setting input{grid-column:1/-1;width:100%;accent-color:#111}
+dialog{background:var(--bg);color:var(--text);border:0;padding:32px;width:min(420px,calc(100% - 32px));max-height:90dvh;font-size:14px;line-height:1.7}
+dialog::backdrop{background:#000c}
+.close{position:absolute;right:14px;top:8px;font-size:22px;color:var(--muted)}
+h2{font-size:18px;font-weight:600;margin:0 0 18px}
+.setting{display:grid;grid-template-columns:1fr auto;gap:6px;margin:16px 0;font-size:14px}
+.setting input{grid-column:1/-1;width:100%;accent-color:var(--text)}
 .setting output{font-variant-numeric:tabular-nums;color:var(--muted)}
-.settings-note{font-size:13.5px;color:var(--muted);margin:22px 0 0}
+.settings-note{font-size:12px;color:var(--muted);margin:20px 0 0}
 
-#receiptDialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:transparent;overflow:hidden}
-#receiptDialog::backdrop{background:rgba(0,0,0,.18)}
+#receiptDialog{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;background:transparent;overflow:hidden}
+#receiptDialog::backdrop{background:rgba(0,0,0,.5)}
 #receiptRibbon{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none}
-#receiptDialog .close{position:fixed;top:20px;right:24px;background:#fff;color:#111;border:1px solid var(--line);border-radius:4px;width:34px;height:34px;line-height:30px;z-index:2}
-#receiptDialog .downloads{position:fixed;right:24px;bottom:22px;display:flex;gap:18px;padding:8px 14px;background:#fff;color:#111;border:1px solid var(--line);border-radius:4px;z-index:2;font-size:14px}
-#receiptDialog .downloads button:hover{text-decoration:underline}
+#receiptDialog .close{position:fixed;top:20px;right:24px;z-index:2;color:var(--text)}
+#receiptDialog .downloads{position:fixed;right:24px;bottom:22px;display:flex;gap:20px;z-index:2;font-size:13px;color:var(--text)}
+#receiptDialog .downloads button:hover{color:var(--muted)}
 #receiptDialog .downloads button:disabled{opacity:.5;cursor:wait}
-@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}

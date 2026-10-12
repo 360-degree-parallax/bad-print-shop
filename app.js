@@ -1,7 +1,7 @@
 'use strict';
 const $=s=>document.querySelector(s),canvas=$('#poster'),ctx=canvas.getContext('2d'),posterScroller=$('#posterScroller'),posterSurface=$('#posterSurface'),posterScale=438/840;
-const palettes=[['#FFFFFF','#111111','#111111'],['#111111','#F2F2F2','#F2F2F2'],['#DADADA','#111111','#111111'],['#8E8E8E','#FFFFFF','#FFFFFF'],['#F4F4F0','#4A4A4A','#4A4A4A'],['#2B2B2B','#BDBDBD','#BDBDBD']];
-let background='#FFFFFF',point='#111111',textInk='#111111',paletteIndex=0;
+const palettes=[['#000000','#F2F2F2','#F2F2F2'],['#000000','#FFFFFF','#FFFFFF'],['#000000','#BDBDBD','#BDBDBD'],['#000000','#8E8E8E','#8E8E8E'],['#000000','#D9D9D9','#D9D9D9']];
+let background='#000000',point='#F2F2F2',textInk='#F2F2F2',paletteIndex=0;
 function luminance(hex){const c=hex.match(/\w\w/g).map(v=>parseInt(v,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return c[0]*.2126+c[1]*.7152+c[2]*.0722}
 function contrast(a,b){const x=luminance(a),y=luminance(b);return(Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
 function setPalette(index){paletteIndex=index;[background,textInk,point]=palettes[index];const root=document.documentElement;root.style.setProperty('--paper',background);root.style.setProperty('--ink',textInk);for(const item of items)item.ink=textInk;PrintFlow.recolor(flow,textInk)}
@@ -38,7 +38,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  prose.append(heading('h2','3','관련 문서','s-3'));const rel=el('p');rel.textContent='오이디푸스 · 테이레시아스 · 이오카스테 · 자기 실현적 예언 · 오이디푸스 콤플렉스';prose.append(rel);
  updateMeta();
 }
-function updateMeta(){const d=history.length?new Date():WikiDoc.updated,pad=n=>String(n).padStart(2,'0');$('#updatedAt').textContent=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;$('#updatedBy').textContent=history.length?`(익명 방문자가 문장 ${history.length}개를 가져감)`:'';$('#printCount').textContent=history.length;$('#starCount').textContent=history.length}
+function updateMeta(){const d=history.length?new Date():WikiDoc.updated,pad=n=>String(n).padStart(2,'0');$('#updatedAt').textContent=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;$('#updatedBy').textContent=history.length?`(익명 방문자가 문장 ${history.length}개를 가져감)`:''}
 function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore()}
 posterScroller.addEventListener('scroll',()=>draw());window.addEventListener('resize',()=>draw());
 function makeItem(text,index){
@@ -64,9 +64,8 @@ function bindPress(element,text,index){
 }
 window.addEventListener('blur',()=>finishPress(false));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)finishPress(false)});
-$('#settingsButton').onclick=()=>$('#settingsDialog').showModal();
+document.addEventListener('keydown',e=>{if(e.key===','&&!document.querySelector('dialog[open]'))$('#settingsDialog').showModal()});
 for(const key of ['size','width','intensity']){const input=$('#'+key+'Input'),output=$('#'+key+'Value');input.addEventListener('input',()=>{settings[key]=Number(input.value)/(key==='intensity'?100:1);output.textContent=input.value+(key==='intensity'?'%':'px')})}
-$('#settleButton').onclick=claim;
 function claim(){finishPress(true);receipt={id:crypto.randomUUID().slice(0,8).toUpperCase(),count:history.length,printFlow:PrintFlow.clone(flow),ink:textInk,background,entries:history.map(h=>({...h})),date:new Date().toLocaleString('en-GB',{hour12:false})};
  receipt.printFlow.rows=receipt.printFlow.rows.map(row=>({...row,tokens:row.tokens.map(token=>({...token,tile:null,staticTile:null,ink:receipt.ink}))}));
  $('#receiptDialog').showModal();PrintReceipt.start($('#receiptRibbon'),receipt);
