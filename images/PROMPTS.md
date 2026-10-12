@@ -1,11 +1,11 @@
 # 픽셀 이미지 프롬프트 (미드저니)
 
-결과물을 `01.png` ~ `20.png` 이름으로 이 폴더에 넣으면 본문의 회색 자리표시가 자동으로 교체됩니다. 비율은 4:3입니다.
+결과물을 `01.png` ~ `20.png` 이름으로 이 폴더에 넣으면 본문의 회색 자리표시가 자동으로 교체됩니다. 비율은 4:5(세로)입니다. 본문 한 단 폭을 꽉 채웁니다.
 
 모든 프롬프트 끝에 같은 꼬리를 붙입니다.
 
 ```
-, 1-bit pixel art, strictly black and white, no gray, ordered Bayer dithering, low resolution 160x120 upscaled with hard square pixels, flat lighting, ancient Greek tragedy, no text --ar 4:3 --style raw --no color, grayscale gradient, text, letters, frame
+, 1-bit pixel art, strictly black and white, no gray, ordered Bayer dithering, low resolution 128x160 upscaled with hard square pixels, flat lighting, ancient Greek tragedy, no text --ar 4:5 --style raw --no color, grayscale gradient, text, letters, frame
 ```
 
 | # | 장면 | 프롬프트 (꼬리 앞부분) |
