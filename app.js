@@ -70,7 +70,7 @@ function makeItem(text,index){
  const item={text,index,ink:textInk,size:settings.size*840/440,blockWidth:Math.min(756,settings.width*840/440),intensity:settings.intensity,seed:Math.floor(Math.random()*1000000),effect:effects[Math.floor(Math.random()*effects.length)]};
  item.words=PrintFlow.words(text,item);return item;
 }
-function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});sentenceNodes[item.index]?.classList.add('taken');updateMeta();nextPalette()}
+function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});sentenceNodes[item.index]?.classList.add('taken');updateMeta();nextPalette();checkFull()}
 function steal(text,index){const item=makeItem(text,index);PrintFlow.append(flow,item);items.push(item);remember(item);delete item.words;draw(true)}
 let press=null;
 function finishPress(commit){if(!press)return;const p=press;press=null;clearTimeout(p.timer);clearInterval(p.cycle);
@@ -99,7 +99,11 @@ canvas.addEventListener('dblclick',claim);
 const receiptOpen=()=>$('#receiptDialog').open;
 function settleOnLeave(){if(history.length&&!receiptOpen())claim()}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)settleOnLeave()});
-document.addEventListener('mouseout',e=>{if(!e.relatedTarget&&e.clientY<=0)settleOnLeave()});
+// The play ends: reaching the bottom of the document settles the account.
+new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting))settleOnLeave()},{root:book,threshold:.6}).observe(document.querySelector('.wiki-foot'));
+// The sheet runs out: once the print passes one poster height, the account is settled.
+function posterFull(){return flow.rows.some(r=>r.y+r.height>1156)}
+let fullTimer=0;function checkFull(){clearTimeout(fullTimer);fullTimer=setTimeout(()=>{if(posterFull())settleOnLeave()},700)}
 window.addEventListener('beforeunload',e=>{if(!history.length)return;settleOnLeave();e.preventDefault();e.returnValue=''});document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='s'&&!e.ctrlKey&&!e.metaKey&&!document.querySelector('dialog[open]')){e.preventDefault();claim()}});
 document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $('#receiptDialog').addEventListener('close',()=>PrintReceipt.stop());
