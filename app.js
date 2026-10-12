@@ -16,10 +16,10 @@ function heading(level,num,title,id){const h=el(level,'wiki-h');h.id=id;const fo
  const body=el('div','wiki-sec');h.tabIndex=0;h.setAttribute('role','button');h.setAttribute('aria-expanded','true');const toggle=()=>{body.hidden=!body.hidden;h.classList.toggle('folded',body.hidden);h.setAttribute('aria-expanded',String(!body.hidden))};h.addEventListener('click',toggle);h.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();toggle()}});return [h,body]}
 function scrollToId(id){const target=document.getElementById(id);if(target)book.scrollTo({top:target.offsetTop-12,behavior:'smooth'})}
 const figureModes=['left','right','inline','left','right'];
-function figure(number,caption){const code=String(number).padStart(2,'0'),mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;
+function figure(number,caption,ratio){const code=String(number).padStart(2,'0'),mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;
  const width=mode==='inline'?64+Math.round(Math.random()*48):mode==='center'?30+Math.round(Math.random()*20):24+Math.round(Math.random()*16);
  f.style.width=mode==='inline'?width+'px':width+'%';if(mode==='center')f.style.marginLeft=Math.round(Math.random()*(100-width))+'%';
- f.style.aspectRatio=['4/5','1/1','3/4','4/5'][Math.floor(Math.random()*4)];
+ f.style.aspectRatio=ratio||'4/5';
  const img=new Image();img.alt=caption;img.loading='lazy';img.src=`images/${code}.png`;img.onerror=()=>{const ph=el('span','ph');img.replaceWith(ph)};f.append(img);return f}
 const firstLine=new Map();BookText.forEach((x,i)=>{if(!firstLine.has(x.speaker))firstLine.set(x.speaker,i)});
 const charNames=(window.WikiDoc.characters||[]).map(c=>c.name).sort((a,b)=>b.length-a.length);
@@ -42,7 +42,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  const tocLine=(num,title,id,depth)=>{const d=el('div','d'+depth);const a=el('a');a.href='#'+id;a.onclick=e=>{e.preventDefault();scrollToId(id)};a.append(el('span','num',num+'.'),document.createTextNode(' '+title));d.append(a);tl.append(d)};
  tocLine('1','개요','s-1',0);tocLine('2','본문','s-2',0);W.sections.forEach((x,i)=>tocLine('2.'+(i+1),x.title,'s-2-'+(i+1),1));tocLine('3','관련 문서','s-3',0);
  const info=el('div','infobox'),I=W.infoTop,head=el('div','info-head');head.append(el('div','info-eyebrow',I.eyebrow),el('div','info-title',I.title),el('div','info-sub',I.sub.join('  |  ')));info.append(head);
- const pic=el('div','info-pic'),img=new Image();img.alt=I.caption;img.src='images/00.png';img.onerror=()=>{img.replaceWith(el('span','ph'))};pic.append(img);info.append(pic,el('div','info-caption',I.caption));
+ const pic=el('div','info-pic');pic.style.aspectRatio=I.ratio||'3/4';const img=new Image();img.alt=I.caption;img.src='images/00.png';img.onerror=()=>{img.replaceWith(el('span','ph'))};pic.append(img);info.append(pic,el('div','info-caption',I.caption));
  const row=(k,v)=>{const r=el('div','info-row');const th=el('div','info-k',k),td=el('div','info-v');if(typeof v==='string')td.textContent=v;else td.append(...v);r.append(th,td);return r};
  const get=k=>(W.infobox.find(x=>x[0]===k)||[])[1]||'';
  info.append(row('작가',get('작가')),row('초연',get('초연')),row('장르',get('장르')));
@@ -57,7 +57,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  W.sections.forEach((s,i)=>{const [sh,sb]=heading('h3','2.'+(i+1),s.title,'s-2-'+(i+1));mainB.append(sh,sb);
   for(let turn=s.from;turn<=s.to;turn++){const list=byTurn.get(turn);if(!list)continue;const first=BookText[list[0]],p=el('p','turn'+(first.speaker==='지문'?' stage':''));
    const f=figs.get(turn),at=f?Math.floor(Math.random()*list.length):-1;
-   list.forEach((index,k)=>{if(k===at)p.append(figure(f.number,f.caption));p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));sb.append(p)}
+   list.forEach((index,k)=>{if(k===at)p.append(figure(f.number,f.caption,f.ratio));p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));sb.append(p)}
  });
  {const [h,b]=heading('h2','3','관련 문서','s-3');prose.append(h,b);const rel=el('p');rel.textContent='오이디푸스 · 테이레시아스 · 이오카스테 · 자기 실현적 예언 · 오이디푸스 콤플렉스';b.append(rel)}
  updateMeta();
