@@ -14,7 +14,12 @@ const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className
 const book=$('#book'),sentenceNodes=[];
 function heading(level,num,title,id){const h=el(level,'wiki-h');h.id=id;const a=el('span','num',num+'.');a.onclick=()=>scrollToId('toc');h.append(a,document.createTextNode(' '+title),el('span','edit','[편집]'));return h}
 function scrollToId(id){const target=document.getElementById(id);if(target)book.scrollTo({top:target.offsetTop-12,behavior:'smooth'})}
-function figure(number,caption){const f=el('figure','figure'),code=String(number).padStart(2,'0'),img=new Image();img.alt=caption;img.loading='lazy';img.src=`images/${code}.png`;img.onerror=()=>{const ph=el('div','ph');ph.append(el('span','',`IMG ${code}`));img.replaceWith(ph)};f.append(img,el('figcaption','',caption));return f}
+const figureModes=['left','right','center','inline','left','right'];
+function figure(number,caption){const code=String(number).padStart(2,'0'),mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;
+ const width=mode==='inline'?96+Math.round(Math.random()*64):mode==='center'?55+Math.round(Math.random()*45):38+Math.round(Math.random()*24);
+ f.style.width=mode==='inline'?width+'px':width+'%';if(mode==='center')f.style.marginLeft=Math.round(Math.random()*(100-width))+'%';
+ f.style.aspectRatio=['4/5','1/1','3/4','4/5'][Math.floor(Math.random()*4)];
+ const img=new Image();img.alt=caption;img.loading='lazy';img.src=`images/${code}.png`;img.onerror=()=>{const ph=el('span','ph');img.replaceWith(ph)};f.append(img);return f}
 function sentenceNode(entry,index){const span=el('span','sentence');span.lang=entry.lang;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label',entry.text+' 수집');const prefix=entry.speaker+': ';
  if(entry.text.startsWith(prefix)){span.append(el('b','who',entry.speaker+': '),document.createTextNode(entry.text.slice(prefix.length)))}else span.textContent=entry.text;
  const collect=()=>steal(entry.text,index);bindPress(span,entry.text,index);span.addEventListener('click',e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
@@ -32,8 +37,8 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  const figs=new Map(W.figures.map((f,i)=>[f.after,{...f,number:i+1}]));
  W.sections.forEach((s,i)=>{prose.append(heading('h3','2.'+(i+1),s.title,'s-2-'+(i+1)));
   for(let turn=s.from;turn<=s.to;turn++){const list=byTurn.get(turn);if(!list)continue;const first=BookText[list[0]],p=el('p','turn'+(first.speaker==='지문'?' stage':''));
-   list.forEach(index=>{p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));prose.append(p);
-   const f=figs.get(turn);if(f)prose.append(figure(f.number,f.caption))}
+   const f=figs.get(turn),at=f?Math.floor(Math.random()*list.length):-1;
+   list.forEach((index,k)=>{if(k===at)p.append(figure(f.number,f.caption));p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));prose.append(p)}
  });
  prose.append(heading('h2','3','관련 문서','s-3'));const rel=el('p');rel.textContent='오이디푸스 · 테이레시아스 · 이오카스테 · 자기 실현적 예언 · 오이디푸스 콤플렉스';prose.append(rel);
  updateMeta();

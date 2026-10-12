@@ -54,11 +54,15 @@ h3.wiki-h{font-size:48px;margin-top:120px}
 .fn{font-size:16px;vertical-align:super;line-height:0;margin-left:2px;color:var(--muted);cursor:pointer;white-space:nowrap}
 .fn:hover{color:var(--text)}
 
-/* Pixel figures: full column, large */
-.figure{margin:96px 0 112px}
-.figure img,.figure .ph{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;image-rendering:pixelated}
-.figure .ph{display:flex;align-items:flex-end;padding:12px;font-size:16px;color:var(--muted);background-image:radial-gradient(var(--faint) 1.4px,transparent 1.6px);background-size:6px 6px}
-.figure figcaption{font-size:20px;line-height:1.2;color:var(--muted);margin-top:16px;text-align:left}
+/* Pixel figures: dropped into the running text at random positions */
+.fig{display:block;position:relative;image-rendering:pixelated;overflow:hidden}
+.fig img,.fig .ph{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.fig .ph{background-color:#4A4A4A;background-image:radial-gradient(#000 1.4px,transparent 1.6px);background-size:5px 5px}
+.fig-left{float:left;margin:4px 16px 4px 0}
+.fig-right{float:right;margin:4px 0 4px 16px}
+.fig-center{clear:both;margin-block:8px}
+.fig-inline{display:inline-block;vertical-align:-.15em;margin:0 6px}
+.wiki-h{clear:both}
 
 .wiki-foot{font-size:20px;color:var(--muted);margin-top:160px;line-height:1.25}
 .wiki-foot p{margin:0 0 4px}
