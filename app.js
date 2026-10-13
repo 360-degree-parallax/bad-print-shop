@@ -116,7 +116,7 @@ function claim(){finishPress(true);receipt={id:crypto.randomUUID().slice(0,8).to
 const receiptOpen=()=>$('#receiptDialog').open;
 function settleOnLeave(){if(history.length&&!receiptOpen())claim()}
 // The play ends: reaching the bottom of the document settles the account.
-new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting))settleOnLeave()},{root:book,threshold:.6}).observe(document.querySelector('.wiki-foot'));
+new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting))settleOnLeave()},{threshold:.6}).observe(document.querySelector('.wiki-foot'));
 
 document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $('#receiptDialog').addEventListener('close',()=>PrintReceipt.stop());

@@ -132,3 +132,5 @@ h2{font-size:32px;font-weight:400;margin:0 0 24px}
 #receiptDialog .downloads button:hover{color:var(--muted)}
 #receiptDialog .downloads button:disabled{opacity:.5;cursor:wait}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+@media(max-width:1150px){body{min-width:0}.layout{width:auto;padding-inline:16px;column-gap:48px;grid-template-columns:1fr 440px}}
+@media(max-width:900px){html,body{overflow:auto;height:auto}.layout{display:flex;flex-direction:column;height:auto}.book{height:auto;overflow:visible;padding-top:40px}.side{height:80dvh}canvas#poster{width:100%}.top-pair{flex-direction:column}.toc{flex:none;width:100%}.infobox{width:100%}}
