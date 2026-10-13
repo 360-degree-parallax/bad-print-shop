@@ -9,13 +9,19 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
-const GEN_KEY="bp-gen";
-const loadGen=()=>{try{return localStorage.getItem(GEN_KEY)||"0"}catch(e){return "0"}};
-const saveGen=v=>{try{localStorage.setItem(GEN_KEY,v)}catch(e){}};
-settings.gen=loadGen();
-const mixPick=new Map();
-function genFor(turn){if(settings.gen!=="mix")return Number(settings.gen);if(!mixPick.has(turn))mixPick.set(turn,Math.floor(Math.random()*6)+1);return mixPick.get(turn)}
-function displayText(index){const entry=BookText[index];if(!entry)return "";if(entry.turn===-1||index>=overviewStart)return entry.text;const g=genFor(entry.turn);if(!g)return entry.text;return window.BookGen?.rows?.[index]?.[g-1]||entry.text}
+// Every sentence taken leaves its next-generation retranslation behind in the document.
+const TAKE_KEY="bp-takes";
+const takes=(()=>{try{return JSON.parse(localStorage.getItem(TAKE_KEY)||"{}")||{}}catch(e){return {}}})();
+const saveTakes=()=>{try{localStorage.setItem(TAKE_KEY,JSON.stringify(takes))}catch(e){}};
+// Distinct versions only: a take always leaves a copy that differs from the one taken.
+const versionCache=new Map();
+function versions(index){if(!versionCache.has(index)){const list=[BookText[index].text];for(const g of window.BookGen?.rows?.[index]||[])if(g&&g!==list.at(-1))list.push(g);versionCache.set(index,list)}return versionCache.get(index)}
+function displayText(index){const entry=BookText[index];if(!entry)return "";if(index>=overviewStart)return entry.text;const v=versions(index);return v[Math.min(takes[index]||0,v.length-1)]}
+function originalCount(){let n=0;for(let i=0;i<overviewStart;i++)if(!takes[i])n++;return n}
+function updateOriginalCount(){const n=document.getElementById("originalCount");if(n)n.textContent=originalCount().toLocaleString("ko-KR")}
+function fillSentence(span,entry,text){span.replaceChildren();span.setAttribute("aria-label",text+" 수집");const m=text.match(/^([^:\s〈][^:]{0,11}): /);
+ if(m){const who=el("b","who");linkify(who,m[1]);who.append(": ");span.append(who);linkify(span,text.slice(m[0].length))}else linkify(span,text)}
+function degrade(index){if(index<0||index>=overviewStart)return;takes[index]=(takes[index]||0)+1;saveTakes();const span=sentenceNodes[index];if(span)fillSentence(span,BookText[index],displayText(index));updateOriginalCount()}
 const sentences=BookText.map(entry=>entry.text);
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
 const book=$('#book'),sentenceNodes=[];
@@ -37,9 +43,8 @@ function linkify(target,text){let last=0;text.replace(charPattern,(m,_,at)=>{if(
 function gotoCharacter(name){const index=firstLine.get(name);const node=sentenceNodes[index];if(!node)return;
  for(let sec=node.closest('.wiki-sec');sec;sec=sec.parentElement.closest('.wiki-sec')){if(sec.hidden){sec.hidden=false;const h=sec.previousElementSibling;h?.classList.remove('folded');h?.setAttribute('aria-expanded','true')}}
  const r=node.getBoundingClientRect(),b=book.getBoundingClientRect();book.scrollTo({top:book.scrollTop+r.top-b.top-120,behavior:'smooth'});node.classList.remove('flash');void node.offsetWidth;node.classList.add('flash');setTimeout(()=>node.classList.remove('flash'),1600)}
-function sentenceNode(entry,index){const text=displayText(index);const span=el('span','sentence');span.lang=entry.lang;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label',text+' 수집');const prefix=entry.speaker+': ';
- if(text.startsWith(prefix)){const who=el('b','who');linkify(who,entry.speaker);who.append(': ');span.append(who);linkify(span,text.slice(prefix.length))}else linkify(span,text);
- const collect=()=>steal(text,index);bindPress(span,text,index);span.addEventListener('click',e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
+function sentenceNode(entry,index){const span=el("span","sentence");span.lang=entry.lang;span.tabIndex=0;span.setAttribute("role","button");fillSentence(span,entry,displayText(index));
+ const collect=()=>steal(displayText(index),index);bindPress(span,()=>displayText(index),index);span.addEventListener("click",e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
 function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index]?.turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`;$('#note').showModal()};return n}
 function render(){const W=window.WikiDoc,prose=$('#prose');
  const fold=(label)=>{const r=el('button','foldbar',label||'[ 펼치기 · 접기 ]');r.type='button';return r};
@@ -56,7 +61,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  info.append(row('작가',get('작가')),row('초연',get('초연')),row('장르',get('장르')));
  const ft=fold(),cast=el('div','info-cast');ft.onclick=()=>{cast.hidden=!cast.hidden};
  const castList=W.characters.map(c=>{const line=el('div','cast-line');line.append(charLink(c.name),el('small','',' ('+c.role+')'));return line});cast.append(row('등장인물',castList));info.append(ft,cast);
- info.append(row('영문 저본',get('영문 저본')),row('한국어 번역',get('한국어 번역')),row('문장 수',get('문장 수')));
+ info.append(row('영문 저본',get('영문 저본')),row('한국어 번역',get('한국어 번역')),row('원문 일치',[Object.assign(el('span','',originalCount().toLocaleString('ko-KR')),{id:'originalCount'})]));
  pair.append(toc,info);prose.append(pair);
  {const [h,b]=heading('h2','1','개요','s-1');prose.append(h,b);const ov=el('p');W.overview.forEach((t,k)=>{const i=overviewStart+k;ov.append(sentenceNode(BookText[i],i),document.createTextNode(' '))});b.append(ov)}
  const [mainH,mainB]=heading('h2','2','본문','s-2');prose.append(mainH,mainB);
@@ -78,7 +83,7 @@ function makeItem(text,index){
  const item={text,index,ink:textInk,size:settings.size*840/440,blockWidth:Math.min(756,settings.width*840/440),intensity:settings.intensity,seed:Math.floor(Math.random()*1000000),effect:effects[Math.floor(Math.random()*effects.length)]};
  item.words=PrintFlow.words(text,item);return item;
 }
-function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});sentenceNodes[item.index]?.classList.add('taken');updateMeta();nextPalette()}
+function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});degrade(item.index);updateMeta();nextPalette()}
 function bindImageSteal(holder,img,code,caption){holder.classList.add('stealable');holder.tabIndex=0;holder.setAttribute('role','button');holder.setAttribute('aria-label',caption+' 사진 수집');
  const go=()=>{if(img.complete&&img.naturalWidth)stealImage(img,code,caption)};holder.addEventListener('click',e=>{e.stopPropagation();go()});holder.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go()}})}
 function stealImage(img,code,caption){const size=settings.size*840/440,drawH=Math.round(size*(2+Math.random()*1.6)),drawW=Math.min(560,Math.round(drawH*img.naturalWidth/img.naturalHeight));
@@ -91,11 +96,11 @@ let press=null;
 function finishPress(commit){if(!press)return;const p=press;press=null;clearTimeout(p.timer);clearInterval(p.cycle);
  if(p.slot!==undefined){p.element.suppressClick=true;if(commit){remember(items[p.slot]);delete items[p.slot].words}else{items.splice(p.slot,1);flow=p.base}draw(commit)}
 }
-function bindPress(element,text,index){
+function bindPress(element,text,index){const textOf=typeof text==='function'?text:()=>text;
  element.addEventListener('pointerdown',e=>{if(e.button!==0)return;finishPress(false);element.suppressClick=false;
  const p=press={element,text,index,pointerId:e.pointerId};element.setPointerCapture?.(e.pointerId);
- p.timer=setTimeout(()=>{if(press!==p)return;p.slot=items.length;p.base=PrintFlow.clone(flow);const item=makeItem(text,index);items.push(item);PrintFlow.append(flow,item);draw(true);
- p.cycle=setInterval(()=>{items[p.slot]=makeItem(text,index);flow=PrintFlow.clone(p.base);PrintFlow.append(flow,items[p.slot]);draw(true)},240)},380);
+ p.timer=setTimeout(()=>{if(press!==p)return;p.slot=items.length;p.base=PrintFlow.clone(flow);const item=makeItem(textOf(),index);items.push(item);PrintFlow.append(flow,item);draw(true);
+ p.cycle=setInterval(()=>{items[p.slot]=makeItem(textOf(),index);flow=PrintFlow.clone(p.base);PrintFlow.append(flow,items[p.slot]);draw(true)},240)},380);
  });
  element.addEventListener('pointerup',e=>{if(press?.element===element&&press.pointerId===e.pointerId)finishPress(true)});
  element.addEventListener('pointercancel',()=>{if(press?.element===element)finishPress(false)});
@@ -104,8 +109,6 @@ function bindPress(element,text,index){
 window.addEventListener('blur',()=>finishPress(false));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)finishPress(false)});
 document.addEventListener('keydown',e=>{if(e.key===','&&!document.querySelector('dialog[open]'))$('#settingsDialog').showModal()});
-const genSelect=$("#genSelect");if(genSelect){genSelect.value=settings.gen;genSelect.addEventListener("change",()=>{settings.gen=genSelect.value;saveGen(settings.gen);reRender()})}
-function reRender(){$("#prose").replaceChildren();sentenceNodes.length=0;render();for(const h of history)sentenceNodes[h.index]?.classList.add("taken")}
 for(const key of ['size','width','intensity']){const input=$('#'+key+'Input'),output=$('#'+key+'Value');input.addEventListener('input',()=>{settings[key]=Number(input.value)/(key==='intensity'?100:1);output.textContent=input.value+(key==='intensity'?'%':'px')})}
 function claim(){finishPress(true);receipt={id:crypto.randomUUID().slice(0,8).toUpperCase(),count:history.length,printFlow:PrintFlow.clone(flow),ink:textInk,background,entries:history.map(h=>({...h})),date:new Date().toLocaleString('en-GB',{hour12:false})};
  receipt.printFlow.rows=receipt.printFlow.rows.map(row=>({...row,tokens:row.tokens.map(token=>({...token,tile:null,staticTile:null,ink:receipt.ink}))}));
