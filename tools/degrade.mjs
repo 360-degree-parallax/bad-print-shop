@@ -222,7 +222,7 @@ new Function('window', fs.readFileSync(path.join(root, 'wiki.js'), 'utf8'))(wiki
 const NAMES = (wikiWin.WikiDoc.characters || []).map(c => c.name).concat(['오이디푸스', '이오카스테', '크레온', '테이레시아스', '라이오스', '스핑크스', '카드모스', '폴리보스', '메로페', '제우스', '아폴론', '코린토스', '테바이', '델포이', '포이보스']);
 const PUNCT_L = /^[〈"“‘'(\[]+/, PUNCT_R = /[〉"”’'.,!?;:…)\]]+$/;
 
-function blur(tokens, k, seed) {
+function blur(tokens, k, seed, capFrac) {
   const idx = [];
   tokens.forEach((t, i) => {
     if (i === tokens.length - 1) return;                                    // 술어는 남긴다
@@ -234,7 +234,7 @@ function blur(tokens, k, seed) {
     idx.push([i, core.length - j.length]);
   });
   idx.sort((x, y) => y[1] - x[1] || x[0] - y[0]);
-  const cap = Math.max(1, Math.floor(idx.length * 0.5));
+  const cap = Math.max(1, Math.ceil(idx.length * capFrac));
   const pick = new Set(idx.slice(0, Math.min(k, cap)).map(x => x[0]));
   return tokens.map((t, i) => {
     if (!pick.has(i)) return t;
@@ -246,6 +246,24 @@ function blur(tokens, k, seed) {
   });
 }
 
+/* 기준 5: 수식어의 탈락. 조사 없는 꾸밈말부터, 해시 순서대로 단계마다 더 많이 빠진다 (7차에는 술어 앞의 꾸밈말이 모두 사라진다) */
+function dropModifiers(tokens, g, seed) {
+  if (g < 3) return tokens;
+  const cand = [];
+  tokens.forEach((t, i) => {
+    if (i === tokens.length - 1 || /[,.!?〉〈]/.test(t)) return;
+    const core = t.replace(PUNCT_L, '').replace(PUNCT_R, '');
+    if (core.length < 2 || NAMES.some(n => core.includes(n)) || /:/.test(t)) return;
+    if (JOSA_TAIL.some(j => core.endsWith(j) && core.length - j.length >= 2)) return;
+    cand.push([hash(seed + 'd' + core + i), i]);
+  });
+  cand.sort((a, b) => a[0] - b[0]);
+  const n = Math.floor(cand.length * Math.min(1, (g - 2) / 5));
+  const gone = new Set(cand.slice(0, n).map(x => x[1]));
+  return tokens.filter((_, i) => !gone.has(i));
+}
+
+const copula = w => w + (jong(w.slice(-1)) ? '이었' : '였');
 const addFrag = (s, frag, stagedir) => stagedir ? s.replace(/〉$/, ' ' + frag + '〉') : s.replace(/\s*$/, '') + ' ' + frag;
 
 function damageChain(orig, index) {
@@ -262,8 +280,10 @@ function damageChain(orig, index) {
   const fragOrder = FRAGMENTS.map(f => [hash(seed + f), f]).sort((a, b) => a[0] - b[0]).map(x => x[1]);
   for (let g = 1; g <= 7; g++) {
     const hits = [];
-    // (4) 어절 흐리기 — 원문에서 직접 계산한다. 단계가 오를수록 더 많은 어절이 바뀐다
-    let s = blur(body.split(' '), Math.ceil(g * 0.7), seed).join(' ');
+    // (4) 어절 흐리기 — 원문에서 직접 계산한다. 단계가 오를수록 더 많은 어절이 바뀌고, 7차에는 체언이 거의 남지 않는다
+    let toks = blur(body.split(' '), Math.ceil(g * 1.3), seed, 0.5 + 0.08 * g);
+    toks = dropModifiers(toks, g, seed);
+    let s = toks.join(' ');
     // (1) 어휘 사다리
     s = swapNouns(s, g, seed, hits);
     s = swapAdj(s, g, seed);
@@ -278,18 +298,33 @@ function damageChain(orig, index) {
       if (g === 5) s = compress(s, 'ends');
       if (g >= 6) s = compress(s, 'last');
     }
-    // (6) 이름 붙이기 틀
     const pairs = hits.filter(h => h[0] !== h[1]);
+    // (5') 술어의 붕괴 (5차부터): 마지막 서술어가 "X였다"로 닳는다
+    if (!stagedir && g >= 5) {
+      const X = pairs.length ? pairs[hash(seed + 'p') % pairs.length][1] : ATTRACTORS[hash(seed + 'p') % ATTRACTORS.length];
+      const sp = s.split(' ');
+      if (sp.length > 2) {
+        const w = X.split(' ').pop();
+        sp[sp.length - 1] = copula(w) + '다.';
+        if (sp[sp.length - 2] === w) sp.splice(sp.length - 2, 1);              // "눈 눈이었다" → "눈이었다"
+        s = sp.join(' ');
+      }
+    }
+    // (6) 이름 붙이기 틀
     if (!stagedir && pairs.length && g >= 6) {
       const [a, b] = pairs[hash(seed + g) % pairs.length];
       const strip = t => t.replace(/[.!?]+$/, '');
       if (g === 6) s = strip(s) + '. ' + b + fixJosa('은', b) + ' ' + a + '의 이름으로 남았다.';
-      if (g === 7) s = strip(s) + '. ' + a + (jong(a.slice(-1)) ? '이었던' : '였던') + ' 것은 ' + b + fixJosa('로', b) + ' 번역되었다.';
     }
-    // (7) 앞 세대에서 쌓인 꼬리(bonus)를 먼저 붙이고, 5단계부터는 단계마다 조각이 하나씩 쌓인다
+    // (7) 술어의 붕괴 (5차부터): 마지막 서술어가 "X였다"로 닳는다. 7차에는 "A는 B였고, B는 C였다"의 사슬이 붙는다
+    if (!stagedir && g === 7) {
+      const A = pairs.length ? pairs[0][1].split(' ').pop() : ATTRACTORS[hash(seed + 'A') % ATTRACTORS.length];
+      let B = ATTRACTORS[hash(seed + 'B') % ATTRACTORS.length]; if (B === A) B = '상처';
+      let C = ATTRACTORS[hash(seed + 'C') % ATTRACTORS.length]; if (C === B || C === A) C = '구멍';
+      s = s.replace(/[.!?]+$/, '') + '. ' + A + fixJosa('은', A) + ' ' + copula(B) + '고, ' + B + fixJosa('은', B) + ' ' + copula(C) + '다.';
+    }
     const lastWord = s.replace(/[.!?〉\s]+$/, '').split(' ').pop().replace(/[,.]$/, '');
     for (const f of bonus) s = addFrag(s, f, stagedir);
-    for (let k = 5; k <= g; k++) s = addFrag(s, fragOrder[k - 5], stagedir);
     // (8) 앞 세대와 같으면 안 된다. 바뀔 곳이 없는 문장은 끝이 닳아서라도 달라진다 (누적).
     //     홀수 번째는 끝 어절의 메아리, 짝수 번째는 조각.
     let guard = 0;
@@ -298,8 +333,8 @@ function damageChain(orig, index) {
       let f;
       if (n % 2 === 0) {
         const echo = n === 0 ? lastWord : lastWord.slice(-Math.max(1, 2 - n / 2));   // 메아리는 점점 짧아진다
-        f = echo.length >= 1 && !/[〈〉:]/.test(echo) ? echo + '.' : fragOrder[(n + 3) % fragOrder.length];
-      } else f = fragOrder[(n + 3) % fragOrder.length];
+        f = echo.length >= 1 && !/[〈〉:]/.test(echo) ? echo + '.' : ATTRACTORS[(n + 3) % ATTRACTORS.length] + '.';
+      } else f = ATTRACTORS[hash(seed + n) % ATTRACTORS.length] + '.';
       bonus.push(f);
       s = addFrag(s, f, stagedir);
     }
