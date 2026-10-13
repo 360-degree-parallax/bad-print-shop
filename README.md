@@ -26,3 +26,7 @@ index.html을 브라우저에서 열면 실행됩니다. HTML/CSS/JavaScript/Can
 한국어 본문 전체: [book/oedipus-ko.txt](book/oedipus-ko.txt)
 
 드림흐물체 파생 글꼴과 Pretendard의 저작권·라이선스는 assets의 문서를 참조하세요. 코드에는 별도의 오픈소스 라이선스를 부여하지 않았습니다.
+
+## 가져간 문장의 훼손
+
+문장을 하나 가져갈 때마다 문서에 남은 그 문장은 다음 단계로 훼손됩니다. 번역이 아니라 규칙에 따른 손상이며, 1~7차까지 각 단계가 앞 단계 위에 겹칩니다. 전문 1,306문장의 7개 세트는 `content-gen.js`에 들어 있고, `node tools/degrade.mjs`로 다시 만들 수 있습니다. 적용한 기준과 한계는 [book/DEGRADATION.md](book/DEGRADATION.md)에 있습니다.
