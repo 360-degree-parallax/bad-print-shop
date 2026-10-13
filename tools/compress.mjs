@@ -34,19 +34,42 @@ const JUNG_SIMPLE = {'ㅐ': 'ㅔ', 'ㅑ': 'ㅏ', 'ㅒ': 'ㅔ', 'ㅕ': 'ㅓ', '�
 // 모음: 셋만 남는다 (열린 ㅏ, 가운데 ㅡ, 닫힌 ㅣ)
 const JUNG_THREE = {'ㅏ': 'ㅏ', 'ㅓ': 'ㅏ', 'ㅗ': 'ㅡ', 'ㅜ': 'ㅡ', 'ㅡ': 'ㅡ', 'ㅔ': 'ㅣ', 'ㅣ': 'ㅣ'};
 
-/* 단계별 문턱 (1차 … 7차): 음절의 고정 난수가 문턱보다 작으면 그 손실이 일어난다 */
+/* 단계별 문턱 (1차 … 20차): 음절의 고정 난수가 문턱보다 작으면 그 손실이 일어난다.
+   ramp(시작, 끝, 최대) — 시작 단계부터 끝 단계까지 곧게 올라가고, 그 뒤로는 최대에 머문다. */
+const STAGES = 20;
+const ramp = (from, to, max = 1) => Array.from({length: STAGES}, (_, k) => { const g = k + 1; return g < from ? 0 : g >= to ? max : max * (g - from + 1) / (to - from + 1); });
 const T = {
-  jongSimple: [0.35, 0.7, 1, 1, 1, 1, 1],
-  jongDrop:   [0.12, 0.3, 0.5, 0.7, 0.85, 1, 1],
-  choPlain:   [0.1, 0.35, 0.65, 0.9, 1, 1, 1],
-  jungSimple: [0, 0.2, 0.45, 0.75, 1, 1, 1],
-  space:      [0, 0, 0.15, 0.35, 0.55, 0.75, 0.9],
-  comma:      [0, 0, 0.5, 1, 1, 1, 1],
-  jungThree:  [0, 0, 0, 0.2, 0.45, 0.75, 1],
-  choPlace:   [0, 0, 0, 0, 0.25, 0.55, 0.85],
-  block:      [0, 0, 0, 0, 0.1, 0.25, 0.45],   // 블록 현상: 네 칸이 첫 글자로 칠해진다
-  drop:       [0, 0, 0, 0, 0, 0.04, 0.12],     // 읽히지 않는 자리 (?)
+  jongSimple: ramp(1, 4),          // 겹받침 → 홑받침
+  jongDrop:   ramp(1, 10),         // 받침 탈락
+  choPlain:   ramp(1, 8),          // 된소리·거센소리 → 예사소리
+  jungSimple: ramp(3, 10),         // 겹모음 → 홑모음
+  comma:      ramp(4, 7),          // 쉼표 탈락
+  space:      ramp(5, 16, 0.95),   // 띄어쓰기 압축
+  jungThree:  ramp(8, 15),         // 모음 셋으로
+  choPlace:   ramp(9, 17, 0.9),    // 자음을 소리 자리로
+  block:      ramp(10, 19, 0.5),   // 블록 현상: 네 칸이 첫 글자로 칠해진다
+  drop:       ramp(9, 20, 0.7),    // 판독 불가
 };
+
+/* 판독 불가: 자리마다 망가지는 방식이 정해져 있다 (단계가 올라도 같은 자리는 같은 모양으로 남는다) */
+const dec949 = new TextDecoder('euc-kr'), dec1252 = new TextDecoder('windows-1252');
+function unreadable(ch, seed, i) {
+  const r = hash(seed + 'kind' + i), code = ch.codePointAt(0);
+  if (r < 0.18) return '?';                                              // 대체 문자
+  if (r < 0.36) return '■';                                              // 검은 네모 (가림)
+  if (r < 0.46) return '□';                                              // 글리프 없음 (두부)
+  if (r < 0.56) return '\uFFFD';                                         // 깨진 바이트 (�)
+  if (r < 0.72) {                                                        // UTF-8을 CP949로 읽음 (諛붾떎)
+    const m = [...dec949.decode(Buffer.from(ch, 'utf8'))].filter(x => x !== '\uFFFD').join('');
+    return m || '\uFFFD';
+  }
+  if (r < 0.82) return [...dec1252.decode(Buffer.from(ch, 'utf8'))].filter(x => x.codePointAt(0) > 0x9f || /[\x20-\x7e]/.test(x)).join('') || '\uFFFD';   // CP1252로 읽음 (ì™•)
+  if (r < 0.97) {                                                        // 비트 하나 뒤집힘 (이웃 음절)
+    const f = code ^ (1 << Math.floor(hash(seed + 'bit' + i) * 9));
+    return f >= 0xAC00 && f <= 0xD7A3 ? String.fromCodePoint(f) : '■';
+  }
+  return '&#' + code + ';';                                              // 이스케이프된 채 남음
+}
 
 function compressAt(body, g, seed, boost) {
   const k = g - 1;
@@ -67,7 +90,7 @@ function compressAt(body, g, seed, boost) {
     if (on('jungSimple', i) && b in JUNG_SIMPLE) b = JUNG_SIMPLE[b];
     if (on('jungThree', i)) b = JUNG_THREE[JUNG_SIMPLE[b] || b] || b;
     if (on('choPlace', i)) a = CHO_PLACE[CHO_PLAIN[a] || a] || a;
-    if (on('drop', i)) return '?';
+    if (on('drop', i)) return unreadable(ch, seed, i);
     return join(CHO.indexOf(a), JUNG.indexOf(b), JONG.indexOf(c));
   });
   // 블록: 원문 위치 기준 네 칸씩 묶어, 문턱 아래의 블록은 첫 한글로 칠한다 (공백·부호는 남긴다)
@@ -87,19 +110,27 @@ function chain(orig, index) {
   const tag = body.match(/^〈[^〉]{1,14}〉 (?=\S)/);              // 〈첫째 정가〉 같은 합창 표지도
   if (tag) { label += tag[0]; body = body.slice(tag[0].length); }
   const res = [];
-  let prev = body, boost = 0, lost = 0;
-  // 더 깎을 정보가 없는 짧은 문장은 뒤에서부터 한 칸씩 읽히지 않게 된다 (누적)
-  // 다 지워진 뒤에는 길이가 줄어든다 (최소 한 칸은 남겨 누를 수 있게 한다)
+  // 저장할 때마다 반드시 무언가 잃는다.
+  // 이번 단계에서 깎을 것이 없으면, 다음 단계의 손실을 앞당긴다 (adv, 되돌아가지 않음).
+  // 20차의 손실까지 다 일어난 짧은 문장은 뒤에서부터 한 칸씩 판독 불가가 되고,
+  // 그다음에는 길이가 줄어든다. 부호를 빼고 최소 한 칸은 남겨 누를 수 있게 한다.
+  // 마지막 한 칸까지 남으면 그 칸도 � → □ → ■ 로 꺼진다.
+  let prev = body, adv = 0, lost = 0, floor = 0;
+  const FLOOR = ['\uFFFD', '□', '■'];
   const erode = s => {
     const a = [...s]; let n = lost;
-    for (let i = a.length - 1; i >= 0 && n > 0; i--) if (split(a[i])) { a[i] = '?'; n--; }
-    while (n-- > 0 && a.length > 1) a.splice(a.length - 2 >= 0 && /[.?!〉]/.test(a.at(-1)) ? a.length - 2 : a.length - 1, 1);
+    for (let i = a.length - 1; i >= 0 && n > 0; i--) if (split(a[i])) { a[i] = unreadable(a[i], seed, 'e' + i); n--; }
+    const tail = /^[.?!〉]$/.test(a.at(-1) || '') ? 1 : 0;
+    while (n-- > 0 && a.length > 1 + tail) a.splice(a.length - 1 - tail, 1);
+    if (floor) a[Math.max(0, a.length - 1 - tail)] = FLOOR[floor - 1];
     return a.join('');
   };
-  for (let g = 1; g <= 7; g++) {
-    let s = erode(compressAt(body, g, seed, boost));
-    while (s === prev && boost < 20) s = erode(compressAt(body, g, seed, ++boost));   // 저장할 때마다 반드시 무언가 잃는다
-    while (s === prev && lost < 64) { lost++; s = erode(compressAt(body, g, seed, boost)); }
+  const at = g => erode(compressAt(body, Math.min(STAGES, g + adv), seed, 0));
+  for (let g = 1; g <= STAGES; g++) {
+    let s = at(g);
+    while (s === prev && g + adv < STAGES) { adv++; s = at(g); }
+    while (s === prev && lost < 400) { lost++; s = at(g); }
+    while (s === prev && floor < FLOOR.length) { floor++; s = at(g); }
     res.push(label + s);
     prev = s;
   }
@@ -110,10 +141,10 @@ const rows = TEXT.map((e, i) => chain(e.text, i));
 const pick = process.argv.slice(3).map(Number);
 if (process.argv[2] === '--dry') {
   for (const i of (pick.length ? pick : [0, 1, 13, 90, 400, 1305]))
-    console.log('\n#' + i, TEXT[i].text + '\n' + rows[i].map((x, k) => ' ' + (k + 1) + ' ' + x).join('\n'));
+    console.log('\n#' + i, TEXT[i].text + '\n' + rows[i].map((x, k) => ' ' + String(k + 1).padStart(2) + ' ' + x).join('\n'));
 } else {
-  const out = '/* 압축 손실 1차–7차 (tools/compress.mjs, book/DEGRADATION.md). 번역도, 다시 쓰기도 아니다.\n   rows[i] = BookText[i]를 n번 다시 저장한 것. 한 번 잃은 정보는 돌아오지 않는다. */\n'
-    + 'window.BookGen = {\n  labels: ' + JSON.stringify(['1차', '2차', '3차', '4차', '5차', '6차', '7차']) + ',\n  rows: [\n'
+  const out = '/* 압축 손실 1차–20차 (tools/compress.mjs, book/DEGRADATION.md). 번역도, 다시 쓰기도 아니다.\n   rows[i] = BookText[i]를 n번 다시 저장한 것. 한 번 잃은 정보는 돌아오지 않는다. */\n'
+    + 'window.BookGen = {\n  labels: ' + JSON.stringify(Array.from({length: STAGES}, (_, k) => (k + 1) + '차')) + ',\n  rows: [\n'
     + rows.map(r => '  ' + JSON.stringify(r)).join(',\n') + '\n  ]\n};\n';
   fs.writeFileSync(path.join(root, 'content-gen.js'), out);
   console.log('wrote content-gen.js', rows.length, 'rows');

@@ -29,4 +29,4 @@ index.html을 브라우저에서 열면 실행됩니다. HTML/CSS/JavaScript/Can
 
 ## 가져간 문장의 손실
 
-문장을 하나 가져갈 때마다 문서에 남은 그 문장은 한 번 더 "다시 저장"되어 압축 손실을 입습니다. 받침 → 거센소리 → 겹모음 → 띄어쓰기 → 모음 → 자음 → 블록 순으로 무너지며, 1~7차까지 한 번 잃은 정보는 돌아오지 않습니다. 전문 1,306문장의 7단계는 `content-gen.js`에 있고 `node tools/compress.mjs`로 다시 만들 수 있습니다. 규칙과 단계별 비율: [book/DEGRADATION.md](book/DEGRADATION.md)
+문장을 하나 가져갈 때마다 문서에 남은 그 문장은 한 번 더 "다시 저장"되어 압축 손실을 입습니다. 받침 → 거센소리 → 겹모음 → 띄어쓰기 → 모음 → 자음 → 블록 → 판독 불가 순으로 무너지며, 1~20차까지 한 번 잃은 정보는 돌아오지 않고, 끝에는 ■·□·�·글자 깨짐 같은 판독 불가가 남습니다. 전문 1,306문장의 20단계는 `content-gen.js`에 있고 `node tools/compress.mjs`로 다시 만들 수 있습니다. 규칙과 단계별 비율: [book/DEGRADATION.md](book/DEGRADATION.md)
