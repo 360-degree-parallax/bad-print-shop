@@ -71,7 +71,7 @@ function makeItem(text,index){
  const item={text,index,ink:textInk,size:settings.size*840/440,blockWidth:Math.min(756,settings.width*840/440),intensity:settings.intensity,seed:Math.floor(Math.random()*1000000),effect:effects[Math.floor(Math.random()*effects.length)]};
  item.words=PrintFlow.words(text,item);return item;
 }
-function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});sentenceNodes[item.index]?.classList.add('taken');updateMeta();nextPalette();checkFull()}
+function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});sentenceNodes[item.index]?.classList.add('taken');updateMeta();nextPalette()}
 function bindImageSteal(holder,img,code,caption){holder.classList.add('stealable');holder.tabIndex=0;holder.setAttribute('role','button');holder.setAttribute('aria-label',caption+' 사진 수집');
  const go=()=>{if(img.complete&&img.naturalWidth)stealImage(img,code,caption)};holder.addEventListener('click',e=>{e.stopPropagation();go()});holder.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go()}})}
 function stealImage(img,code,caption){const size=settings.size*840/440,drawH=Math.round(size*(2+Math.random()*1.6)),drawW=Math.min(560,Math.round(drawH*img.naturalWidth/img.naturalHeight));
@@ -102,17 +102,13 @@ function claim(){finishPress(true);receipt={id:crypto.randomUUID().slice(0,8).to
  receipt.printFlow.rows=receipt.printFlow.rows.map(row=>({...row,tokens:row.tokens.map(token=>({...token,tile:null,staticTile:null,ink:receipt.ink}))}));
  $('#receiptDialog').showModal();PrintReceipt.start($('#receiptRibbon'),receipt);
 }
-canvas.addEventListener('dblclick',claim);
-// Leaving settles the account: switching tabs, moving to close the window, or unloading prints the receipt.
+
+// The receipt prints only when the reader reaches the end of the play.
 const receiptOpen=()=>$('#receiptDialog').open;
 function settleOnLeave(){if(history.length&&!receiptOpen())claim()}
-document.addEventListener('visibilitychange',()=>{if(document.hidden)settleOnLeave()});
 // The play ends: reaching the bottom of the document settles the account.
 new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting))settleOnLeave()},{root:book,threshold:.6}).observe(document.querySelector('.wiki-foot'));
-// The sheet runs out: once the print passes one poster height, the account is settled.
-function posterFull(){return flow.rows.some(r=>r.y+r.height>1156)}
-let fullTimer=0;function checkFull(){clearTimeout(fullTimer);fullTimer=setTimeout(()=>{if(posterFull())settleOnLeave()},700)}
-window.addEventListener('beforeunload',e=>{if(!history.length)return;settleOnLeave();e.preventDefault();e.returnValue=''});document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='s'&&!e.ctrlKey&&!e.metaKey&&!document.querySelector('dialog[open]')){e.preventDefault();claim()}});
+
 document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 $('#receiptDialog').addEventListener('close',()=>PrintReceipt.stop());
 function download(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove()}$('#savePoster').onclick=async()=>{const button=$('#savePoster');button.disabled=true;try{const result=await PrintExport.make(receipt);const url=URL.createObjectURL(result.blob);download(url,`ST0L3N_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false;draw()}};$('#saveReceipt').onclick=async()=>{const button=$('#saveReceipt');button.disabled=true;try{const result=await PrintReceipt.export(receipt);const url=URL.createObjectURL(result.blob);download(url,`RECEIPT_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false}};
