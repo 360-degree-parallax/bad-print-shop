@@ -10,7 +10,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 ::selection{background:var(--hl);color:var(--hl-ink)}
 
 .layout{width:1040px;margin:0 auto;height:100dvh;display:grid;grid-template-columns:440px 440px;column-gap:160px}
-.book{height:100%;overflow-y:auto;overscroll-behavior:contain;padding:56px 0 160px;scrollbar-width:none}
+/* The text column is clipped inside the same top/bottom margins as the poster (56px / 48px). */
+.book{height:calc(100dvh - 104px);margin:56px 0 48px;overflow-y:auto;overscroll-behavior:contain;padding:0 0 160px;scrollbar-width:none}
 .book::-webkit-scrollbar{display:none}
 
 /* Document head */
@@ -133,7 +134,7 @@ h2{font-size:32px;font-weight:400;margin:0 0 24px}
 #receiptDialog .downloads button:disabled{opacity:.5;cursor:wait}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 @media(max-width:1150px){body{min-width:0}.layout{width:auto;padding-inline:16px;column-gap:48px;grid-template-columns:1fr 440px}}
-@media(max-width:900px){html,body{overflow:auto;height:auto}.layout{display:flex;flex-direction:column;height:auto}.book{height:auto;overflow:visible;padding-top:40px}.side{height:80dvh}canvas#poster{width:100%}.top-pair{flex-direction:column}.toc{flex:none;width:100%}.infobox{width:100%}}
+@media(max-width:900px){html,body{overflow:auto;height:auto}.layout{display:flex;flex-direction:column;height:auto}.book{height:auto;margin:0;overflow:visible;padding-top:40px}.side{height:80dvh}canvas#poster{width:100%}.top-pair{flex-direction:column}.toc{flex:none;width:100%}.infobox{width:100%}}
 
 /* Captions read like archive records; they surface only on hover. */
 .fig[data-cap]:hover::after,.info-pic[data-cap]:hover::after{content:attr(data-cap);position:absolute;left:0;right:0;bottom:0;background:#000;color:var(--muted);font-family:Pretendard,sans-serif;font-size:13px;line-height:1.35;padding:6px 8px;text-align:left;letter-spacing:0;pointer-events:none}

@@ -60,7 +60,7 @@ function unreadable(ch, seed, i) {
   if (r < 0.46) return '□';                                              // 글리프 없음 (두부)
   if (r < 0.56) return '\uFFFD';                                         // 깨진 바이트 (�)
   if (r < 0.72) {                                                        // UTF-8을 CP949로 읽음 (諛붾떎)
-    const m = [...dec949.decode(Buffer.from(ch, 'utf8'))].filter(x => x !== '\uFFFD').join('');
+    const m = [...dec949.decode(Buffer.from(ch, 'utf8'))].filter(x => x !== '\uFFFD' && !/[\u0000-\u001f\u007f-\u009f]/.test(x)).join('');   // 제어 문자는 화면에 'IND' 같은 상자로 찍히므로 뺀다
     return m || '\uFFFD';
   }
   if (r < 0.82) return [...dec1252.decode(Buffer.from(ch, 'utf8'))].filter(x => x.codePointAt(0) > 0x9f || /[\x20-\x7e]/.test(x)).join('') || '\uFFFD';   // CP1252로 읽음 (ì™•)
