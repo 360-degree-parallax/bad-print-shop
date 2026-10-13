@@ -24,7 +24,7 @@ window.PrintFlow=(()=>{
   })
  }
  function recolor(state,ink){for(const row of state.rows)for(const token of row.tokens){if(token.tile)PrintEffects.recolor(token,ink);else token.ink=ink}}
- function paint(target,state,offset=0,viewport=Infinity){for(const row of state.rows.filter(r=>r.y+r.height+400>=offset&&r.y-400<=offset+viewport))for(const {token,x,y} of positions(row)){if(token.missing)continue;if(!token.tile)PrintEffects.prepare(token);target.save();target.translate(x+token.width/2,y+token.size*.4);target.rotate(token.turn);target.translate(-token.width/2,-token.size*.4);PrintEffects.paint(target,token,0);target.restore()}}
- function height(state){return state.rows.reduce((height,row)=>Math.max(height,row.y+row.height+row.tokens.reduce((margin,t)=>t.turn?Math.max(margin,t.width*.6):margin,96)),1188)}
+ function paint(target,state,offset=0,viewport=Infinity){for(const row of state.rows.filter(r=>r.y+r.height+400>=offset&&r.y-400<=offset+viewport))for(const {token,x,y} of positions(row)){if(token.missing)continue;if(token.image){target.save();target.imageSmoothingEnabled=false;target.drawImage(token.image,x,y,token.drawW,token.drawH);target.restore();continue}if(!token.tile)PrintEffects.prepare(token);target.save();target.translate(x+token.width/2,y+token.size*.4);target.rotate(token.turn);target.translate(-token.width/2,-token.size*.4);PrintEffects.paint(target,token,0);target.restore()}}
+ function height(state){return state.rows.reduce((height,row)=>Math.max(height,row.y+row.height+row.tokens.reduce((margin,t)=>t.image?Math.max(margin,t.drawH):t.turn?Math.max(margin,t.width*.6):margin,96)),1188)}
  return {height,create,clone,append,positions,words,recolor,paint,width};
 })();

@@ -63,6 +63,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .notice,.navbox,.top-pair{text-align:left;text-align-last:auto}
 .navbox-title,.info-head,.info-caption,.foldbar{text-align:center!important}
 
+.stealable{cursor:pointer}
+.stealable:hover img,.stealable:focus-visible img{filter:invert(1)}
+
 /* Character links */
 a.char{color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.15em}
 a.char:hover{text-decoration-thickness:3px}

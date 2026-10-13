@@ -16,11 +16,12 @@ function heading(level,num,title,id){const h=el(level,'wiki-h');h.id=id;const fo
  const body=el('div','wiki-sec');h.tabIndex=0;h.setAttribute('role','button');h.setAttribute('aria-expanded','true');const toggle=()=>{body.hidden=!body.hidden;h.classList.toggle('folded',body.hidden);h.setAttribute('aria-expanded',String(!body.hidden))};h.addEventListener('click',toggle);h.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();toggle()}});return [h,body]}
 function scrollToId(id){const target=document.getElementById(id);if(target)book.scrollTo({top:target.offsetTop-12,behavior:'smooth'})}
 const figureModes=['left','right','inline','left','right'];
-function figure(number,caption,ratio){const code=String(number).padStart(2,'0'),mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;
+function figure(code,caption,ratio){const mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;
  const width=mode==='inline'?64+Math.round(Math.random()*48):mode==='center'?30+Math.round(Math.random()*20):24+Math.round(Math.random()*16);
  f.style.width=mode==='inline'?width+'px':width+'%';if(mode==='center')f.style.marginLeft=Math.round(Math.random()*(100-width))+'%';
  f.style.aspectRatio=ratio||'4/5';
- const img=new Image();img.alt=caption;img.loading='lazy';img.src=`images/${code}.png`;img.onerror=()=>{const ph=el('span','ph');img.replaceWith(ph)};f.append(img);return f}
+ const img=new Image();img.alt=caption;img.loading='lazy';img.src=`images/${code}.png`;img.onerror=()=>{const ph=el('span','ph');img.replaceWith(ph)};f.append(img);bindImageSteal(f,img,code,caption);return f}
+const overviewStart=BookText.length;for(const t of window.WikiDoc.overview)BookText.push({text:t,lang:'ko',turn:-1,speaker:'개요',group:-1});
 const firstLine=new Map();BookText.forEach((x,i)=>{if(!firstLine.has(x.speaker))firstLine.set(x.speaker,i)});
 const charNames=(window.WikiDoc.characters||[]).map(c=>c.name).sort((a,b)=>b.length-a.length);
 const charPattern=new RegExp('('+charNames.map(n=>n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','g');
@@ -32,7 +33,7 @@ function gotoCharacter(name){const index=firstLine.get(name);const node=sentence
 function sentenceNode(entry,index){const span=el('span','sentence');span.lang=entry.lang;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label',entry.text+' 수집');const prefix=entry.speaker+': ';
  if(entry.text.startsWith(prefix)){const who=el('b','who');linkify(who,entry.speaker);who.append(': ');span.append(who);linkify(span,entry.text.slice(prefix.length))}else linkify(span,entry.text);
  const collect=()=>steal(entry.text,index);bindPress(span,entry.text,index);span.addEventListener('click',e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
-function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index].turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`;$('#note').showModal()};return n}
+function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index]?.turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`;$('#note').showModal()};return n}
 function render(){const W=window.WikiDoc,prose=$('#prose');
  const fold=(label)=>{const r=el('button','foldbar',label||'[ 펼치기 · 접기 ]');r.type='button';return r};
  {const nb=el('div','navbox');nb.append(el('div','navbox-title',W.navbox.title));const t=fold(),list=el('div','navbox-list');list.hidden=true;t.onclick=()=>{list.hidden=!list.hidden};
@@ -42,7 +43,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  const tocLine=(num,title,id,depth)=>{const d=el('div','d'+depth);const a=el('a');a.href='#'+id;a.onclick=e=>{e.preventDefault();scrollToId(id)};a.append(el('span','num',num+'.'),document.createTextNode(' '+title));d.append(a);tl.append(d)};
  tocLine('1','개요','s-1',0);tocLine('2','본문','s-2',0);W.sections.forEach((x,i)=>tocLine('2.'+(i+1),x.title,'s-2-'+(i+1),1));tocLine('3','관련 문서','s-3',0);
  const info=el('div','infobox'),I=W.infoTop,head=el('div','info-head');head.append(el('div','info-eyebrow',I.eyebrow),el('div','info-title',I.title),el('div','info-sub',I.sub.join('  |  ')));info.append(head);
- const pic=el('div','info-pic');pic.style.aspectRatio=I.ratio||'3/4';const img=new Image();img.alt=I.caption;img.src='images/00.png';img.onerror=()=>{img.replaceWith(el('span','ph'))};pic.append(img);info.append(pic,el('div','info-caption',I.caption));
+ const pic=el('div','info-pic');pic.style.aspectRatio=I.ratio||'3/4';const img=new Image();img.alt=I.caption;img.src='images/00.png';img.onerror=()=>{img.replaceWith(el('span','ph'))};pic.append(img);bindImageSteal(pic,img,'00',I.caption);info.append(pic,el('div','info-caption',I.caption));
  const row=(k,v)=>{const r=el('div','info-row');const th=el('div','info-k',k),td=el('div','info-v');if(typeof v==='string')td.textContent=v;else td.append(...v);r.append(th,td);return r};
  const get=k=>(W.infobox.find(x=>x[0]===k)||[])[1]||'';
  info.append(row('작가',get('작가')),row('초연',get('초연')),row('장르',get('장르')));
@@ -50,14 +51,14 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  const castList=W.characters.map(c=>{const line=el('div','cast-line');line.append(charLink(c.name),el('small','',' ('+c.role+')'));return line});cast.append(row('등장인물',castList));info.append(ft,cast);
  info.append(row('영문 저본',get('영문 저본')),row('한국어 번역',get('한국어 번역')),row('문장 수',get('문장 수')));
  pair.append(toc,info);prose.append(pair);
- {const [h,b]=heading('h2','1','개요','s-1');prose.append(h,b);const ov=el('p');W.overview.forEach(t=>{ov.append(el('span','',t),document.createTextNode(' '))});b.append(ov)}
+ {const [h,b]=heading('h2','1','개요','s-1');prose.append(h,b);const ov=el('p');W.overview.forEach((t,k)=>{const i=overviewStart+k;ov.append(sentenceNode(BookText[i],i),document.createTextNode(' '))});b.append(ov)}
  const [mainH,mainB]=heading('h2','2','본문','s-2');prose.append(mainH,mainB);
  const byTurn=new Map();BookText.forEach((entry,index)=>{if(!byTurn.has(entry.turn))byTurn.set(entry.turn,[]);byTurn.get(entry.turn).push(index)});
- const figs=new Map(W.figures.map((f,i)=>[f.after,{...f,number:i+1}]));
+ const figs=new Map(W.figures.map(f=>[f.after,f]));
  W.sections.forEach((s,i)=>{const [sh,sb]=heading('h3','2.'+(i+1),s.title,'s-2-'+(i+1));mainB.append(sh,sb);
   for(let turn=s.from;turn<=s.to;turn++){const list=byTurn.get(turn);if(!list)continue;const first=BookText[list[0]],p=el('p','turn'+(first.speaker==='지문'?' stage':''));
    const f=figs.get(turn),at=f?Math.floor(Math.random()*list.length):-1;
-   list.forEach((index,k)=>{if(k===at)p.append(figure(f.number,f.caption,f.ratio));p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));sb.append(p)}
+   list.forEach((index,k)=>{if(k===at)p.append(figure(f.code,f.caption,f.ratio));p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));sb.append(p)}
  });
  {const [h,b]=heading('h2','3','관련 문서','s-3');prose.append(h,b);const rel=el('p');rel.textContent='오이디푸스 · 테이레시아스 · 이오카스테 · 자기 실현적 예언 · 오이디푸스 콤플렉스';b.append(rel)}
  updateMeta();
@@ -71,6 +72,13 @@ function makeItem(text,index){
  item.words=PrintFlow.words(text,item);return item;
 }
 function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});sentenceNodes[item.index]?.classList.add('taken');updateMeta();nextPalette();checkFull()}
+function bindImageSteal(holder,img,code,caption){holder.classList.add('stealable');holder.tabIndex=0;holder.setAttribute('role','button');holder.setAttribute('aria-label',caption+' 사진 수집');
+ const go=()=>{if(img.complete&&img.naturalWidth)stealImage(img,code,caption)};holder.addEventListener('click',e=>{e.stopPropagation();go()});holder.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go()}})}
+function stealImage(img,code,caption){const size=settings.size*840/440,drawH=Math.round(size*(2+Math.random()*1.6)),drawW=Math.min(560,Math.round(drawH*img.naturalWidth/img.naturalHeight));
+ const cell=3+Math.floor(Math.random()*4),small=document.createElement('canvas');small.width=Math.max(1,Math.round(drawW/cell));small.height=Math.max(1,Math.round(drawH/cell));const x=small.getContext('2d');x.filter='grayscale(1) contrast(1.15)';x.drawImage(img,0,0,small.width,small.height);
+ const token={text:'',image:small,drawW,drawH,width:Math.min(drawW,Math.round(size*(1.5+Math.random()*2))),gap:PrintFlow.width(' ',size),size,turn:0,ink:textInk};
+ const item={text:`[사진 ${code}] ${caption}`,index:-1,ink:textInk,size,blockWidth:Math.min(756,settings.width*840/440),words:[token],effect:'IMAGE'};
+ PrintFlow.append(flow,item);items.push(item);remember(item);delete item.words;draw(true)}
 function steal(text,index){const item=makeItem(text,index);PrintFlow.append(flow,item);items.push(item);remember(item);delete item.words;draw(true)}
 let press=null;
 function finishPress(commit){if(!press)return;const p=press;press=null;clearTimeout(p.timer);clearInterval(p.cycle);
