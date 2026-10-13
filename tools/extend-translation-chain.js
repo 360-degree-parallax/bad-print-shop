@@ -11,16 +11,12 @@ const bookText = context.window.BookText;
 const previousRows = context.window.BookGen?.rows || [];
 
 const routes = [
-  ['1차', '태국어'],
-  ['2차', '터키어'],
-  ['3차', '아랍어'],
+  ['2차', '기존 8차 승격'],
+  ['3차', '스와힐리어'],
   ['4차', '스와힐리어'],
-  ['5차', '몽골어'],
-  ['6차', '조지아어'],
-  ['7차', '크메르어'],
-  ['8차', '라오어'],
-  ['9차', '암하라어'],
-  ['10차', '태국어']
+  ['5차', '스와힐리어'],
+  ['6차', '스와힐리어'],
+  ['7차', '스와힐리어']
 ];
 
 const labels = routes.map(([turn, lang]) => `${turn} ${lang} 왕복`);
@@ -41,6 +37,15 @@ const dictionaries = [
   [['아버지', '먼저의 남자'], ['어머니', '낳은 여자'], ['아들', '나온 남자'], ['딸', '나온 여자'], ['형제', '같은 집 사람']],
   [['눈', '보는 구멍'], ['손', '잡는 끝'], ['피', '붉은 물'], ['침묵', '닫힌 말'], ['죄', '검은 일']],
   [['행복', '좋은 끝'], ['고통', '아픈 것'], ['슬픔', '젖은 마음'], ['안식', '마지막 쉼'], ['명성', '남은 이름']]
+];
+
+const swahiliDrift = [
+  [['궁전', '집의 앞'], ['왕궁', '높은 집'], ['궁문', '문 입'], ['제단', '돌의 자리'], ['탄원자', '청하는 사람']],
+  [['왕', '명령하는 사람'], ['군주', '머리 사람'], ['나라', '사람의 땅'], ['도시', '모인 곳'], ['시민', '성 안 사람']],
+  [['재앙', '나쁜 바람'], ['역병', '몸의 불'], ['신탁', '입에서 온 명령'], ['예언자', '먼저 보는 입'], ['운명', '묶인 길']],
+  [['아버지', '먼저 남자'], ['어머니', '처음 여자'], ['아들', '나온 몸'], ['딸', '작은 몸'], ['형제', '같은 피']],
+  [['눈', '빛 구멍'], ['손', '잡는 끝'], ['피', '붉은 물'], ['입', '말 구멍'], ['죄', '검은 일']],
+  [['죽었다', '아래로 갔다'], ['죽인', '아래로 보낸'], ['낳은', '몸에서 꺼낸'], ['보았다', '빛을 먹었다'], ['말했다', '입을 열었다']]
 ];
 
 function seeded(index, pass) {
@@ -107,13 +112,13 @@ function residue(text, pass, rand) {
   return `${text} ${bits[Math.floor(rand() * bits.length)]}`;
 }
 
-function pass(text, index, passNumber) {
+function pass(text, index, passNumber, mode = 'default') {
   const rand = seeded(index, passNumber);
   const [speaker, body] = protectSpeaker(text);
-  let out = replaceWords(body, passNumber, rand);
+  let out = mode === 'swahili' ? replaceSwahili(body, passNumber, rand) : replaceWords(body, passNumber, rand);
   out = bruiseGrammar(out, passNumber, rand);
   out = shuffleSmall(out, passNumber, rand);
-  out = residue(out, passNumber, rand);
+  out = mode === 'swahili' ? swahiliResidue(out, passNumber, rand) : residue(out, passNumber, rand);
   out = out
     .replace(/\s+/g, ' ')
     .replace(/\s+([,.?!〉」’])/g, '$1')
@@ -121,19 +126,43 @@ function pass(text, index, passNumber) {
   return `${speaker}${out}`.trim();
 }
 
+function replaceSwahili(text, pass, rand) {
+  for (const table of swahiliDrift) {
+    for (const [from, to] of table) {
+      text = text.split(from).join(rand() < 0.82 ? to : from);
+    }
+  }
+  text = text
+    .replace(/해야 한다/g, rand() < 0.65 ? '해야 한다고 입이 말한다' : '해야 한다')
+    .replace(/아니다/g, rand() < 0.55 ? '아닌 것이 되었다' : '아니다')
+    .replace(/무엇/g, rand() < 0.55 ? '어떤 것' : '무엇')
+    .replace(/누구/g, rand() < 0.55 ? '어느 몸' : '누구');
+  return text;
+}
+
+function swahiliResidue(text, pass, rand) {
+  const bits = [
+    '입은 그렇게 돌아왔다',
+    '먼 말이 한국어가 되었다',
+    '그 뜻은 물처럼 남았다',
+    '이름은 다른 길로 왔다',
+    '말의 뼈만 남았다'
+  ];
+  if (rand() < 0.34 + pass * 0.035) text = `${text} ${bits[Math.floor(rand() * bits.length)]}`;
+  if (rand() < 0.28) text = text.replace(/,\s*/g, ' / ');
+  if (rand() < 0.22) text = text.replace(/[.。]/g, ' ·');
+  return text;
+}
+
 function buildRow(entry, index) {
   const old = previousRows[index] || [];
-  const row = [];
-  row[0] = pass(entry.text, index, 1);
-  for (let i = 1; i <= 6; i++) {
-    row[i] = old[i - 1] || pass(row[i - 1], index, i + 1);
+  const row = [old[7] || old.at(-1) || pass(entry.text, index, 8)];
+  for (let i = 1; i <= 5; i++) {
+    row[i] = pass(row[i - 1], index, 20 + i, 'swahili');
   }
-  row[7] = pass(row[6], index, 8);
-  row[8] = pass(row[7], index, 9);
-  row[9] = pass(row[8], index, 10);
   return row;
 }
 
 const rows = bookText.map(buildRow);
-const js = `/* 한국어 -> 경유 언어 -> 한국어 왕복 훼손 사슬. BookText 인덱스와 1:1 대응. */\nwindow.BookGen=${JSON.stringify({ labels, route: routes, rows }, null, 2)};\n`;
+const js = `/* 기존 8차 훼손본을 2차 위치로 승격하고, 그 상태에서 스와힐리어 왕복 5차를 누적한 사슬. */\nwindow.BookGen=${JSON.stringify({ labels, route: routes, rows }, null, 2)};\n`;
 fs.writeFileSync(`${root}/content-gen.js`, js);
