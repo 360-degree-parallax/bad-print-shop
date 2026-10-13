@@ -32,7 +32,7 @@ function heading(level,num,title,id){const h=el(level,'wiki-h');h.id=id;const fo
 function scrollToId(id){const target=document.getElementById(id);if(target)book.scrollTo({top:target.offsetTop-12,behavior:'smooth'})}
 const figureModes=['left','right','inline','left','right'];
 function figure(code,caption,ratio){const mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;
- const width=mode==='inline'?64+Math.round(Math.random()*48):mode==='center'?30+Math.round(Math.random()*20):24+Math.round(Math.random()*16);
+ const width=mode==='inline'?128+Math.round(Math.random()*64):mode==='center'?48+Math.round(Math.random()*24):40+Math.round(Math.random()*18);
  f.style.width=mode==='inline'?width+'px':width+'%';if(mode==='center')f.style.marginLeft=Math.round(Math.random()*(100-width))+'%';
  f.style.aspectRatio=ratio||'4/5';
  const img=new Image();img.alt=caption;img.loading='lazy';img.src=`images/${code}.png`;img.onerror=()=>{const ph=el('span','ph');img.replaceWith(ph)};f.append(img);bindImageSteal(f,img,code,caption);return f}
