@@ -16,12 +16,14 @@ const saveTakes=()=>{try{localStorage.setItem(TAKE_KEY,JSON.stringify(takes))}ca
 // Distinct versions only: a take always leaves a copy that differs from the one taken.
 const versionCache=new Map();
 function versions(index){if(!versionCache.has(index)){const list=[BookText[index].text];for(const g of window.BookGen?.rows?.[index]||[])if(g&&g!==list.at(-1))list.push(g);versionCache.set(index,list)}return versionCache.get(index)}
-function displayText(index){const entry=BookText[index];if(!entry)return "";if(index>=overviewStart)return entry.text;const v=versions(index);return v[Math.min(takes[index]||0,v.length-1)]}
+function displayText(index){const entry=BookText[index];if(!entry)return "";const v=versions(index);return withCount(v[Math.min(takes[index]||0,v.length-1)])}
+// {n}: the overview reports the live count of untouched sentences, in whatever state the sentence itself is in.
+function withCount(text){return text.includes("{n}")?text.split("{n}").join(originalCount().toLocaleString("ko-KR")):text}
 function originalCount(){let n=0;for(let i=0;i<overviewStart;i++)if(!takes[i])n++;return n}
-function updateOriginalCount(){const n=document.getElementById("originalCount");if(n)n.textContent=originalCount().toLocaleString("ko-KR")}
+function updateOriginalCount(){const n=document.getElementById("originalCount");if(n)n.textContent=originalCount().toLocaleString("ko-KR");for(let i=overviewStart;i<BookText.length;i++){const span=sentenceNodes[i];if(span&&versions(i).some(t=>t.includes("{n}")))fillSentence(span,BookText[i],displayText(i))}}
 function fillSentence(span,entry,text){span.replaceChildren();span.setAttribute("aria-label",text+" 수집");const m=text.match(/^([^:\s〈][^:]{0,11}): /);
  if(m){const who=el("b","who");linkify(who,m[1]);who.append(": ");span.append(who);linkify(span,text.slice(m[0].length))}else linkify(span,text)}
-function degrade(index){if(index<0||index>=overviewStart)return;takes[index]=(takes[index]||0)+1;saveTakes();const span=sentenceNodes[index];if(span)fillSentence(span,BookText[index],displayText(index));updateOriginalCount()}
+function degrade(index){if(index<0||index>=BookText.length)return;takes[index]=(takes[index]||0)+1;saveTakes();const span=sentenceNodes[index];if(span)fillSentence(span,BookText[index],displayText(index));updateOriginalCount()}
 const sentences=BookText.map(entry=>entry.text);
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
 const book=$('#book'),sentenceNodes=[];
@@ -63,7 +65,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  const castList=W.characters.map(c=>{const line=el('div','cast-line');line.append(charLink(c.name),el('small','',' ('+c.role+')'));return line});cast.append(row('등장인물',castList));info.append(ft,cast);
  info.append(row('영문 저본',get('영문 저본')),row('한국어 번역',get('한국어 번역')),row('원문 일치',[Object.assign(el('span','',originalCount().toLocaleString('ko-KR')),{id:'originalCount'})]));
  pair.append(toc,info);prose.append(pair);
- {const [h,b]=heading('h2','1','개요','s-1');prose.append(h,b);const ov=el('p');W.overview.forEach((t,k)=>{const i=overviewStart+k;ov.append(sentenceNode(BookText[i],i),document.createTextNode(' '))});b.append(ov)}
+ {const [h,b]=heading('h2','1','개요','s-1');prose.append(h,b);const ov=el('p');W.overview.forEach((t,k)=>{const i=overviewStart+k;ov.append(sentenceNode(BookText[i],i));if(t.includes('{n}')&&W.overviewNote){const fn=el('span','fn','[1]');fn.setAttribute('role','button');fn.tabIndex=0;fn.onclick=()=>{$('#noteText').textContent=W.overviewNote;$('#note').showModal()};ov.append(fn)}ov.append(document.createTextNode(' '))});b.append(ov)}
  const [mainH,mainB]=heading('h2','2','본문','s-2');prose.append(mainH,mainB);
  const byTurn=new Map();BookText.forEach((entry,index)=>{if(!byTurn.has(entry.turn))byTurn.set(entry.turn,[]);byTurn.get(entry.turn).push(index)});
  const figs=new Map(W.figures.map(f=>[f.after,f]));

@@ -137,11 +137,15 @@ function chain(orig, index) {
   return res;
 }
 
-const rows = TEXT.map((e, i) => chain(e.text, i));
+// 본문 1,306문장 뒤에 개요 문장이 이어진다 (app.js의 overviewStart와 같은 순서). {n}은 손대지 않고 남겨 둔다.
+const wikiWin = {};
+new Function('window', fs.readFileSync(path.join(root, 'wiki.js'), 'utf8'))(wikiWin);
+const OVERVIEW = wikiWin.WikiDoc.overview || [];
+const rows = TEXT.map((e, i) => chain(e.text, i)).concat(OVERVIEW.map((t, k) => chain(t, TEXT.length + k)));
 const pick = process.argv.slice(3).map(Number);
 if (process.argv[2] === '--dry') {
   for (const i of (pick.length ? pick : [0, 1, 13, 90, 400, 1305]))
-    console.log('\n#' + i, TEXT[i].text + '\n' + rows[i].map((x, k) => ' ' + String(k + 1).padStart(2) + ' ' + x).join('\n'));
+    console.log('\n#' + i, (TEXT[i] ? TEXT[i].text : OVERVIEW[i - TEXT.length]) + '\n' + rows[i].map((x, k) => ' ' + String(k + 1).padStart(2) + ' ' + x).join('\n'));
 } else {
   const out = '/* 압축 손실 1차–20차 (tools/compress.mjs, book/DEGRADATION.md). 번역도, 다시 쓰기도 아니다.\n   rows[i] = BookText[i]를 n번 다시 저장한 것. 한 번 잃은 정보는 돌아오지 않는다. */\n'
     + 'window.BookGen = {\n  labels: ' + JSON.stringify(Array.from({length: STAGES}, (_, k) => (k + 1) + '차')) + ',\n  rows: [\n'
