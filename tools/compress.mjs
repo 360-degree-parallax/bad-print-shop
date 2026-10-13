@@ -142,14 +142,19 @@ const wikiWin = {};
 new Function('window', fs.readFileSync(path.join(root, 'wiki.js'), 'utf8'))(wikiWin);
 const OVERVIEW = wikiWin.WikiDoc.overview || [];
 const rows = TEXT.map((e, i) => chain(e.text, i)).concat(OVERVIEW.map((t, k) => chain(t, TEXT.length + k)));
+// 유통 중인 사본: 본문의 약 10%는 처음부터 5차·10차·15차 사본으로 열린다 (개요는 제외).
+// 앞서 다녀간 누군가가 이미 가져갔던 문장이다. 이 문장들은 처음부터 원문 일치에서 빠진다.
+const START = {};
+TEXT.forEach((e, i) => { if (hash('start:' + i) < 0.10) START[i] = [5, 10, 15][Math.floor(hash('stage:' + i) * 3)]; });
 const pick = process.argv.slice(3).map(Number);
 if (process.argv[2] === '--dry') {
   for (const i of (pick.length ? pick : [0, 1, 13, 90, 400, 1305]))
     console.log('\n#' + i, (TEXT[i] ? TEXT[i].text : OVERVIEW[i - TEXT.length]) + '\n' + rows[i].map((x, k) => ' ' + String(k + 1).padStart(2) + ' ' + x).join('\n'));
 } else {
   const out = '/* 압축 손실 1차–20차 (tools/compress.mjs, book/DEGRADATION.md). 번역도, 다시 쓰기도 아니다.\n   rows[i] = BookText[i]를 n번 다시 저장한 것. 한 번 잃은 정보는 돌아오지 않는다. */\n'
-    + 'window.BookGen = {\n  labels: ' + JSON.stringify(Array.from({length: STAGES}, (_, k) => (k + 1) + '차')) + ',\n  rows: [\n'
+    + 'window.BookGen = {\n  labels: ' + JSON.stringify(Array.from({length: STAGES}, (_, k) => (k + 1) + '차')) + ',\n'
+    + '  start: ' + JSON.stringify(START) + ',\n  rows: [\n'
     + rows.map(r => '  ' + JSON.stringify(r)).join(',\n') + '\n  ]\n};\n';
   fs.writeFileSync(path.join(root, 'content-gen.js'), out);
-  console.log('wrote content-gen.js', rows.length, 'rows');
+  console.log('wrote content-gen.js', rows.length, 'rows,', Object.keys(START).length, 'start degraded', JSON.stringify(Object.values(START).reduce((a, v) => (a[v] = (a[v] || 0) + 1, a), {})));
 }

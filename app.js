@@ -16,10 +16,12 @@ const saveTakes=()=>{try{localStorage.setItem(TAKE_KEY,JSON.stringify(takes))}ca
 // Distinct versions only: a take always leaves a copy that differs from the one taken.
 const versionCache=new Map();
 function versions(index){if(!versionCache.has(index)){const list=[BookText[index].text];for(const g of window.BookGen?.rows?.[index]||[])if(g&&g!==list.at(-1))list.push(g);versionCache.set(index,list)}return versionCache.get(index)}
-function displayText(index){const entry=BookText[index];if(!entry)return "";const v=versions(index);return withCount(v[Math.min(takes[index]||0,v.length-1)])}
+// Some sentences are already in circulation: they open as a 5th/10th/15th save and go on from there.
+function startOf(index){const g=window.BookGen?.start?.[index];if(!g)return 0;const v=versions(index),t=window.BookGen.rows[index][g-1];const k=v.indexOf(t);return k<0?Math.min(g,v.length-1):k}
+function displayText(index){const entry=BookText[index];if(!entry)return "";const v=versions(index);return withCount(v[Math.min(startOf(index)+(takes[index]||0),v.length-1)])}
 // {n}: the overview reports the live count of untouched sentences, in whatever state the sentence itself is in.
 function withCount(text){return text.includes("{n}")?text.split("{n}").join(originalCount().toLocaleString("ko-KR")):text}
-function originalCount(){let n=0;for(let i=0;i<overviewStart;i++)if(!takes[i])n++;return n}
+function originalCount(){let n=0;for(let i=0;i<overviewStart;i++)if(!takes[i]&&!startOf(i))n++;return n}
 function updateOriginalCount(){const n=document.getElementById("originalCount");if(n)n.textContent=originalCount().toLocaleString("ko-KR");for(let i=overviewStart;i<BookText.length;i++){const span=sentenceNodes[i];if(span&&versions(i).some(t=>t.includes("{n}")))fillSentence(span,BookText[i],displayText(i))}}
 function fillSentence(span,entry,text){span.replaceChildren();span.setAttribute("aria-label",text+" 수집");const m=text.match(/^([^:\s〈][^:]{0,11}): /);
  if(m){const who=el("b","who");linkify(who,m[1]);who.append(": ");span.append(who);linkify(span,text.slice(m[0].length))}else linkify(span,text)}
