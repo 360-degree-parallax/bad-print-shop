@@ -33,7 +33,7 @@ function heading(level,num,title,id){const h=el(level,'wiki-h');h.id=id;const fo
  const body=el('div','wiki-sec');h.tabIndex=0;h.setAttribute('role','button');h.setAttribute('aria-expanded','true');const toggle=()=>{body.hidden=!body.hidden;h.classList.toggle('folded',body.hidden);h.setAttribute('aria-expanded',String(!body.hidden))};h.addEventListener('click',toggle);h.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();toggle()}});return [h,body]}
 function scrollToId(id){const target=document.getElementById(id);if(target)book.scrollTo({top:target.offsetTop-12,behavior:'smooth'})}
 const figureModes=['left','right','inline','left','right'];
-function figure(code,caption,ratio){const mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;
+function figure(code,caption,ratio){const mode=figureModes[Math.floor(Math.random()*figureModes.length)],f=el('span','fig fig-'+mode);f.title=caption;f.dataset.cap=caption;
  const width=mode==='inline'?128+Math.round(Math.random()*64):mode==='center'?48+Math.round(Math.random()*24):40+Math.round(Math.random()*18);
  f.style.width=mode==='inline'?width+'px':width+'%';if(mode==='center')f.style.marginLeft=Math.round(Math.random()*(100-width))+'%';
  f.style.aspectRatio=ratio||'4/5';
@@ -49,7 +49,16 @@ function gotoCharacter(name){const index=firstLine.get(name);const node=sentence
  const r=node.getBoundingClientRect(),b=book.getBoundingClientRect();book.scrollTo({top:book.scrollTop+r.top-b.top-120,behavior:'smooth'});node.classList.remove('flash');void node.offsetWidth;node.classList.add('flash');setTimeout(()=>node.classList.remove('flash'),1600)}
 function sentenceNode(entry,index){const span=el("span","sentence");span.lang=entry.lang;span.tabIndex=0;span.setAttribute("role","button");fillSentence(span,entry,displayText(index));
  const collect=()=>steal(displayText(index),index);bindPress(span,()=>displayText(index),index);span.addEventListener("click",e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
-function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index]?.turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`;$('#note').showModal()};return n}
+// Critical apparatus: damaged sentences of this turn are recorded as cruxes or as variant readings of other manuscripts.
+const UNREADABLE=/[■□\uFFFD]|&#\d+;|[\u00C0-\u00FF\u2122\u2022]|[\u4E00-\u9FFF]/;
+const ro=w=>{const c=(w.at(-1)||'').charCodeAt(0)-0xAC00;if(c<0||c>11171)return '로';const j=c%28;return j===0||j===8?'로':'으로'};
+function apparatus(turn){const strip=t=>t.replace(/^([^:\s〈][^:]{0,11}): /,''),clean=w=>(w||'').replace(/^[〈"“‘(]+|[〉"”’).,!?;:]+$/g,''),lines=[];
+ for(let i=0;i<overviewStart&&lines.length<3;i++){if(BookText[i].turn!==turn)continue;const o=strip(BookText[i].text),c=strip(displayText(i));if(o===c)continue;
+  const m=c.match(UNREADABLE);if(m){const a=Math.max(0,m.index-3);lines.push(`†${c.slice(a,a+9)}† 판독 불가. 다른 사본에는 이 행이 없다.`);continue}
+  let d=0;while(d<o.length&&o[d]===c[d])d++;const ws=o.lastIndexOf(' ',d-1)+1,w=clean(o.slice(ws).split(' ')[0]),v=clean(c.slice(ws).split(' ')[0]);
+  if(w&&v&&w!==v)lines.push(`사본 L에는 ‘${w}’${ro(w)}, 사본 V에는 ‘${v}’${ro(v)} 되어 있다.`)}
+ return lines.length?'\n\n'+lines.join('\n'):''}
+function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index]?.turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`+apparatus(turn);$('#note').showModal()};return n}
 function render(){const W=window.WikiDoc,prose=$('#prose');
  const fold=(label)=>{const r=el('button','foldbar',label||'[ 펼치기 · 접기 ]');r.type='button';return r};
  {const nb=el('div','navbox');nb.append(el('div','navbox-title',W.navbox.title));const t=fold(),list=el('div','navbox-list');list.hidden=true;t.onclick=()=>{list.hidden=!list.hidden};
@@ -59,7 +68,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  const tocLine=(num,title,id,depth)=>{const d=el('div','d'+depth);const a=el('a');a.href='#'+id;a.onclick=e=>{e.preventDefault();scrollToId(id)};a.append(el('span','num',num+'.'),document.createTextNode(' '+title));d.append(a);tl.append(d)};
  tocLine('1','개요','s-1',0);tocLine('2','본문','s-2',0);W.sections.forEach((x,i)=>tocLine('2.'+(i+1),x.title,'s-2-'+(i+1),1));tocLine('3','관련 문서','s-3',0);
  const info=el('div','infobox'),I=W.infoTop,head=el('div','info-head');head.append(el('div','info-eyebrow',I.eyebrow),el('div','info-title',I.title),el('div','info-sub',I.sub.join('  |  ')));info.append(head);
- const pic=el('div','info-pic');pic.style.aspectRatio=I.ratio||'3/4';const img=new Image();img.alt=I.caption;img.src='images/00.png';img.onerror=()=>{img.replaceWith(el('span','ph'))};pic.append(img);bindImageSteal(pic,img,'00',I.caption);info.append(pic,el('div','info-caption',I.caption));
+ const pic=el('div','info-pic');pic.dataset.cap=I.caption;pic.style.aspectRatio=I.ratio||'3/4';const img=new Image();img.alt=I.caption;img.src='images/00.png';img.onerror=()=>{img.replaceWith(el('span','ph'))};pic.append(img);bindImageSteal(pic,img,'00',I.caption);info.append(pic,el('div','info-caption',I.caption));
  const row=(k,v)=>{const r=el('div','info-row');const th=el('div','info-k',k),td=el('div','info-v');if(typeof v==='string')td.textContent=v;else td.append(...v);r.append(th,td);return r};
  const get=k=>(W.infobox.find(x=>x[0]===k)||[])[1]||'';
  info.append(row('작가',get('작가')),row('초연',get('초연')),row('장르',get('장르')));
@@ -77,6 +86,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
    list.forEach((index,k)=>{if(k===at)p.append(figure(f.code,f.caption,f.ratio));p.append(sentenceNode(BookText[index],index),document.createTextNode(' '))});p.append(footnote(turn,first.speaker));sb.append(p)}
  });
  {const [h,b]=heading('h2','3','관련 문서','s-3');prose.append(h,b);const rel=el('p');rel.textContent='오이디푸스 · 테이레시아스 · 이오카스테 · 자기 실현적 예언 · 오이디푸스 콤플렉스';b.append(rel)}
+ {const foot=document.querySelector('.wiki-foot');if(foot&&W.history){const box=el('div','doc-history');box.append(el('p','doc-history-title','문서 역사'));for(const [y,t] of W.history){const r=el('p');r.append(el('span','y',y),document.createTextNode(' '+t));box.append(r)}foot.prepend(box)}}
  updateMeta();
 }
 function updateMeta(){}
