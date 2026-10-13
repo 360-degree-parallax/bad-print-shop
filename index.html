@@ -18,7 +18,8 @@
 <label class="setting" for="sizeInput"><span>크기</span><output id="sizeValue">32px</output><input id="sizeInput" type="range" min="24" max="56" step="8" value="32"></label>
 <label class="setting" for="widthInput"><span>너비</span><output id="widthValue">396px</output><input id="widthInput" type="range" min="240" max="396" value="396"></label>
 <label class="setting" for="intensityInput"><span>풍화</span><output id="intensityValue">55%</output><input id="intensityInput" type="range" min="0" max="100" value="55"></label>
+<label class="setting" for="genSelect"><span>번역 세대</span><select id="genSelect"><option value="0">1차 (영-한 번역)</option><option value="1">2차</option><option value="2">3차</option><option value="3">4차</option><option value="4">5차</option><option value="5">6차</option><option value="6">7차</option><option value="mix">혼합 (대사마다 무작위)</option></select></label>
 <p class="settings-note">문장은 앞 문장에 이어 인쇄됩니다. 문장을 길게 누르고, 마음에 드는 순간 놓으세요.</p></dialog>
 <dialog id="note"><button class="close" aria-label="닫기">×</button><p id="noteText"></p></dialog>
 <dialog id="receiptDialog"><button class="close" aria-label="닫기">×</button><canvas id="receiptRibbon" aria-label="수집한 문장의 영수증"></canvas><div class="downloads"><button id="savePoster">포스터 저장 ↓</button><button id="saveReceipt">영수증 PNG ↓</button></div></dialog>
-<script src="effects.js"></script><script src="content.js"></script><script src="wiki.js"></script><script src="receipt.js"></script><script src="flow.js"></script><script src="export.js"></script><script src="app.js"></script></body></html>
+<script src="effects.js"></script><script src="content.js"></script><script src="wiki.js"></script><script src="receipt.js"></script><script src="flow.js"></script><script src="export.js"></script><script src="content-gen.js"></script><script src="app.js"></script></body></html>

@@ -9,6 +9,13 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
+const GEN_KEY="bp-gen";
+const loadGen=()=>{try{return localStorage.getItem(GEN_KEY)||"0"}catch(e){return "0"}};
+const saveGen=v=>{try{localStorage.setItem(GEN_KEY,v)}catch(e){}};
+settings.gen=loadGen();
+const mixPick=new Map();
+function genFor(turn){if(settings.gen!=="mix")return Number(settings.gen);if(!mixPick.has(turn))mixPick.set(turn,Math.floor(Math.random()*6)+1);return mixPick.get(turn)}
+function displayText(index){const entry=BookText[index];if(!entry)return "";if(entry.turn===-1||index>=overviewStart)return entry.text;const g=genFor(entry.turn);if(!g)return entry.text;return window.BookGen?.rows?.[index]?.[g-1]||entry.text}
 const sentences=BookText.map(entry=>entry.text);
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n};
 const book=$('#book'),sentenceNodes=[];
@@ -30,9 +37,9 @@ function linkify(target,text){let last=0;text.replace(charPattern,(m,_,at)=>{if(
 function gotoCharacter(name){const index=firstLine.get(name);const node=sentenceNodes[index];if(!node)return;
  for(let sec=node.closest('.wiki-sec');sec;sec=sec.parentElement.closest('.wiki-sec')){if(sec.hidden){sec.hidden=false;const h=sec.previousElementSibling;h?.classList.remove('folded');h?.setAttribute('aria-expanded','true')}}
  const r=node.getBoundingClientRect(),b=book.getBoundingClientRect();book.scrollTo({top:book.scrollTop+r.top-b.top-120,behavior:'smooth'});node.classList.remove('flash');void node.offsetWidth;node.classList.add('flash');setTimeout(()=>node.classList.remove('flash'),1600)}
-function sentenceNode(entry,index){const span=el('span','sentence');span.lang=entry.lang;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label',entry.text+' 수집');const prefix=entry.speaker+': ';
- if(entry.text.startsWith(prefix)){const who=el('b','who');linkify(who,entry.speaker);who.append(': ');span.append(who);linkify(span,entry.text.slice(prefix.length))}else linkify(span,entry.text);
- const collect=()=>steal(entry.text,index);bindPress(span,entry.text,index);span.addEventListener('click',e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
+function sentenceNode(entry,index){const text=displayText(index);const span=el('span','sentence');span.lang=entry.lang;span.tabIndex=0;span.setAttribute('role','button');span.setAttribute('aria-label',text+' 수집');const prefix=entry.speaker+': ';
+ if(text.startsWith(prefix)){const who=el('b','who');linkify(who,entry.speaker);who.append(': ');span.append(who);linkify(span,text.slice(prefix.length))}else linkify(span,text);
+ const collect=()=>steal(text,index);bindPress(span,text,index);span.addEventListener('click',e=>{if(span.suppressClick){span.suppressClick=false;e.preventDefault();return}collect()});span.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();collect()}});sentenceNodes[index]=span;return span}
 function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index]?.turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`;$('#note').showModal()};return n}
 function render(){const W=window.WikiDoc,prose=$('#prose');
  const fold=(label)=>{const r=el('button','foldbar',label||'[ 펼치기 · 접기 ]');r.type='button';return r};
@@ -97,6 +104,8 @@ function bindPress(element,text,index){
 window.addEventListener('blur',()=>finishPress(false));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)finishPress(false)});
 document.addEventListener('keydown',e=>{if(e.key===','&&!document.querySelector('dialog[open]'))$('#settingsDialog').showModal()});
+const genSelect=$("#genSelect");if(genSelect){genSelect.value=settings.gen;genSelect.addEventListener("change",()=>{settings.gen=genSelect.value;saveGen(settings.gen);reRender()})}
+function reRender(){$("#prose").replaceChildren();sentenceNodes.length=0;render();for(const h of history)sentenceNodes[h.index]?.classList.add("taken")}
 for(const key of ['size','width','intensity']){const input=$('#'+key+'Input'),output=$('#'+key+'Value');input.addEventListener('input',()=>{settings[key]=Number(input.value)/(key==='intensity'?100:1);output.textContent=input.value+(key==='intensity'?'%':'px')})}
 function claim(){finishPress(true);receipt={id:crypto.randomUUID().slice(0,8).toUpperCase(),count:history.length,printFlow:PrintFlow.clone(flow),ink:textInk,background,entries:history.map(h=>({...h})),date:new Date().toLocaleString('en-GB',{hour12:false})};
  receipt.printFlow.rows=receipt.printFlow.rows.map(row=>({...row,tokens:row.tokens.map(token=>({...token,tile:null,staticTile:null,ink:receipt.ink}))}));
