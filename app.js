@@ -10,6 +10,9 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
+const BUILD="202610140041";
+// A new build may change what each sentence's saves are; takes stored by an older build are dropped.
+try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
 const takes=(()=>{try{return JSON.parse(localStorage.getItem(TAKE_KEY)||"{}")||{}}catch(e){return {}}})();
 const saveTakes=()=>{try{localStorage.setItem(TAKE_KEY,JSON.stringify(takes))}catch(e){}};
