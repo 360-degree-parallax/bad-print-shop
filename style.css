@@ -159,3 +159,5 @@ h2{font-size:32px;font-weight:400;margin:0 0 24px}
 .receipt-tail canvas{display:block;image-rendering:pixelated}
 .receipt-tail.pullable{cursor:grab}
 .receipt-tail.pullable:hover{filter:brightness(1.08)}
+/* Buttons over the receipt invert against whatever is under them, paper or black. */
+#receiptDialog .close,#receiptDialog .downloads{color:#fff;mix-blend-mode:difference}
