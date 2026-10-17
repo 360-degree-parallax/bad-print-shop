@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610170830";
+const BUILD="202610170840";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -104,10 +104,14 @@ function updateMeta(){if(!tail)return;const used=history.length;tail.hidden=!use
  c.width=bmp.width;c.height=bmp.height;c.style.width=w+"px";c.style.height=h+"px";c.getContext("2d").drawImage(bmp,0,0);
  // only what has come out so far: the head and the items, not yet the total at the foot
  const rules=l.rows.filter(r=>r.kind==="rule"),cut=(rules[1]?rules[1].y:l.height)*bmp.width/l.width*scale;
- const reach=window.innerHeight*.9/Math.cos(PrintReceipt.tailDeg*Math.PI/180);tailLead=Math.round(Math.min(cut,reach));
+ tailLead=Math.round(cut);   // no cap: the whole printed length feeds out, past the edge of the screen if it must
  tail.style.width=w+"px";tail.style.height=tailLead+"px";c.style.marginTop="0"}
 let tailLead=0;
-function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore();paintEndMark(canvas.height)}
+function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore();paintDefects(offset,canvas.height);paintEndMark(canvas.height)}
+// The poster's own print faults, fixed to the paper so they scroll with it: motor banding at a regular pitch
+// and lines where the supply sagged and the ink came out weak.
+function paintDefects(offset,h){ctx.save();ctx.fillStyle=background;const pitch=47;for(let y=-((offset%pitch)+pitch)%pitch;y<h;y+=pitch){ctx.globalAlpha=.42;ctx.fillRect(0,y,840,3)}
+ const strip=36;for(let y=-(offset%strip);y<h;y+=strip){const k=Math.floor((y+offset)/strip),r=Math.abs(Math.sin(k*12.9898)*43758.5453)%1;if(r<.07){ctx.globalAlpha=.5;ctx.fillRect(0,y,840,strip)}}ctx.restore()}
 function paintEndMark(h){const a=endMark();if(!a)return;ctx.save();ctx.globalAlpha=.55*a;ctx.beginPath();ctx.rect(840-22,0,22,h);ctx.clip();ctx.strokeStyle='#9A9A9A';ctx.lineWidth=5;for(let y=-40;y<h+40;y+=14){ctx.beginPath();ctx.moveTo(840-30,y+30);ctx.lineTo(848,y-8);ctx.stroke()}ctx.restore()}
 posterScroller.addEventListener('scroll',()=>draw());window.addEventListener('resize',()=>draw());
 function makeItem(text,index){

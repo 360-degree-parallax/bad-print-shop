@@ -18,7 +18,7 @@ window.PrintReceipt=(()=>{
    for(const word of String(entry.text).split(/\s+/)){for(const ch of Array.from(word+' ')){if(measure.measureText(line+ch).width>LAYOUT_W-56){add(line.trimEnd());line='    '}line+=ch}}
    if(line.trim())add(line.trimEnd());y+=8});
   add('','rule',30);add(String(s.count),'total',38);add('*'.repeat(30),'stars',30);
-  return {rows,height:y+40,width:LAYOUT_W};
+  return {rows,height:y+40,width:LAYOUT_W,count:s.count||0};
  }
  function drawRow(x,r){x.fillStyle='#000';x.font=FONT;x.textBaseline='top';
   if(r.kind==='rule'){let t='-';while(x.measureText(t+'-').width<=LAYOUT_W-48)t+='-';x.fillText(t,24,0);return}
@@ -37,27 +37,38 @@ window.PrintReceipt=(()=>{
   for(let i=0;i<DOTS*H;i++)ink[i]=1-data[i*4]/255;
   const random=rng(seed),dead=new Set([...Array(2+Math.floor(random()*3))].map(()=>Math.floor(18+random()*(DOTS-36))));
   const dots=new Uint8Array(DOTS*H);let printed=0;
+  // A1 brownout: whole lines print weak when the supply sags
+  const LINE=14,sag=new Float32Array(Math.ceil(H/LINE)+1);for(let k=0;k<sag.length;k++)sag[k]=random()<.07?.45+random()*.25:1;
+  // A2 motor banding: a light stripe every BAND dot rows
+  const BAND=21+Math.floor(random()*6);
   for(let y=0;y<H;y++){
    const heat=1-Math.exp(-printed/45000);                 // the head warms with every dot it has burned
+   const strength=sag[Math.floor(y/LINE)]*((y%BAND)<2?.6:1);
    for(let x=0;x<DOTS;x++){const i=y*DOTS+x;let sum=0,n=0;
     for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const yy=y+dy,xx=x+dx;if(yy<0||yy>=H||xx<0||xx>=DOTS)continue;sum+=ink[yy*DOTS+xx];n++}
-    let v=Math.max(ink[i],(sum/n)*(.55+1.25*heat));       // bleed: ink spreads into its neighbours
+    let v=Math.max(ink[i],(sum/n)*(.55+1.25*heat))*strength;   // bleed: ink spreads into its neighbours
     if(y>0)v+=heat*.35*ink[i-DOTS];                       // smear along the feed
     const pressure=.42+.22*Math.pow(x/DOTS,3)+.08*Math.sin(y/37+seed%7);   // weaker on one side
     const on=v>pressure+(random()-.5)*.22&&!dead.has(x)&&random()>.025;
     dots[i]=on?1:0;if(on)printed++}
   }
-  // the feed: rows slip (stretched), skip, or shift sideways for a moment
-  const out=[];let shift=0,band=0;
+  // A3 head debris: a thin black line dragged down part of the paper
+  for(let k=0,n=1+Math.floor(random()*2);k<n;k++){const x=Math.floor(10+random()*(DOTS-20)),y0=Math.floor(random()*H*.6),y1=Math.min(H,y0+Math.floor(H*(.2+random()*.5)));for(let y=y0;y<y1;y++)if(random()>.08)dots[y*DOTS+x]=1}
+  // A6 end-of-roll stripe: near the end of a long roll the paper carries a hatched mark on one edge
+  if(l.count>=10){const from=Math.floor(H*(1-Math.min(.6,(l.count-9)*.08)));for(let y=from;y<H;y++)for(let x=DOTS-9;x<DOTS-1;x++)if(((x+y)%7)<2)dots[y*DOTS+x]=1}
+  // the feed: rows slip (stretched), skip, shift sideways for a moment, drift (A4 skew), or go through twice (A5)
+  const out=[];let shift=0,band=0;const skew=(random()<.5?-1:1)/(160+random()*120);
   for(let y=0;y<H;y++){const r=random();
    if(band>0)band--;else shift=0;
    if(r<.004){shift=random()<.5?-2:2;band=4+Math.floor(random()*8)}
    if(r>.997)continue;
+   const drift=Math.round(y*skew);
    const reps=r>.992?3+Math.floor(random()*4):1;
-   for(let k=0;k<reps;k++)out.push([y,shift])}
+   for(let k=0;k<reps;k++)out.push([y,shift+drift,null]);
+   if(r>.9955&&r<=.997&&y>12){const back=6+Math.floor(random()*8),off=1+Math.floor(random()*3);for(let k=back;k>0;k--)out.push([y-k,shift+drift+off,y])}}
   const c=document.createElement('canvas');c.width=DOTS;c.height=out.length;const cx=c.getContext('2d'),img=cx.createImageData(DOTS,out.length),p=img.data;
   const paper=PAPER.slice(1).match(/../g).map(v=>parseInt(v,16));
-  out.forEach(([y,s],oy)=>{const fade=.88+.12*random();for(let x=0;x<DOTS;x++){const sxp=x-s,o=(oy*DOTS+x)*4,on=sxp>=0&&sxp<DOTS&&dots[y*DOTS+sxp];
+  out.forEach(([y,s,over],oy)=>{const fade=.88+.12*random();for(let x=0;x<DOTS;x++){const sxp=x-s,o=(oy*DOTS+x)*4,ghost=over!=null&&dots[over*DOTS+x],on=ghost||(sxp>=0&&sxp<DOTS&&dots[y*DOTS+sxp]);
    for(let ch=0;ch<3;ch++)p[o+ch]=on?Math.round(INK[ch]+(paper[ch]-INK[ch])*(1-fade)*.6):paper[ch];p[o+3]=255}});
   cx.putImageData(img,0,0);return c;
  }
@@ -80,10 +91,19 @@ window.PrintReceipt=(()=>{
   // conveyor: the top of the receipt has travelled furthest; what was printed last is still at the corner
   for(let d=0;d<printed;d+=step){const len=Math.min(step,printed-d),p=at(path,end-d),sy=d/scale,sh=Math.min(bmp.height-sy,len/scale+1);if(sh<=0)break;
    x.save();x.translate(p.x,p.y);x.rotate(p.angle+Math.PI/2);x.drawImage(bmp,0,sy,DOTS,sh,-SHOW_W/2,0,SHOW_W,sh*scale+.6);x.restore()}
+  // B1/B2: heat from the hand and scratches stay where they were made, only on the paper
+  if(current&&current.c===c&&current.marks){x.save();x.setTransform(1,0,0,1,0,0);x.globalCompositeOperation='source-atop';x.drawImage(current.marks,0,0);x.restore()}
  }
+ // Thermal paper darkens where it is warmed and turns black where it is scratched.
+ function touch(e){const s=current;if(!s||!s.marks)return;const m=s.marks.getContext('2d'),r=s.marks.width/s.w,px=e.clientX,py=e.clientY;
+  m.setTransform(r,0,0,r,0,0);
+  if(e.buttons&1){const last=s.last||{x:px,y:py};m.strokeStyle='rgba(18,18,16,.85)';m.lineWidth=1.4;m.lineCap='round';m.beginPath();m.moveTo(last.x,last.y);m.lineTo(px+(Math.random()-.5),py+(Math.random()-.5));m.stroke();s.last={x:px,y:py}}
+  else{s.last=null;const g=m.createRadialGradient(px,py,0,px,py,24);g.addColorStop(0,'rgba(36,34,30,.045)');g.addColorStop(1,'rgba(36,34,30,0)');m.fillStyle=g;m.fillRect(px-24,py-24,48,48)}
+  if(s.progress===1)render(s.c,s.bmp,s.path,s.total,s.w,s.h,s.total)}
+ window.addEventListener('pointermove',touch);window.addEventListener('pointerdown',e=>{if(current)current.last={x:e.clientX,y:e.clientY}});
  function stop(){cancelAnimationFrame(frame);frame=0;current=null}
  function start(c,s){stop();const l=layout(s),seed=parseInt(s.id,16)||Date.now(),bmp=print(l,seed),feed=Math.max(window.innerWidth,window.innerHeight)*.9,total=lengthOf(bmp)+feed,lead=Math.min(lengthOf(bmp),s.lead||0),from=lead/total,state=current={c,bmp,seed,progress:from,total,lead};let began=null;const duration=Math.min(12000,1600+(total-lead)*2);
- function resize(){const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);state.w=w;state.h=h;state.path=route(w,h,total,seed,lead)}resize();
+ function resize(){const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);state.w=w;state.h=h;state.marks=document.createElement('canvas');state.marks.width=c.width;state.marks.height=c.height;state.path=route(w,h,total,seed,lead)}resize();
  const tick=t=>{if(current!==state)return;if(began===null)began=t;state.progress=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,from+(1-from)*(t-began)/duration);if(state.w!==window.innerWidth||state.h!==window.innerHeight)resize();render(c,bmp,state.path,total*state.progress,state.w,state.h,total);if(state.progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick);
  }
  window.addEventListener('resize',()=>{if(current&&current.progress===1){const s=current,w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);s.c.width=w*dpr;s.c.height=h*dpr;s.w=w;s.h=h;s.path=route(w,h,s.total,s.seed,s.lead||0);render(s.c,s.bmp,s.path,s.total,w,h,s.total)}});

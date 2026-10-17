@@ -153,7 +153,7 @@ h2{font-size:32px;font-weight:400;margin:0 0 24px}
 .toc a{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* Receipt tail: the receipt leaves the bottom-right corner on a diagonal and grows with each take. */
 .receipt-tail{position:fixed;right:0;bottom:0;width:240px;height:0;overflow:hidden;background:#EFEFEC;z-index:5;
- transform-origin:50% 100%;transform:translateX(50%) rotate(-35deg);transition:height .45s steps(6),filter .2s;
+ transform-origin:50% 100%;transform:translateX(50%) rotate(-35deg);transition:height 1.6s linear,filter .2s;
  clip-path:polygon(0 4px,8% 0,17% 4px,25% 0,33% 4px,42% 0,50% 4px,58% 0,67% 4px,75% 0,83% 4px,92% 0,100% 4px,100% 100%,0 100%)}
 .receipt-tail[hidden]{display:none}
 .receipt-tail canvas{display:block;image-rendering:pixelated}
