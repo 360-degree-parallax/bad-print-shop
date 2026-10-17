@@ -38,3 +38,7 @@ index.html을 브라우저에서 열면 실행됩니다. HTML/CSS/JavaScript/Can
 ## 좌측 서체
 
 좌측 위키 문서는 도스고딕(DOSGothic, © Damheo Lee, MIT, `assets/DOSGothic-LICENSE.txt`)을 16px 배수로만 씁니다. 용량을 줄이려고 페이지에 나오는 글자만 남긴 `assets/DOSGothic-subset.woff`(약 74KB)를 씁니다. `content-gen.js`를 다시 만들면 `python3 tools/subset-dosgothic.py <원본 DOSGothic.ttf>`로 서브셋도 다시 만드세요.
+
+## 각주
+
+대사 번호를 누르면 뜨는 각주는 `footnotes.js`가 대사마다 하나씩 만듭니다. 대사 안의 낱말에서 시작해, 사실인 서지 정보(1912년 스토어 번역, 『꿈의 해석』, 라우렌치아나 사본 등)와 존재하지 않는 판본·스캔·독서 카드가 같은 말투로 섞입니다. 실존 인물의 말을 지어내 인용하지는 않습니다. 같은 대사에는 언제나 같은 각주가 나옵니다(438개 모두 다름). 각주 문구를 고치면 `python3 tools/subset-dosgothic.py <원본 DOSGothic.ttf>`로 글꼴 서브셋도 다시 만드세요.

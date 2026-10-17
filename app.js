@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610170956";
+const BUILD="202610171000";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -61,7 +61,7 @@ function apparatus(turn){const strip=t=>t.replace(/^([^:\s〈][^:]{0,11}): /,'')
   let d=0;while(d<o.length&&o[d]===c[d])d++;const ws=o.lastIndexOf(' ',d-1)+1,w=clean(o.slice(ws).split(' ')[0]),v=clean(c.slice(ws).split(' ')[0]);
   if(w&&v&&w!==v)lines.push(`사본 L에는 ‘${w}’${ro(w)}, 사본 V에는 ‘${v}’${ro(v)} 되어 있다.`)}
  return lines.length?'\n\n'+lines.join('\n'):''}
-function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index]?.turn===turn).length;$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}. 소포클레스가 신화에서 가져왔고, 프랜시스 스토어가 1912년 영어로 옮겼고, AI가 한국어로 옮겼다. 이 브라우저에서 이 대사를 가져간 횟수: ${count}.`+apparatus(turn);$('#note').showModal()};return n}
+function footnote(turn,speaker){const n=el('span','fn',`[${turn===0?'*':turn}]`);n.setAttribute('role','button');n.tabIndex=0;n.title=turn===0?'첫 무대 지시':`대사 ${turn} · ${speaker}`;n.onclick=()=>{const count=history.filter(h=>BookText[h.index]?.turn===turn).length,text=BookText.slice(0,overviewStart).filter(e=>e.turn===turn).map(e=>e.text).join(' ');$('#noteText').textContent=`[${turn===0?'*':turn}] ${BookMeta.title} · ${turn===0?'첫 무대 지시':'대사 '+turn} · ${speaker}\n\n`+Footnotes.build(turn,text,turn===0?'무대 지시':speaker)+`\n\n이 브라우저에서 이 대사를 가져간 횟수: ${count}.`+apparatus(turn);$('#note').showModal()};return n}
 function render(){const W=window.WikiDoc,prose=$('#prose');
  const fold=(label)=>{const r=el('button','foldbar',label||'[ 펼치기 · 접기 ]');r.type='button';return r};
  {const nb=el('div','navbox');nb.append(el('div','navbox-title',W.navbox.title));const t=fold(),list=el('div','navbox-list');list.hidden=true;t.onclick=()=>{list.hidden=!list.hidden};

@@ -6,7 +6,7 @@ from fontTools import subset
 from fontTools.ttLib import TTFont
 src = sys.argv[1]
 chars = set()
-for f in ['content.js', 'content-gen.js', 'wiki.js', 'app.js', 'index.html']:
+for f in ['content.js', 'content-gen.js', 'wiki.js', 'app.js', 'footnotes.js', 'index.html']:
     chars |= set(open(f, encoding='utf8').read())
 chars |= set(chr(c) for c in range(0x20, 0x7f))
 cmap = TTFont(src).getBestCmap()

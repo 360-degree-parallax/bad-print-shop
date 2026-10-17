@@ -163,3 +163,7 @@ h2{font-size:32px;font-weight:400;margin:0 0 24px}
 .receipt-tail.pullable:hover{filter:brightness(1.08)}
 /* Buttons over the receipt invert against whatever is under them, paper or black. */
 #receiptDialog .close,#receiptDialog .downloads{color:#fff;mix-blend-mode:difference}
+/* Footnote: a long note to read down, in the wiki's bitmap face */
+#note{width:min(560px,calc(100% - 32px));max-height:80dvh;overflow-y:auto;font-family:DOSGothic,DreamHeumul,sans-serif;font-size:16px;line-height:1.6;-webkit-font-smoothing:none;scrollbar-width:none}
+#note::-webkit-scrollbar{display:none}
+#noteText{margin:8px 0 0;word-break:keep-all}
