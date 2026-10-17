@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610170934";
+const BUILD="202610170944";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -106,7 +106,7 @@ function updateMeta(){if(!tail)return;const used=history.length;tail.hidden=!use
  const s=receiptState(),l=PrintReceipt.layout(s),bmp=PrintReceipt.print(l,parseInt(SESSION_ID,16)||1),c=tail.querySelector("canvas"),w=PrintReceipt.showWidth,scale=w/bmp.width,h=Math.round(bmp.height*scale);
  c.width=bmp.width;c.height=bmp.height;c.style.width=w+"px";c.style.height=h+"px";c.getContext("2d").drawImage(bmp,0,0);
  // the whole receipt, foot included, so nothing at the corner has to move when it is pulled
- tailLead=h;
+ tailLead=Math.round(PrintReceipt.cutOf(l));   // the foot (TOTAL) stays inside the printer until the receipt is pulled
  tail.style.width=w+"px";tail.style.height=tailLead+"px";c.style.marginTop="0"}
 let tailLead=0;
 function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore();paintDefects(offset,canvas.height);paintEndMark(canvas.height)}
