@@ -80,45 +80,52 @@ window.PrintReceipt=(()=>{
  // where the curve turns tight. The curve starts at the bottom-right corner, where the tail came out.
  const TAIL_DEG=35;
  function cutOf(l){const rules=l.rows.filter(r=>r.kind==='rule');return (rules[1]?rules[1].y:l.height)*K*(SHOW_W/DOTS)}
- // Straight ahead until there is nowhere left to go, then one tight turn: the paper is wider than the turn
- // is round, so it fans out there. Out of the corner first, along the tail's line.
- function route(w,h,length,seed){let n=seed>>>0;const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296};
-  const rad=TAIL_DEG*Math.PI/180,m=140,inside=(x,y)=>x>=m&&x<=w-m&&y>=m&&y<=h-m,STEP=6;
-  let x=w+30,y=h+30,heading=Math.atan2(-Math.cos(rad),-Math.sin(rad)),entered=false,guard=0;
-  const pts=[{x,y,d:0}],push=(nx,ny)=>{const p=pts.at(-1);pts.push({x:nx,y:ny,d:p.d+Math.hypot(nx-p.x,ny-p.y)});x=nx;y=ny};
-  // how far a ray can run inside the margin
-  const reach=(hd)=>{let k=0,px=x,py=y;while(k<4000){px+=Math.cos(hd)*STEP;py+=Math.sin(hd)*STEP;if(!inside(px,py))break;k+=STEP}return k};
-  while(pts.at(-1).d<length+200&&guard++<3000){const nx=x+Math.cos(heading)*STEP,ny=y+Math.sin(heading)*STEP;
-   if(inside(nx,ny))entered=true;
-   if(!entered||inside(nx,ny)){push(nx,ny);continue}
-   // nowhere left to go: turn hard toward the side with the most room, on a small radius
-   const turn=(110+random()*55)*Math.PI/180,left=heading-turn,right=heading+turn,sign=reach(left)>=reach(right)?-1:1,r=28+random()*36;
-   const cx=x+Math.cos(heading+sign*Math.PI/2)*r,cy=y+Math.sin(heading+sign*Math.PI/2)*r,start=Math.atan2(y-cy,x-cx);
-   for(let a=0;a<=turn;a+=.12)push(cx+Math.cos(start+sign*a)*r,cy+Math.sin(start+sign*a)*r);
-   heading+=sign*turn;
-   // step back inside if the turn left us on the margin
-   for(let k=0;k<40&&!inside(x+Math.cos(heading)*STEP,y+Math.sin(heading)*STEP);k++)heading+=sign*.15}
-  return pts;
+ // The paper runs straight until there is nowhere left to go, then folds like real paper: two creases close
+ // together (the back of the paper shows for a moment between them), and it runs straight again in the new
+ // direction, print side up. Pieces laid later lie on top of earlier ones.
+ const FEED=150;   // px per second, about the pace of a small thermal printer
+ function folds(w,h,length,seed){let n=seed>>>0;const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296};
+  const rad=TAIL_DEG*Math.PI/180,m=150,inside=(x,y)=>x>=m&&x<=w-m&&y>=m&&y<=h-m,rot=(v,a)=>({x:v.x*Math.cos(a)-v.y*Math.sin(a),y:v.x*Math.sin(a)+v.y*Math.cos(a)});
+  let p={x:w+30,y:h+30},d={x:-Math.sin(rad),y:-Math.cos(rad)},s0=0,entered=false;const segs=[];let crease={x:-d.y,y:d.x};
+  const room=(q,v)=>{let k=0;while(k<3000){const x=q.x+v.x*(k+6),y=q.y+v.y*(k+6);if(!inside(x,y))break;k+=6}return k};
+  while(s0<length+200&&segs.length<60){let len=0;
+   while(len<6000){const x=p.x+d.x*(len+6),y=p.y+d.y*(len+6);if(inside(x,y))entered=true;if(entered&&!inside(x,y))break;len+=6}
+   len=Math.max(len,40);const seg={p,d,len,s0,back:false,c0:crease};segs.push(seg);s0+=len;p={x:p.x+d.x*len,y:p.y+d.y*len};
+   const T=(115+random()*50)*Math.PI/180,sign=room(p,rot(d,-T))>=room(p,rot(d,T))?-1:1,d1=rot(d,sign*T/2),d2=rot(d,sign*T),mid=SHOW_W*(.35+random()*.25);
+   const n1=(a,b)=>{const x=a.x+b.x,y=a.y+b.y,l=Math.hypot(x,y)||1;return {x:x/l,y:y/l}};
+   seg.c1=n1(d,d1);segs.push({p,d:d1,len:mid,s0,back:true,c0:seg.c1,c1:n1(d1,d2)});s0+=mid;p={x:p.x+d1.x*mid,y:p.y+d1.y*mid};
+   crease=n1(d1,d2);d=d2}
+  return segs;
  }
- function at(path,d){let low=0,high=path.length-1;while(low+1<high){const mid=(low+high)>>1;if(path[mid].d<d)low=mid;else high=mid}const a=path[low],b=path[high],t=Math.max(0,Math.min(1,(d-a.d)/(b.d-a.d||1)));return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,angle:Math.atan2(b.y-a.y,b.x-a.x)}}
  const scale=SHOW_W/DOTS,lengthOf=bmp=>bmp.height*scale;
- function render(c,bmp,path,revealed,w,h){const x=c.getContext('2d'),ratio=c.width/w;x.setTransform(ratio,0,0,ratio,0,0);x.clearRect(0,0,w,h);x.imageSmoothingEnabled=false;
-  const end=Math.min(lengthOf(bmp),revealed),step=4,half=SHOW_W/2;
-  // paper as quads between successive normals: on tight turns they fan out and fold, as the first version did
-  x.fillStyle=PAPER;let last=at(path,0);for(let d=step;d<end+step;d+=step){const p=at(path,Math.min(d,end)),n=q=>({x:-Math.sin(q.angle)*half,y:Math.cos(q.angle)*half}),a=n(last),b=n(p);x.beginPath();x.moveTo(last.x+a.x,last.y+a.y);x.lineTo(p.x+b.x,p.y+b.y);x.lineTo(p.x-b.x,p.y-b.y);x.lineTo(last.x-a.x,last.y-a.y);x.closePath();x.fill();last=p;if(d>=end)break}
-  for(let d=0;d<end;d+=step){const len=Math.min(step,end-d),p=at(path,d),sy=d/scale,sh=Math.min(bmp.height-sy,len/scale+1);if(sh<=0)break;
-   x.save();x.translate(p.x,p.y);x.rotate(p.angle-Math.PI/2);x.drawImage(bmp,0,sy,DOTS,sh,-half,0,SHOW_W,sh*scale+.6);x.restore()}
+ const cross=(a,b)=>a.x*b.y-a.y*b.x;
+ // the corners of one straight piece: its two edges cut by the crease at each end
+ function corners(seg,len){const half=SHOW_W/2,nrm={x:-seg.d.y,y:seg.d.x},end={x:seg.p.x+seg.d.x*len,y:seg.p.y+seg.d.y*len},c1=len<seg.len?nrm:(seg.c1||nrm);
+  const hit=(off,q,c)=>{const e={x:seg.p.x+nrm.x*off,y:seg.p.y+nrm.y*off},t=cross({x:q.x-e.x,y:q.y-e.y},c)/(cross(seg.d,c)||1e-6);return {x:e.x+seg.d.x*t,y:e.y+seg.d.y*t}};
+  return [hit(half,seg.p,seg.c0),hit(half,end,c1),hit(-half,end,c1),hit(-half,seg.p,seg.c0)]}
+ function render(c,bmp,segs,revealed,w,h){const x=c.getContext('2d'),ratio=c.width/w;x.setTransform(ratio,0,0,ratio,0,0);x.clearRect(0,0,w,h);x.imageSmoothingEnabled=false;
+  const end=Math.min(lengthOf(bmp),revealed),half=SHOW_W/2;
+  for(const seg of segs){if(seg.s0>=end)break;const len=Math.min(seg.len,end-seg.s0),poly=corners(seg,len);
+   x.save();x.beginPath();poly.forEach((q,i)=>i?x.lineTo(q.x,q.y):x.moveTo(q.x,q.y));x.closePath();
+   x.shadowColor='rgba(0,0,0,.35)';x.shadowBlur=6;x.fillStyle=seg.back?'#DCDCD6':PAPER;x.fill();x.shadowColor='transparent';x.clip();
+   // print from a little before to a little after this piece, clipped to it (the creases cut it)
+   const ang=Math.atan2(seg.d.y,seg.d.x)-Math.PI/2,from=Math.max(0,seg.s0-half),to=Math.min(lengthOf(bmp),seg.s0+len+half);
+   x.translate(seg.p.x,seg.p.y);x.rotate(ang);if(seg.back){x.globalAlpha=.07;x.scale(-1,1)}
+   x.drawImage(bmp,0,from/scale,DOTS,(to-from)/scale,-half,from-seg.s0,SHOW_W,to-from);x.restore();
+   // the crease itself
+   x.save();x.strokeStyle='rgba(0,0,0,.18)';x.lineWidth=1;x.beginPath();x.moveTo(poly[0].x,poly[0].y);x.lineTo(poly[3].x,poly[3].y);x.stroke();x.restore()}
  }
- function stop(){cancelAnimationFrame(frame);frame=0;current=null}
- function start(c,s){stop();const l=layout(s),seed=parseInt(s.id,16)||Date.now(),bmp=print(l,seed),state=current={c,bmp,seed,progress:0};let began=null;const duration=Math.min(14000,1800+lengthOf(bmp)*1.6);
- function resize(){const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);state.w=w;state.h=h;state.path=route(w,h,lengthOf(bmp),seed)}resize();
- const tick=t=>{if(current!==state)return;if(began===null)began=t;state.progress=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(t-began)/duration);if(state.w!==window.innerWidth||state.h!==window.innerHeight)resize();render(c,bmp,state.path,lengthOf(bmp)*state.progress,state.w,state.h);if(state.progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick);
+ function stop(){cancelAnimationFrame(frame);frame=0;if(current&&current.done)current.done();current=null}
+ function start(c,s,hooks={}){stop();const l=layout(s),seed=parseInt(s.id,16)||Date.now(),bmp=print(l,seed),state=current={c,bmp,seed,progress:0,done:hooks.done};let began=null;const duration=Math.min(60000,600+lengthOf(bmp)/FEED*1000);
+ function resize(){const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);state.w=w;state.h=h;state.segs=folds(w,h,lengthOf(bmp),seed)}resize();
+ if(hooks.begin)hooks.begin();
+ const tick=t=>{if(current!==state)return;if(began===null)began=t;state.progress=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(t-began)/duration);if(state.w!==window.innerWidth||state.h!==window.innerHeight)resize();render(c,bmp,state.segs,lengthOf(bmp)*state.progress,state.w,state.h);if(state.progress<1)frame=requestAnimationFrame(tick);else if(state.done){const f=state.done;state.done=null;f()}};frame=requestAnimationFrame(tick);
  }
- window.addEventListener('resize',()=>{if(current&&current.progress===1){const s=current,w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);s.c.width=w*dpr;s.c.height=h*dpr;s.w=w;s.h=h;s.path=route(w,h,lengthOf(s.bmp),s.seed);render(s.c,s.bmp,s.path,lengthOf(s.bmp),w,h)}});
+ window.addEventListener('resize',()=>{if(current&&current.progress===1){const s=current,w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);s.c.width=w*dpr;s.c.height=h*dpr;s.w=w;s.h=h;s.segs=folds(w,h,lengthOf(s.bmp),s.seed);render(s.c,s.bmp,s.segs,lengthOf(s.bmp),w,h)}});
  // The PNG is the same print, each dot enlarged to a 4×4 block so the low resolution survives.
  async function exportReceipt(s){const bmp=print(layout(s),parseInt(s.id,16)||1),Z=4,rowsPer=Math.floor(16000/Z),files=[];
   for(let offset=0;offset<bmp.height;offset+=rowsPer){const h=Math.min(rowsPer,bmp.height-offset),c=document.createElement('canvas');c.width=DOTS*Z;c.height=h*Z;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(bmp,0,offset,DOTS,h,0,0,DOTS*Z,h*Z);
    const blob=await new Promise((resolve,reject)=>c.toBlob(b=>b?resolve(b):reject(new Error('Receipt export failed')),'image/png'));files.push({name:'receipt_'+String(files.length+1).padStart(3,'0')+'.png',blob,bytes:new Uint8Array(await blob.arrayBuffer())})}
   return files.length===1?{blob:files[0].blob,extension:'png'}:{blob:PrintExport.zip(files),extension:'zip'}}
- return {layout,print,route,at,render,start,stop,export:exportReceipt,complement,showWidth:SHOW_W,tailDeg:TAIL_DEG,cutOf};
+ return {layout,print,folds,render,start,stop,export:exportReceipt,complement,showWidth:SHOW_W,tailDeg:TAIL_DEG,cutOf};
 })();

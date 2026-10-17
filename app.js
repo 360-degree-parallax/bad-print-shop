@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610171159";
+const BUILD="202610171208";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -124,7 +124,13 @@ function makeItem(text,index){
 }
 // Every take is heard as a thermal print: one of four recordings, never the same one twice in a row.
 const printSounds=[1,2,3,4].map(i=>{const a=new Audio(`assets/sound/print-${i}.mp3`);a.preload="auto";return a});let lastSound=-1;
-function playPrint(){let i=Math.floor(Math.random()*printSounds.length);if(i===lastSound)i=(i+1)%printSounds.length;lastSound=i;const a=printSounds[i].cloneNode();a.volume=.7;a.play().catch(()=>{})}
+// While the receipt is printing, the four recordings follow one another without a gap (each starts a
+// moment before the last one ends) until the paper stops.
+let printLoop=0;
+function startPrintLoop(){stopPrintLoop();const next=()=>{playPrint();printLoop=setTimeout(next,2780)};next()}
+function stopPrintLoop(){clearTimeout(printLoop);printLoop=0;for(const a of playing)a.pause();playing.clear()}
+const playing=new Set();
+function playPrint(){let i=Math.floor(Math.random()*printSounds.length);if(i===lastSound)i=(i+1)%printSounds.length;lastSound=i;const a=printSounds[i].cloneNode();a.volume=.7;playing.add(a);a.onended=()=>playing.delete(a);a.play().catch(()=>{})}
 function remember(item){playPrint();history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});takeEnds.push(PrintFlow.height(flow));degrade(item.index);updateMeta();nextPalette()}
 function bindImageSteal(holder,img,code,caption){holder.classList.add('stealable');holder.tabIndex=0;holder.setAttribute('role','button');holder.setAttribute('aria-label',caption+' 사진 수집');
  const go=()=>{if(img.complete&&img.naturalWidth)stealImage(img,code,caption)};holder.addEventListener('click',e=>{e.stopPropagation();go()});holder.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go()}})}
@@ -154,7 +160,7 @@ document.addEventListener('keydown',e=>{if(e.key===','&&!document.querySelector(
 for(const key of ['size','width','intensity']){const input=$('#'+key+'Input'),output=$('#'+key+'Value');input.addEventListener('input',()=>{settings[key]=Number(input.value)/(key==='intensity'?100:1);output.textContent=input.value+(key==='intensity'?'%':'px')})}
 function claim(){finishPress(true);if(tail)tail.hidden=true;receipt={lead:tailLead,id:SESSION_ID,count:history.length,printFlow:PrintFlow.clone(flow),ink:textInk,background,entries:history.map(h=>({...h})),date:receiptState().date};
  receipt.printFlow.rows=receipt.printFlow.rows.map(row=>({...row,tokens:row.tokens.map(token=>({...token,tile:null,staticTile:null,ink:receipt.ink}))}));
- $('#receiptDialog').showModal();PrintReceipt.start($('#receiptRibbon'),receipt);
+ $('#receiptDialog').showModal();PrintReceipt.start($('#receiptRibbon'),receipt,{begin:startPrintLoop,done:stopPrintLoop});
 }
 
 // The receipt prints only when the reader reaches the end of the play.
