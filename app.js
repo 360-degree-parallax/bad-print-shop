@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610170844";
+const BUILD="202610170921";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -96,8 +96,11 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
 // screen with every take (the real print, top first). From half a sheet the tail can be pulled to print.
 // Near the end of the sheet the poster gets the hatched end-of-roll mark that thermal paper carries.
 const SHEET=14,SESSION_ID=crypto.randomUUID().slice(0,8).toUpperCase(),tail=document.getElementById("receiptTail");
-const endMark=()=>Math.max(0,Math.min(1,(history.length-(SHEET-5))/5));
-function receiptState(){return {id:SESSION_ID,count:history.length,entries:history.map(h=>({...h})),date:new Date().toLocaleString("en-GB",{hour12:false}),background}}
+// where each take ended on the poster, in poster units, so the end-of-roll mark stays on the stretch it was printed on
+const takeEnds=[];
+// The receipt starts printing at the first take, so its date and time are that moment's and never change.
+let printedAt=null;
+function receiptState(){if(!printedAt)printedAt=new Date().toLocaleString("en-GB",{hour12:false});return {id:SESSION_ID,count:history.length,entries:history.map(h=>({...h})),date:printedAt,background}}
 // The tail is the receipt itself at the size it prints: as long as what has been printed so far.
 function updateMeta(){if(!tail)return;const used=history.length;tail.hidden=!used;if(!used)return;tail.classList.toggle("pullable",used>=SHEET/2);
  const s=receiptState(),l=PrintReceipt.layout(s),bmp=PrintReceipt.print(l,parseInt(SESSION_ID,16)||1),c=tail.querySelector("canvas"),w=PrintReceipt.showWidth,scale=w/bmp.width,h=Math.round(bmp.height*scale);
@@ -112,14 +115,16 @@ function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScrolle
 // and lines where the supply sagged and the ink came out weak.
 function paintDefects(offset,h){ctx.save();ctx.fillStyle=background;const pitch=47;for(let y=-((offset%pitch)+pitch)%pitch;y<h;y+=pitch){ctx.globalAlpha=.42;ctx.fillRect(0,y,840,3)}
  const strip=36;for(let y=-(offset%strip);y<h;y+=strip){const k=Math.floor((y+offset)/strip),r=Math.abs(Math.sin(k*12.9898)*43758.5453)%1;if(r<.07){ctx.globalAlpha=.5;ctx.fillRect(0,y,840,strip)}}ctx.restore()}
-function paintEndMark(h){const a=endMark();if(!a)return;ctx.save();ctx.globalAlpha=.55*a;ctx.beginPath();ctx.rect(840-22,0,22,h);ctx.clip();ctx.strokeStyle='#9A9A9A';ctx.lineWidth=5;for(let y=-40;y<h+40;y+=14){ctx.beginPath();ctx.moveTo(840-30,y+30);ctx.lineTo(848,y-8);ctx.stroke()}ctx.restore()}
+function paintEndMark(h){const offset=(posterScroller.scrollTop||0)/posterScale;ctx.save();ctx.strokeStyle='#9A9A9A';ctx.lineWidth=5;
+ for(let k=SHEET-5;k<takeEnds.length;k++){const top=(takeEnds[k-1]||0)-offset,bottom=takeEnds[k]-offset;if(bottom<0||top>h)continue;ctx.save();ctx.globalAlpha=.55*Math.min(1,(k-(SHEET-6))/5);ctx.beginPath();ctx.rect(840-22,top,22,bottom-top);ctx.clip();for(let y=top-40;y<bottom+40;y+=14){ctx.beginPath();ctx.moveTo(840-30,y+30);ctx.lineTo(848,y-8);ctx.stroke()}ctx.restore()}
+ ctx.restore()}
 posterScroller.addEventListener('scroll',()=>draw());window.addEventListener('resize',()=>draw());
 function makeItem(text,index){
  const previous=items.filter(o=>o.index===index).at(-1),effects=PrintEffects.names.filter(name=>name!==previous?.effect);
  const item={text,index,ink:textInk,size:settings.size*840/440,blockWidth:Math.min(756,settings.width*840/440),intensity:settings.intensity,seed:Math.floor(Math.random()*1000000),effect:effects[Math.floor(Math.random()*effects.length)]};
  item.words=PrintFlow.words(text,item);return item;
 }
-function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});degrade(item.index);updateMeta();nextPalette()}
+function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});takeEnds.push(PrintFlow.height(flow));degrade(item.index);updateMeta();nextPalette()}
 function bindImageSteal(holder,img,code,caption){holder.classList.add('stealable');holder.tabIndex=0;holder.setAttribute('role','button');holder.setAttribute('aria-label',caption+' 사진 수집');
  const go=()=>{if(img.complete&&img.naturalWidth)stealImage(img,code,caption)};holder.addEventListener('click',e=>{e.stopPropagation();go()});holder.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go()}})}
 function stealImage(img,code,caption){const size=settings.size*840/440,drawH=Math.round(size*(2+Math.random()*1.6)),drawW=Math.min(560,Math.round(drawH*img.naturalWidth/img.naturalHeight));
@@ -146,7 +151,7 @@ window.addEventListener('blur',()=>finishPress(false));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)finishPress(false)});
 document.addEventListener('keydown',e=>{if(e.key===','&&!document.querySelector('dialog[open]'))$('#settingsDialog').showModal()});
 for(const key of ['size','width','intensity']){const input=$('#'+key+'Input'),output=$('#'+key+'Value');input.addEventListener('input',()=>{settings[key]=Number(input.value)/(key==='intensity'?100:1);output.textContent=input.value+(key==='intensity'?'%':'px')})}
-function claim(){finishPress(true);if(tail)tail.hidden=true;receipt={lead:tailLead,id:SESSION_ID,count:history.length,printFlow:PrintFlow.clone(flow),ink:textInk,background,entries:history.map(h=>({...h})),date:new Date().toLocaleString('en-GB',{hour12:false})};
+function claim(){finishPress(true);if(tail)tail.hidden=true;receipt={lead:tailLead,id:SESSION_ID,count:history.length,printFlow:PrintFlow.clone(flow),ink:textInk,background,entries:history.map(h=>({...h})),date:receiptState().date};
  receipt.printFlow.rows=receipt.printFlow.rows.map(row=>({...row,tokens:row.tokens.map(token=>({...token,tile:null,staticTile:null,ink:receipt.ink}))}));
  $('#receiptDialog').showModal();PrintReceipt.start($('#receiptRibbon'),receipt);
 }
