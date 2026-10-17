@@ -34,3 +34,7 @@ index.html을 브라우저에서 열면 실행됩니다. HTML/CSS/JavaScript/Can
 ## 배포 후 캐시
 
 `index.html`의 CSS·JS 주소에는 `?v=<빌드>`가 붙어 있습니다. 파일을 고친 뒤 `sh tools/stamp.sh`를 실행하고 커밋하면, 예전 파일을 캐시한 휴대폰과 브라우저도 다음 접속 때 새 파일을 받습니다. 빌드가 바뀌면 브라우저에 저장된 "가져간 횟수"도 한 번 초기화됩니다.
+
+## 좌측 서체
+
+좌측 위키 문서는 도스고딕(DOSGothic, © Damheo Lee, MIT, `assets/DOSGothic-LICENSE.txt`)을 16px 배수로만 씁니다. 용량을 줄이려고 페이지에 나오는 글자만 남긴 `assets/DOSGothic-subset.woff`(약 74KB)를 씁니다. `content-gen.js`를 다시 만들면 `python3 tools/subset-dosgothic.py <원본 DOSGothic.ttf>`로 서브셋도 다시 만드세요.
