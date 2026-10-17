@@ -63,29 +63,34 @@ window.PrintReceipt=(()=>{
  }
 
  /* ---------- the ribbon ---------- */
- function route(w,h,length,seed){let n=seed>>>0;const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296};const margin=150,anchors=[{x:150,y:120},{x:w*.78,y:h*.79}],corners=[{x:margin,y:margin},{x:w-margin,y:margin},{x:w-margin,y:h-margin},{x:margin,y:h-margin}];let rough=Math.hypot(w*.78-150,h*.79-120),corner=2;
+ // The paper leaves the printer at the bottom-right corner, heading up and to the left at TAIL_DEG,
+ // straight for at least the length already showing as the tail, then wanders over the screen.
+ const TAIL_DEG=35;
+ function route(w,h,length,seed,lead=0){let n=seed>>>0;const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296};const r=TAIL_DEG*Math.PI/180,dx=-Math.sin(r),dy=-Math.cos(r),leg=Math.max(360,lead+240);
+ const margin=150,anchors=[{x:w,y:h},{x:w+dx*leg*.5,y:h+dy*leg*.5},{x:w+dx*leg,y:h+dy*leg}],corners=[{x:margin,y:margin},{x:w-margin,y:margin},{x:w-margin,y:h-margin},{x:margin,y:h-margin}];let rough=leg,corner=3;
  while(rough<length+Math.max(w,h)*2){corner=(corner+1)%4;const c=corners[corner],last=anchors.at(-1),p={x:c.x+(random()-.5)*90,y:c.y+(random()-.5)*70};rough+=Math.hypot(p.x-last.x,p.y-last.y);anchors.push(p)}
  const pts=[{...anchors[0],d:0}];for(let i=0;i<anchors.length-1;i++){const a=anchors[Math.max(0,i-1)],b=anchors[i],c=anchors[i+1],d=anchors[Math.min(anchors.length-1,i+2)],steps=Math.max(20,Math.ceil(Math.hypot(c.x-b.x,c.y-b.y)/5));for(let j=1;j<=steps;j++){const t=j/steps,t2=t*t,t3=t2*t,f=k=>.5*((2*b[k])+(-a[k]+c[k])*t+(2*a[k]-5*b[k]+4*c[k]-d[k])*t2+(-a[k]+3*b[k]-3*c[k]+d[k])*t3),p={x:f('x'),y:f('y')},prev=pts.at(-1);p.d=prev.d+Math.hypot(p.x-prev.x,p.y-prev.y);pts.push(p)}}return pts;
  }
  function at(path,d){let low=0,high=path.length-1;while(low+1<high){const mid=(low+high)>>1;if(path[mid].d<d)low=mid;else high=mid}const a=path[low],b=path[high],t=Math.max(0,Math.min(1,(d-a.d)/(b.d-a.d||1)));return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,angle:Math.atan2(b.y-a.y,b.x-a.x)}}
  const scale=SHOW_W/DOTS,lengthOf=bmp=>bmp.height*scale;
- function render(c,bmp,path,revealed,w,h){const x=c.getContext('2d'),ratio=c.width/w;x.setTransform(ratio,0,0,ratio,0,0);x.clearRect(0,0,w,h);x.imageSmoothingEnabled=false;
-  const end=Math.min(lengthOf(bmp),revealed),step=2,half=SHOW_W/2;
+ function render(c,bmp,path,revealed,w,h,total=lengthOf(bmp)){const x=c.getContext('2d'),ratio=c.width/w;x.setTransform(ratio,0,0,ratio,0,0);x.clearRect(0,0,w,h);x.imageSmoothingEnabled=false;
+  const end=Math.min(total,revealed),printed=Math.min(end,lengthOf(bmp)),step=2,half=SHOW_W/2;
   // paper first, as a continuous band, so tight turns never open gaps between the printed slices
-  x.fillStyle=PAPER;let last=at(path,0);for(let d=step;d<end+step;d+=step){const p=at(path,Math.min(d,end)),n=q=>({x:-Math.sin(q.angle)*half,y:Math.cos(q.angle)*half}),a=n(last),b=n(p);x.beginPath();x.moveTo(last.x+a.x,last.y+a.y);x.lineTo(p.x+b.x,p.y+b.y);x.lineTo(p.x-b.x,p.y-b.y);x.lineTo(last.x-a.x,last.y-a.y);x.closePath();x.fill();last=p;if(d>=end)break}
-  for(let d=0;d<end;d+=step){const len=Math.min(step,end-d),p=at(path,d),sy=d/scale,sh=Math.min(bmp.height-sy,len/scale+1);if(sh<=0)break;
-   x.save();x.translate(p.x,p.y);x.rotate(p.angle-Math.PI/2);x.drawImage(bmp,0,sy,DOTS,sh,-SHOW_W/2,0,SHOW_W,sh*scale+.6);x.restore()}
+  x.strokeStyle=PAPER;x.lineWidth=SHOW_W;x.lineJoin='round';x.lineCap='butt';x.beginPath();for(let d=0;d<=end;d+=step){const p=at(path,d);d?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y)}const pe=at(path,end);x.lineTo(pe.x,pe.y);x.stroke();
+  // conveyor: the top of the receipt has travelled furthest; what was printed last is still at the corner
+  for(let d=0;d<printed;d+=step){const len=Math.min(step,printed-d),p=at(path,end-d),sy=d/scale,sh=Math.min(bmp.height-sy,len/scale+1);if(sh<=0)break;
+   x.save();x.translate(p.x,p.y);x.rotate(p.angle+Math.PI/2);x.drawImage(bmp,0,sy,DOTS,sh,-SHOW_W/2,0,SHOW_W,sh*scale+.6);x.restore()}
  }
  function stop(){cancelAnimationFrame(frame);frame=0;current=null}
- function start(c,s){stop();const l=layout(s),seed=parseInt(s.id,16)||Date.now(),bmp=print(l,seed),state=current={c,bmp,seed,progress:0};let began=null;const duration=Math.min(16000,1800+lengthOf(bmp)*2.2);
- function resize(){const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);state.w=w;state.h=h;state.path=route(w,h,lengthOf(bmp),seed)}resize();
- const tick=t=>{if(current!==state)return;if(began===null)began=t;state.progress=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(t-began)/duration);if(state.w!==window.innerWidth||state.h!==window.innerHeight)resize();render(c,bmp,state.path,lengthOf(bmp)*state.progress,state.w,state.h);if(state.progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick);
+ function start(c,s){stop();const l=layout(s),seed=parseInt(s.id,16)||Date.now(),bmp=print(l,seed),feed=Math.max(window.innerWidth,window.innerHeight)*.9,total=lengthOf(bmp)+feed,lead=Math.min(lengthOf(bmp),s.lead||0),from=lead/total,state=current={c,bmp,seed,progress:from,total,lead};let began=null;const duration=Math.min(12000,1600+(total-lead)*2);
+ function resize(){const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);state.w=w;state.h=h;state.path=route(w,h,total,seed,lead)}resize();
+ const tick=t=>{if(current!==state)return;if(began===null)began=t;state.progress=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,from+(1-from)*(t-began)/duration);if(state.w!==window.innerWidth||state.h!==window.innerHeight)resize();render(c,bmp,state.path,total*state.progress,state.w,state.h,total);if(state.progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick);
  }
- window.addEventListener('resize',()=>{if(current&&current.progress===1){const s=current,w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);s.c.width=w*dpr;s.c.height=h*dpr;s.w=w;s.h=h;s.path=route(w,h,lengthOf(s.bmp),s.seed);render(s.c,s.bmp,s.path,lengthOf(s.bmp),w,h)}});
+ window.addEventListener('resize',()=>{if(current&&current.progress===1){const s=current,w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);s.c.width=w*dpr;s.c.height=h*dpr;s.w=w;s.h=h;s.path=route(w,h,s.total,s.seed,s.lead||0);render(s.c,s.bmp,s.path,s.total,w,h,s.total)}});
  // The PNG is the same print, each dot enlarged to a 4×4 block so the low resolution survives.
  async function exportReceipt(s){const bmp=print(layout(s),parseInt(s.id,16)||1),Z=4,rowsPer=Math.floor(16000/Z),files=[];
   for(let offset=0;offset<bmp.height;offset+=rowsPer){const h=Math.min(rowsPer,bmp.height-offset),c=document.createElement('canvas');c.width=DOTS*Z;c.height=h*Z;const x=c.getContext('2d');x.imageSmoothingEnabled=false;x.drawImage(bmp,0,offset,DOTS,h,0,0,DOTS*Z,h*Z);
    const blob=await new Promise((resolve,reject)=>c.toBlob(b=>b?resolve(b):reject(new Error('Receipt export failed')),'image/png'));files.push({name:'receipt_'+String(files.length+1).padStart(3,'0')+'.png',blob,bytes:new Uint8Array(await blob.arrayBuffer())})}
   return files.length===1?{blob:files[0].blob,extension:'png'}:{blob:PrintExport.zip(files),extension:'zip'}}
- return {layout,print,route,at,render,start,stop,export:exportReceipt,complement,showWidth:SHOW_W};
+ return {layout,print,route,at,render,start,stop,export:exportReceipt,complement,showWidth:SHOW_W,tailDeg:TAIL_DEG};
 })();

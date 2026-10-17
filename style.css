@@ -151,11 +151,11 @@ h2{font-size:32px;font-weight:400;margin:0 0 24px}
 .book .fn{font-size:16px;vertical-align:baseline;line-height:inherit;margin-left:2px}
 /* One type scale on the left: 16px for everything, 32px for section titles only. */
 .toc a{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* Receipt tail: the receipt peeks out of the bottom edge and grows with each take. */
-.receipt-tail{position:fixed;bottom:0;right:24px;width:240px;height:0;overflow:hidden;background:#EFEFEC;z-index:5;
- transition:height .45s steps(6),transform .4s ease-in;clip-path:polygon(0 4px,8% 0,17% 4px,25% 0,33% 4px,42% 0,50% 4px,58% 0,67% 4px,75% 0,83% 4px,92% 0,100% 4px,100% 100%,0 100%)}
+/* Receipt tail: the receipt leaves the bottom-right corner on a diagonal and grows with each take. */
+.receipt-tail{position:fixed;right:0;bottom:0;width:240px;height:0;overflow:hidden;background:#EFEFEC;z-index:5;
+ transform-origin:50% 100%;transform:translateX(50%) rotate(-35deg);transition:height .45s steps(6),filter .2s;
+ clip-path:polygon(0 4px,8% 0,17% 4px,25% 0,33% 4px,42% 0,50% 4px,58% 0,67% 4px,75% 0,83% 4px,92% 0,100% 4px,100% 100%,0 100%)}
 .receipt-tail[hidden]{display:none}
 .receipt-tail canvas{display:block;image-rendering:pixelated}
 .receipt-tail.pullable{cursor:grab}
-.receipt-tail.pullable:hover{transform:translateY(-6px)}
-.receipt-tail.pulled{transform:translateY(-110vh);cursor:grabbing}
+.receipt-tail.pullable:hover{filter:brightness(1.08)}
