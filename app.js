@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610170823";
+const BUILD="202610170826";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -98,10 +98,13 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
 const SHEET=14,SESSION_ID=crypto.randomUUID().slice(0,8).toUpperCase(),tail=document.getElementById("receiptTail");
 const endMark=()=>Math.max(0,Math.min(1,(history.length-(SHEET-5))/5));
 function receiptState(){return {id:SESSION_ID,count:history.length,entries:history.map(h=>({...h})),date:new Date().toLocaleString("en-GB",{hour12:false}),background}}
-function updateMeta(){if(!tail)return;const used=history.length;tail.hidden=!used;if(!used)return;
- const peek=Math.min(26+used*16,260);tail.style.height=peek+"px";tail.classList.toggle("pullable",used>=SHEET/2);
- const s=receiptState(),bmp=PrintReceipt.print(PrintReceipt.layout(s),parseInt(SESSION_ID,16)||1),c=tail.querySelector("canvas"),w=96,h=Math.round(bmp.height*w/bmp.width);
- c.width=bmp.width;c.height=bmp.height;c.style.width=w+"px";c.style.height=h+"px";c.getContext("2d").drawImage(bmp,0,0)}
+// The tail is the receipt itself at the size it prints: as long as what has been printed so far.
+function updateMeta(){if(!tail)return;const used=history.length;tail.hidden=!used;if(!used)return;tail.classList.toggle("pullable",used>=SHEET/2);
+ const s=receiptState(),l=PrintReceipt.layout(s),bmp=PrintReceipt.print(l,parseInt(SESSION_ID,16)||1),c=tail.querySelector("canvas"),w=PrintReceipt.showWidth,scale=w/bmp.width,h=Math.round(bmp.height*scale);
+ c.width=bmp.width;c.height=bmp.height;c.style.width=w+"px";c.style.height=h+"px";c.getContext("2d").drawImage(bmp,0,0);
+ // only what has come out so far: the head and the items, not yet the total at the foot
+ const rules=l.rows.filter(r=>r.kind==="rule"),cut=(rules[1]?rules[1].y:l.height)*bmp.width/l.width*scale;
+ tail.style.width=w+"px";tail.style.height=Math.round(Math.min(cut,window.innerHeight*.45))+"px"}
 function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore();paintEndMark(canvas.height)}
 function paintEndMark(h){const a=endMark();if(!a)return;ctx.save();ctx.globalAlpha=.55*a;ctx.beginPath();ctx.rect(840-22,0,22,h);ctx.clip();ctx.strokeStyle='#9A9A9A';ctx.lineWidth=5;for(let y=-40;y<h+40;y+=14){ctx.beginPath();ctx.moveTo(840-30,y+30);ctx.lineTo(848,y-8);ctx.stroke()}ctx.restore()}
 posterScroller.addEventListener('scroll',()=>draw());window.addEventListener('resize',()=>draw());
