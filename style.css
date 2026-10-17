@@ -86,7 +86,7 @@ h3.wiki-h{font-size:24px;margin-top:48px}
 .wiki-sec[hidden]{display:none}
 
 /* Body text: the same setting as the print */
-.wiki-body{font-size:16px;line-height:1.5;text-align:left;word-break:normal;overflow-wrap:break-word}
+.wiki-body{font-size:16px;line-height:1.5;text-align:justify;text-justify:inter-word;text-align-last:left;word-break:normal;overflow-wrap:break-word}
 .wiki-body p{display:inline;margin:0}
 .turn .who{font-weight:400;color:var(--muted)}
 .turn.stage{color:var(--muted)}
