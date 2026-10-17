@@ -75,8 +75,8 @@ a.char:hover{text-decoration-thickness:3px}
 
 /* Headings: wiki title row with fold mark, number, title, [편집] and a rule */
 .wiki-h{clear:both;display:flex;align-items:center;gap:12px;margin:64px 0 24px;padding-bottom:8px;border-bottom:1px solid var(--text);font-weight:400;line-height:1;letter-spacing:0;cursor:pointer;user-select:none}
-h2.wiki-h{font-size:32px}
-h3.wiki-h{font-size:16px;margin-top:48px}
+h2.wiki-h{font-size:24px}
+h3.wiki-h{font-size:24px;margin-top:48px}
 .wiki-h .fold{flex:none;width:.34em;height:.34em;border-right:2px solid var(--text);border-bottom:2px solid var(--text);transform:translateY(-.12em) rotate(45deg);margin:0 .08em 0 .06em;transition:transform 120ms linear}
 .wiki-h.folded .fold{transform:rotate(-45deg)}
 .wiki-h .num{flex:none}
