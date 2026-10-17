@@ -16,7 +16,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .book::-webkit-scrollbar{display:none}
 
 /* Document head */
-.doc-title{font-size:64px;font-weight:400;line-height:1;margin:0;letter-spacing:0}
+.doc-title{font-size:32px;font-weight:400;line-height:1;margin:0;letter-spacing:0}
 .doc-updated{font-size:16px;color:var(--muted);margin:20px 0 0;line-height:1.3}
 .categories{border:1px solid var(--text);padding:8px 12px;font-size:16px;line-height:1.4;margin:16px 0 14px}
 .categories b{font-weight:400;margin-right:6px}
@@ -33,8 +33,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .navbox-row{display:flex;justify-content:space-between;gap:12px;padding:6px 12px;font-size:16px;line-height:1.3}
 .navbox-row+.navbox-row{border-top:1px solid var(--text)}
 
-.top-pair{display:flex;align-items:flex-start;gap:16px;margin:0 0 40px}
-.toc{flex:0 0 200px;border:1px solid var(--text);padding:12px 12px 14px;font-size:16px;line-height:1.5}
+.top-pair{display:flex;flex-direction:column;align-items:stretch;gap:16px;margin:0 0 40px}
+.toc{flex:none;border:1px solid var(--text);padding:12px 12px 14px;font-size:16px;line-height:1.5}
 .toc-title{display:flex;justify-content:space-between;align-items:center;width:100%;font-size:16px;line-height:1;margin-bottom:10px}
 .toc-fold{width:8px;height:8px;border-right:1px solid var(--text);border-bottom:1px solid var(--text);transform:translateY(-3px) rotate(45deg)}
 .toc.folded .toc-fold{transform:rotate(-135deg)}
@@ -49,13 +49,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;paddin
 .info-eyebrow{font-size:13px}
 .info-title{font-size:24px;line-height:1.1;margin:6px 0}
 .info-sub{font-size:13px;font-family:Pretendard,sans-serif;white-space:pre}
-.info-pic{aspect-ratio:4/5;border-bottom:1px solid var(--text)}
-.info-pic img,.info-pic .ph{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.info-pic{aspect-ratio:4/3!important;border-bottom:1px solid var(--text)}
+.info-pic img,.info-pic .ph{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 25%;image-rendering:pixelated}
 .info-pic .ph{background-color:#4A4A4A;background-image:radial-gradient(#000 1.4px,transparent 1.6px);background-size:5px 5px}
 .info-caption{text-align:center;font-size:13px;padding:6px 8px;border-bottom:1px solid var(--text)}
-.info-row{display:grid;grid-template-columns:72px 1fr}
+.info-row{display:grid;grid-template-columns:112px 1fr}
 .info-row+.info-row,.info-cast+.info-row{border-top:1px solid var(--text)}
-.info-k{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 4px;border-right:1px solid var(--text);font-size:16px}
+.info-k{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 4px;border-right:1px solid var(--text);font-size:16px;white-space:nowrap}
 .info-v{padding:6px 8px;min-width:0;overflow-wrap:anywhere}
 .info-cast[hidden]{display:none}
 .info-cast{border-top:1px solid var(--text)}
@@ -74,9 +74,9 @@ a.char:hover{text-decoration-thickness:3px}
 .sentence.flash,.sentence.flash .who{background:var(--hl);color:var(--hl-ink)}
 
 /* Headings: wiki title row with fold mark, number, title, [편집] and a rule */
-.wiki-h{clear:both;display:flex;align-items:center;gap:14px;margin:120px 0 28px;padding-bottom:14px;border-bottom:1px solid var(--text);font-weight:400;line-height:1;letter-spacing:0;cursor:pointer;user-select:none}
-h2.wiki-h{font-size:48px}
-h3.wiki-h{font-size:32px;margin-top:88px}
+.wiki-h{clear:both;display:flex;align-items:center;gap:12px;margin:64px 0 24px;padding-bottom:8px;border-bottom:1px solid var(--text);font-weight:400;line-height:1;letter-spacing:0;cursor:pointer;user-select:none}
+h2.wiki-h{font-size:32px}
+h3.wiki-h{font-size:16px;margin-top:48px}
 .wiki-h .fold{flex:none;width:.34em;height:.34em;border-right:2px solid var(--text);border-bottom:2px solid var(--text);transform:translateY(-.12em) rotate(45deg);margin:0 .08em 0 .06em;transition:transform 120ms linear}
 .wiki-h.folded .fold{transform:rotate(-45deg)}
 .wiki-h .num{flex:none}
@@ -149,3 +149,5 @@ h2{font-size:32px;font-weight:400;margin:0 0 24px}
    Glyphs it lacks (《》〈〉…) fall back to the print face. */
 .book{font-family:DOSGothic,DreamHeumul,Pretendard,sans-serif;-webkit-font-smoothing:none;-moz-osx-font-smoothing:unset;font-smooth:never;text-rendering:optimizeSpeed}
 .book .fn{font-size:16px;vertical-align:baseline;line-height:inherit;margin-left:2px}
+/* One type scale on the left: 16px for everything, 32px for section titles only. */
+.toc a{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
