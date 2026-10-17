@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610170944";
+const BUILD="202610170948";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -68,7 +68,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
   for(const [name,year] of W.navbox.rows){const row=el('div','navbox-row');row.append(el('span','',name),el('span','',year));list.append(row)}nb.append(t,list);prose.append(nb)}
  const pair=el('div','top-pair');
  const toc=el('div','toc');toc.id='toc';const tt=el('button','toc-title');tt.type='button';tt.append(el('span','','목차'),el('span','toc-fold'));const tl=el('div','toc-list');tt.onclick=()=>{tl.hidden=!tl.hidden;toc.classList.toggle('folded',tl.hidden)};toc.append(tt,tl);
- const tocLine=(num,title,id,depth)=>{const d=el('div','d'+depth);const a=el('a');a.href='#'+id;a.onclick=e=>{e.preventDefault();scrollToId(id)};a.append(el('span','num',num+'.'),document.createTextNode(' '+title));d.append(a);tl.append(d)};
+ const tocLine=(num,title,id,depth)=>{const d=el('div','d'+depth);const a=el('a');a.href='#'+id;a.onclick=e=>{e.preventDefault();scrollToId(id)};a.append(el('span','num',num+'.'),el('span','t',title.replace(/ /g,'\u00A0')));d.append(a);tl.append(d)};
  tocLine('1','개요','s-1',0);tocLine('2','본문','s-2',0);W.sections.forEach((x,i)=>tocLine('2.'+(i+1),x.title,'s-2-'+(i+1),1));tocLine('3','관련 문서','s-3',0);
  const info=el('div','infobox'),I=W.infoTop;
  const pic=el('div','info-pic');pic.dataset.cap=I.caption;pic.style.aspectRatio=I.ratio||'3/4';const img=new Image();img.alt=I.caption;img.src='images/00.png';img.onerror=()=>{img.replaceWith(el('span','ph'))};pic.append(img);bindImageSteal(pic,img,'00',I.caption);info.append(pic);
