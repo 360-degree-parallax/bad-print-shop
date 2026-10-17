@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610171000";
+const BUILD="202610171131";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -75,8 +75,7 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  const row=(k,v)=>{const r=el('div','info-row');const th=el('div','info-k',k),td=el('div','info-v');if(typeof v==='string')td.textContent=v;else td.append(...v);r.append(th,td);return r};
  const get=k=>(W.infobox.find(x=>x[0]===k)||[])[1]||'';
  info.append(row('작가',get('작가')),row('초연',get('초연')),row('장르',get('장르')));
- const ft=fold(),cast=el('div','info-cast');ft.onclick=()=>{cast.hidden=!cast.hidden};
- const castList=W.characters.map(c=>{const line=el('div','cast-line');line.append(charLink(c.name),el('small','',' ('+c.role+')'));return line});cast.append(row('등장인물',castList));info.append(ft,cast);
+ // the cast list is not shown; character names in the text still link to their first line
  info.append(row('영문 저본',get('영문 저본')),row('한국어 번역',get('한국어 번역')),row('원문 일치',[Object.assign(el('span','',originalCount().toLocaleString('ko-KR')),{id:'originalCount'})]));
  pair.append(toc,info);prose.append(pair);
  {const [h,b]=heading('h2','1','개요','s-1');prose.append(h,b);const ov=el('p');W.overview.forEach((t,k)=>{const i=overviewStart+k;ov.append(sentenceNode(BookText[i],i));if(t.includes('{n}')&&W.overviewNote){const fn=el('span','fn','[1]');fn.setAttribute('role','button');fn.tabIndex=0;fn.onclick=()=>{$('#noteText').textContent=W.overviewNote;$('#note').showModal()};ov.append(fn)}ov.append(document.createTextNode(' '))});b.append(ov)}
