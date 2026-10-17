@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610171132";
+const BUILD="202610171152";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -122,7 +122,10 @@ function makeItem(text,index){
  const item={text,index,ink:textInk,size:settings.size*840/440,blockWidth:Math.min(756,settings.width*840/440),intensity:settings.intensity,seed:Math.floor(Math.random()*1000000),effect:effects[Math.floor(Math.random()*effects.length)]};
  item.words=PrintFlow.words(text,item);return item;
 }
-function remember(item){history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});takeEnds.push(PrintFlow.height(flow));degrade(item.index);updateMeta();nextPalette()}
+// Every take is heard as a thermal print: one of four recordings, never the same one twice in a row.
+const printSounds=[1,2,3,4].map(i=>{const a=new Audio(`assets/sound/print-${i}.mp3`);a.preload="auto";return a});let lastSound=-1;
+function playPrint(){let i=Math.floor(Math.random()*printSounds.length);if(i===lastSound)i=(i+1)%printSounds.length;lastSound=i;const a=printSounds[i].cloneNode();a.volume=.7;a.play().catch(()=>{})}
+function remember(item){playPrint();history.push({text:item.text,index:item.index,ink:item.ink,effect:item.effect});takeEnds.push(PrintFlow.height(flow));degrade(item.index);updateMeta();nextPalette()}
 function bindImageSteal(holder,img,code,caption){holder.classList.add('stealable');holder.tabIndex=0;holder.setAttribute('role','button');holder.setAttribute('aria-label',caption+' 사진 수집');
  const go=()=>{if(img.complete&&img.naturalWidth)stealImage(img,code,caption)};holder.addEventListener('click',e=>{e.stopPropagation();go()});holder.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();go()}})}
 function stealImage(img,code,caption){const size=settings.size*840/440,drawH=Math.round(size*(2+Math.random()*1.6)),drawW=Math.min(560,Math.round(drawH*img.naturalWidth/img.naturalHeight));
