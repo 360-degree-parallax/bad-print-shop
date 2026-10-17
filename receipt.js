@@ -80,15 +80,25 @@ window.PrintReceipt=(()=>{
  // where the curve turns tight. The curve starts at the bottom-right corner, where the tail came out.
  const TAIL_DEG=35;
  function cutOf(l){const rules=l.rows.filter(r=>r.kind==='rule');return (rules[1]?rules[1].y:l.height)*K*(SHOW_W/DOTS)}
+ // Straight ahead until there is nowhere left to go, then one tight turn: the paper is wider than the turn
+ // is round, so it fans out there. Out of the corner first, along the tail's line.
  function route(w,h,length,seed){let n=seed>>>0;const random=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296};
-  // out of the corner along the tail's line, then short legs with sharp turns: the spline folds the paper at each
-  const rad=TAIL_DEG*Math.PI/180,m=130,inside=p=>p.x>=m&&p.x<=w-m&&p.y>=m&&p.y<=h-m,anchors=[{x:w+30,y:h+30},{x:w-Math.sin(rad)*300,y:h-Math.cos(rad)*300}];
-  let heading=Math.atan2(-Math.cos(rad),-Math.sin(rad)),rough=340,guard=0;
-  while(rough<length+400&&guard++<400){const last=anchors.at(-1);let p=null;
-   for(let tries=0;tries<24&&!p;tries++){const hd=heading+(random()<.5?-1:1)*(1+random()*1.3),len=240+random()*260,q={x:last.x+Math.cos(hd)*len,y:last.y+Math.sin(hd)*len};if(inside(q)){p=q;heading=hd}}
-   if(!p){p={x:m+random()*(w-2*m),y:m+random()*(h-2*m)};heading=Math.atan2(p.y-last.y,p.x-last.x)}
-   rough+=Math.hypot(p.x-last.x,p.y-last.y);anchors.push(p)}
-  const pts=[{...anchors[0],d:0}];for(let i=0;i<anchors.length-1;i++){const a=anchors[Math.max(0,i-1)],b=anchors[i],c=anchors[i+1],d=anchors[Math.min(anchors.length-1,i+2)],steps=Math.max(20,Math.ceil(Math.hypot(c.x-b.x,c.y-b.y)/5));for(let j=1;j<=steps;j++){const t=j/steps,t2=t*t,t3=t2*t,f=k=>.5*((2*b[k])+(-a[k]+c[k])*t+(2*a[k]-5*b[k]+4*c[k]-d[k])*t2+(-a[k]+3*b[k]-3*c[k]+d[k])*t3),p={x:f('x'),y:f('y')},prev=pts.at(-1);p.d=prev.d+Math.hypot(p.x-prev.x,p.y-prev.y);pts.push(p)}}return pts;
+  const rad=TAIL_DEG*Math.PI/180,m=140,inside=(x,y)=>x>=m&&x<=w-m&&y>=m&&y<=h-m,STEP=6;
+  let x=w+30,y=h+30,heading=Math.atan2(-Math.cos(rad),-Math.sin(rad)),entered=false,guard=0;
+  const pts=[{x,y,d:0}],push=(nx,ny)=>{const p=pts.at(-1);pts.push({x:nx,y:ny,d:p.d+Math.hypot(nx-p.x,ny-p.y)});x=nx;y=ny};
+  // how far a ray can run inside the margin
+  const reach=(hd)=>{let k=0,px=x,py=y;while(k<4000){px+=Math.cos(hd)*STEP;py+=Math.sin(hd)*STEP;if(!inside(px,py))break;k+=STEP}return k};
+  while(pts.at(-1).d<length+200&&guard++<3000){const nx=x+Math.cos(heading)*STEP,ny=y+Math.sin(heading)*STEP;
+   if(inside(nx,ny))entered=true;
+   if(!entered||inside(nx,ny)){push(nx,ny);continue}
+   // nowhere left to go: turn hard toward the side with the most room, on a small radius
+   const turn=(110+random()*55)*Math.PI/180,left=heading-turn,right=heading+turn,sign=reach(left)>=reach(right)?-1:1,r=28+random()*36;
+   const cx=x+Math.cos(heading+sign*Math.PI/2)*r,cy=y+Math.sin(heading+sign*Math.PI/2)*r,start=Math.atan2(y-cy,x-cx);
+   for(let a=0;a<=turn;a+=.12)push(cx+Math.cos(start+sign*a)*r,cy+Math.sin(start+sign*a)*r);
+   heading+=sign*turn;
+   // step back inside if the turn left us on the margin
+   for(let k=0;k<40&&!inside(x+Math.cos(heading)*STEP,y+Math.sin(heading)*STEP);k++)heading+=sign*.15}
+  return pts;
  }
  function at(path,d){let low=0,high=path.length-1;while(low+1<high){const mid=(low+high)>>1;if(path[mid].d<d)low=mid;else high=mid}const a=path[low],b=path[high],t=Math.max(0,Math.min(1,(d-a.d)/(b.d-a.d||1)));return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,angle:Math.atan2(b.y-a.y,b.x-a.x)}}
  const scale=SHOW_W/DOTS,lengthOf=bmp=>bmp.height*scale;
