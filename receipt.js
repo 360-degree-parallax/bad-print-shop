@@ -99,22 +99,27 @@ window.PrintReceipt=(()=>{
   hd=Math.PI;const y0=y;let t=0;                                            // and lies on the floor in a loose S
   while(d<60000){t+=STEP;x-=STEP;const ny=y0+Math.sin(t/260)*26*Math.min(1,t/300),py=y;y=ny;hd=Math.atan2(y-py,-STEP);d+=Math.hypot(STEP,y-py);push();if(x<-4000)break}
   trackCache.set(key,pts);return pts}
- function at(path,d){let low=0,high=path.length-1;while(low+1<high){const mid=(low+high)>>1;if(path[mid].d<d)low=mid;else high=mid}const a=path[low],b=path[high],t=Math.max(0,Math.min(1,(d-a.d)/(b.d-a.d||1)));return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,angle:Math.atan2(b.y-a.y,b.x-a.x)}}
+ // while reading, the tail just runs straight out of the corner along TAIL_DEG
+ function straight(w,h){const key='s'+w+'x'+h;if(trackCache.has(key))return trackCache.get(key);const rad=TAIL_DEG*Math.PI/180,ux=-Math.sin(rad),uy=-Math.cos(rad),angle=Math.atan2(uy,ux),pts=[];
+  for(let d=0;d<=60000;d+=8)pts.push({x:w+20+ux*d,y:h+20+uy*d,d,angle});trackCache.set(key,pts);return pts}
+ // between the two: the straight strip falls into its weighted shape (k from 0 to 1)
+ function blend(a,b,k){return {d:0,at:s=>{const p=at(a,s),q=at(b,s),cx=Math.cos(p.angle)*(1-k)+Math.cos(q.angle)*k,cy=Math.sin(p.angle)*(1-k)+Math.sin(q.angle)*k;return {x:p.x+(q.x-p.x)*k,y:p.y+(q.y-p.y)*k,angle:Math.atan2(cy,cx)}}}}
+ function at(path,d){if(path.at&&!Array.isArray(path))return path.at(d);let low=0,high=path.length-1;while(low+1<high){const mid=(low+high)>>1;if(path[mid].d<d)low=mid;else high=mid}const a=path[low],b=path[high],t=Math.max(0,Math.min(1,(d-a.d)/(b.d-a.d||1)));return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,angle:Math.atan2(b.y-a.y,b.x-a.x)}}
  // draw the strip with L px of it out of the printer: receipt row d sits at track position L - d
  function strip(x,bmp,path,L){const F=lengthOf(bmp),half=SHOW_W/2,step=2,top=Math.min(F,L);
   x.imageSmoothingEnabled=false;x.strokeStyle=PAPER;x.lineWidth=SHOW_W;x.lineJoin='round';x.lineCap='butt';x.beginPath();
   for(let q=0;q<=top;q+=step){const p=at(path,L-top+q);q?x.lineTo(p.x,p.y):x.moveTo(p.x,p.y)}const pe=at(path,L);x.lineTo(pe.x,pe.y);x.stroke();
   for(let dd=0;dd<top;dd+=step){const len=Math.min(step,top-dd),p=at(path,L-dd),sy=dd/scale,sh=Math.min(bmp.height-sy,len/scale+1);if(sh<=0)break;
    x.save();x.translate(p.x,p.y);x.rotate(p.angle+Math.PI/2);x.drawImage(bmp,0,sy,DOTS,sh,-half,0,SHOW_W,sh*scale+.6);x.restore()}}
- function render(c,bmp,L,w,h){const x=c.getContext('2d'),ratio=c.width/w;x.setTransform(ratio,0,0,ratio,0,0);x.clearRect(0,0,w,h);strip(x,bmp,track(w,h),L)}
+ function render(c,bmp,L,w,h,fall=1){const x=c.getContext('2d'),ratio=c.width/w;x.setTransform(ratio,0,0,ratio,0,0);x.clearRect(0,0,w,h);strip(x,bmp,fall>=1?track(w,h):fall<=0?straight(w,h):blend(straight(w,h),track(w,h),fall),L)}
  // the tail while reading: the same strip, L = what has been printed so far (the foot is still inside)
- function tail(c,bmp,L){const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr)}render(c,bmp,L,w,h)}
- function onTail(px,py,L){const path=track(window.innerWidth,window.innerHeight);for(let q=0;q<=L;q+=8){const p=at(path,q);if(Math.hypot(p.x-px,p.y-py)<SHOW_W/2)return true}return false}
+ function tail(c,bmp,L){const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);if(c.width!==Math.round(w*dpr)||c.height!==Math.round(h*dpr)){c.width=Math.round(w*dpr);c.height=Math.round(h*dpr)}render(c,bmp,L,w,h,0)}
+ function onTail(px,py,L){const path=straight(window.innerWidth,window.innerHeight);for(let q=0;q<=L;q+=8){const p=at(path,q);if(Math.hypot(p.x-px,p.y-py)<SHOW_W/2)return true}return false}
  function stop(){cancelAnimationFrame(frame);frame=0;if(current&&current.done)current.done();current=null}
- function start(c,s,hooks={}){stop();const l=layout(s),seed=parseInt(s.id,16)||Date.now(),bmp=print(l,seed),F=lengthOf(bmp),lead=Math.min(F,s.lead||0),state=current={c,bmp,seed,progress:0,done:hooks.done};let began=null;const duration=Math.min(60000,600+(F-lead)/FEED*1000);
+ function start(c,s,hooks={}){stop();const l=layout(s),seed=parseInt(s.id,16)||Date.now(),bmp=print(l,seed),F=lengthOf(bmp),lead=Math.min(F,s.lead||0),state=current={c,bmp,seed,progress:0,done:hooks.done};let began=null;const duration=Math.min(60000,900+(F-lead)/FEED*1000);
  function resize(){const w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);c.width=Math.round(w*dpr);c.height=Math.round(h*dpr);state.w=w;state.h=h}resize();
  if(hooks.begin)hooks.begin();
- const tick=t=>{if(current!==state)return;if(began===null)began=t;state.progress=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(t-began)/duration);if(state.w!==window.innerWidth||state.h!==window.innerHeight)resize();render(c,bmp,lead+(F-lead)*state.progress,state.w,state.h);if(state.progress<1)frame=requestAnimationFrame(tick);else if(state.done){const f=state.done;state.done=null;f()}};frame=requestAnimationFrame(tick);
+ const tick=t=>{if(current!==state)return;if(began===null)began=t;state.progress=window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:Math.min(1,(t-began)/duration);if(state.w!==window.innerWidth||state.h!==window.innerHeight)resize();const el=t-began,fall=Math.min(1,el/900),ease=fall*fall*(3-2*fall);render(c,bmp,lead+(F-lead)*state.progress,state.w,state.h,ease);if(state.progress<1)frame=requestAnimationFrame(tick);else if(state.done){const f=state.done;state.done=null;f()}};frame=requestAnimationFrame(tick);
  }
  window.addEventListener('resize',()=>{if(current&&current.progress===1){const s=current,w=window.innerWidth,h=window.innerHeight,dpr=Math.min(window.devicePixelRatio||1,2);s.c.width=w*dpr;s.c.height=h*dpr;s.w=w;s.h=h;render(s.c,s.bmp,lengthOf(s.bmp),w,h)}});
  // The PNG is the same print, each dot enlarged to a 4×4 block so the low resolution survives.
