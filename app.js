@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610171208";
+const BUILD="202610171217";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -100,13 +100,15 @@ const takeEnds=[];
 // The receipt starts printing at the first take, so its date and time are that moment's and never change.
 let printedAt=null;
 function receiptState(){if(!printedAt)printedAt=new Date().toLocaleString("en-GB",{hour12:false});return {id:SESSION_ID,count:history.length,entries:history.map(h=>({...h})),date:printedAt,background}}
-// The tail is the receipt itself at the size it prints: as long as what has been printed so far.
+// The tail is the receipt itself on its track, as far out as it has been printed so far. It slides out to
+// its new length over a moment after each take, the way the paper is pushed out of the printer.
+let tailBmp=null,tailShown=0,tailAnim=0;
 function updateMeta(){if(!tail)return;const used=history.length;tail.hidden=!used;if(!used)return;tail.classList.toggle("pullable",used>=SHEET/2);
- const s=receiptState(),l=PrintReceipt.layout(s),bmp=PrintReceipt.print(l,parseInt(SESSION_ID,16)||1),c=tail.querySelector("canvas"),w=PrintReceipt.showWidth,scale=w/bmp.width,h=Math.round(bmp.height*scale);
- c.width=bmp.width;c.height=bmp.height;c.style.width=w+"px";c.style.height=h+"px";c.getContext("2d").drawImage(bmp,0,0);
- // the whole receipt, foot included, so nothing at the corner has to move when it is pulled
+ const s=receiptState(),l=PrintReceipt.layout(s);tailBmp=PrintReceipt.print(l,parseInt(SESSION_ID,16)||1);
  tailLead=Math.round(PrintReceipt.cutOf(l));   // the foot (TOTAL) stays inside the printer until the receipt is pulled
- tail.style.width=w+"px";tail.style.height=tailLead+"px";c.style.marginTop="0"}
+ cancelAnimationFrame(tailAnim);const from=tailShown,to=tailLead,t0=performance.now(),dur=Math.max(300,(to-from)/150*1000);
+ const step=t=>{const k=Math.min(1,(t-t0)/dur);tailShown=from+(to-from)*k;PrintReceipt.tail(tail,tailBmp,tailShown);if(k<1)tailAnim=requestAnimationFrame(step)};tailAnim=requestAnimationFrame(step)}
+window.addEventListener("resize",()=>{if(tailBmp&&!tail.hidden)PrintReceipt.tail(tail,tailBmp,tailShown)});
 let tailLead=0;
 function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore();paintDefects(offset,canvas.height);paintEndMark(canvas.height)}
 // The poster's own print faults, fixed to the paper so they scroll with it: motor banding at a regular pitch
@@ -173,6 +175,8 @@ document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog')
 $('#receiptDialog').addEventListener('close',()=>PrintReceipt.stop());
 function download(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove()}$('#savePoster').onclick=async()=>{const button=$('#savePoster');button.disabled=true;try{const result=await PrintExport.make(receipt);const url=URL.createObjectURL(result.blob);download(url,`ST0L3N_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false;draw()}};$('#saveReceipt').onclick=async()=>{const button=$('#saveReceipt');button.disabled=true;try{const result=await PrintReceipt.export(receipt);const url=URL.createObjectURL(result.blob);download(url,`RECEIPT_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false}};
 setPalette(0);render();draw();document.fonts.ready.then(()=>{for(const row of flow.rows)for(const token of row.tokens)delete token.tile;draw()});
-tail?.addEventListener("click",()=>{if(!tail.classList.contains("pullable")||receiptOpen())return;claim()});
+// the tail canvas lets pointer events through; the paper itself is hit-tested against its track
+document.addEventListener("click",e=>{if(!tail||tail.hidden||!tail.classList.contains("pullable")||receiptOpen())return;if(PrintReceipt.onTail(e.clientX,e.clientY,tailShown)){e.preventDefault();e.stopPropagation();claim()}},true);
+document.addEventListener("mousemove",e=>{if(!tail||tail.hidden)return;const on=tail.classList.contains("pullable")&&!receiptOpen()&&PrintReceipt.onTail(e.clientX,e.clientY,tailShown);document.documentElement.classList.toggle("over-tail",on)});
 $('#receiptDialog').addEventListener('close',()=>updateMeta());
-tail?.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();tail.click()}});updateMeta();
+updateMeta();
