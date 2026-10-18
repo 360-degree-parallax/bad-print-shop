@@ -12,7 +12,7 @@ window.PrintReceipt=(()=>{
  function layout(s){const rows=[];let y=40;
   const add=(text,kind='text',step=28,extra)=>{rows.push({text,y,kind,...extra});y+=step};
   const [date,time]=String(s.date).split(/,\s*/);
-  add('#'+s.id,'text',30);add(date||'','pair',34,{right:time||''});add('','rule',26);
+  add('#'+s.id,'pair',30,{right:'을지로3가 · 단말기 07'});add(date||'','pair',34,{right:time||''});add('','rule',26);
   const measure=document.createElement('canvas').getContext('2d');measure.font=FONT;
   s.entries.forEach((entry,i)=>{const prefix=String(i+1).padStart(2,'0')+'. ';let line=prefix;
    for(const word of String(entry.text).split(/\s+/)){for(const ch of Array.from(word+' ')){if(measure.measureText(line+ch).width>LAYOUT_W-56){add(line.trimEnd(),'text',28,{item:i});line='    '}line+=ch}}
