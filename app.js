@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610240627";
+const BUILD="202610240633";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -113,8 +113,18 @@ let tailBmp=null,tailShown=0,tailAnim=0,tailFrom=0;
 function updateMeta(){if(!tail)return;tail.hidden=false;
  const s=receiptState(),l=PrintReceipt.layout(s);tailBmp=PrintReceipt.print(l,parseInt(SESSION_ID,16)||1);
  tailLead=Math.round(PrintReceipt.cutOf(l));tailFrom=PrintReceipt.tornAt(l);   // the foot (TOTAL) stays inside the printer until the receipt is pulled
- cancelAnimationFrame(tailAnim);const from=tailShown||Math.max(tailFrom,tailLead-220),to=tailLead,t0=performance.now(),dur=Math.max(300,(to-from)/150*1000);
- const step=t=>{const k=Math.min(1,(t-t0)/dur);tailShown=from+(to-from)*k;PrintReceipt.tail(tail,tailBmp,tailShown,tailFrom);if(k<1)tailAnim=requestAnimationFrame(step)};tailAnim=requestAnimationFrame(step)}
+ if(intro===0){tailShown=tailFrom;PrintReceipt.tail(tail,tailBmp,tailShown,tailFrom);return}
+ feed(tailLead)}
+// Slide the tail out to `to`. While the opening feed runs the print sound loops; it stops when the paper does.
+function feed(to,dur){cancelAnimationFrame(tailAnim);const from=Math.max(tailShown,tailFrom),t0=performance.now();dur=dur||Math.max(300,(to-from)/150*1000);
+ const step=t=>{const k=Math.min(1,(t-t0)/dur);tailShown=from+(to-from)*k;PrintReceipt.tail(tail,tailBmp,tailShown,tailFrom);if(k<1)tailAnim=requestAnimationFrame(step);else if(introLoop){introLoop=false;stopPrintLoop()}};tailAnim=requestAnimationFrame(step)}
+// The opening: nothing sticks out at first. At the first touch (browsers keep sound off until then), or after
+// a few seconds anyway, the printer runs for a while and pushes out the end of the last customer's receipt
+// and your header, the print sound repeating for as long as it runs.
+let intro=0,introLoop=false;
+function openingFeed(){if(intro)return;intro=1;if(receiptOpen()||pulling)return;introLoop=true;startPrintLoop();feed(tailLead,2600+Math.random()*2800)}
+for(const type of ['pointerdown','keydown','touchstart'])window.addEventListener(type,openingFeed,{capture:true,once:true});
+setTimeout(openingFeed,6000);
 window.addEventListener("resize",()=>{if(tailBmp&&!tail.hidden)PrintReceipt.tail(tail,tailBmp,tailShown,tailFrom)});
 let tailLead=0;
 function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore();paintDefects(offset,canvas.height);paintEndMark(canvas.height)}
@@ -170,7 +180,7 @@ for(const key of ['size','width','intensity']){const input=$('#'+key+'Input'),ou
 // Pulling (or reaching the end): the tail is drawn back into the printer down the diagonal, then the
 // whole roll is printed again from the slot at the bottom centre.
 let pulling=false;
-function claim(){if(pulling||receiptOpen())return;finishPress(true);pulling=true;cancelAnimationFrame(tailAnim);const from=tailShown,t0=performance.now();
+function claim(){if(pulling||receiptOpen())return;finishPress(true);pulling=true;intro=intro||1;if(introLoop){introLoop=false;stopPrintLoop()}cancelAnimationFrame(tailAnim);const from=tailShown,t0=performance.now();
  const back=t=>{const k=Math.min(1,(t-t0)/600),e=k*k;tailShown=tailFrom+(from-tailFrom)*(1-e);if(tailBmp)PrintReceipt.tail(tail,tailBmp,tailShown,tailFrom);if(k<1)requestAnimationFrame(back);else{tail.hidden=true;tailShown=0;pulling=false;release()}};
  if(tail&&!tail.hidden&&from>tailFrom&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)requestAnimationFrame(back);else{if(tail)tail.hidden=true;pulling=false;release()}}
 function release(){const st=receiptState();receipt={lead:0,id:SESSION_ID,count:history.length,printFlow:PrintFlow.clone(flow),ink:textInk,background,entries:history.map(h=>({...h})),date:st.date,prior:st.prior};
@@ -196,7 +206,7 @@ $('#receiptDialog').addEventListener('close',()=>{PrintReceipt.stop();$('#receip
 function download(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove()}$('#savePoster').onclick=async()=>{const button=$('#savePoster');button.disabled=true;try{const result=await PrintExport.make(receipt);const url=URL.createObjectURL(result.blob);download(url,`ST0L3N_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false;draw()}};$('#saveReceipt').onclick=async()=>{const button=$('#saveReceipt');button.disabled=true;try{const result=await PrintReceipt.export(receipt);const url=URL.createObjectURL(result.blob);download(url,`RECEIPT_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false}};
 setPalette(0);render();draw();document.fonts.ready.then(()=>{for(const row of flow.rows)for(const token of row.tokens)delete token.tile;draw()});
 // the tail canvas lets pointer events through; the paper itself is hit-tested against its track
-document.addEventListener("click",e=>{if(!tail||tail.hidden||pulling||receiptOpen())return;if(PrintReceipt.onTail(e.clientX,e.clientY,tailShown,tailFrom)){e.preventDefault();e.stopPropagation();claim()}},true);
-document.addEventListener("mousemove",e=>{if(!tail||tail.hidden)return;const on=!pulling&&!receiptOpen()&&PrintReceipt.onTail(e.clientX,e.clientY,tailShown,tailFrom);document.documentElement.classList.toggle("over-tail",on)});
+document.addEventListener("click",e=>{if(!tail||tail.hidden||!intro||pulling||receiptOpen())return;if(PrintReceipt.onTail(e.clientX,e.clientY,tailShown,tailFrom)){e.preventDefault();e.stopPropagation();claim()}},true);
+document.addEventListener("mousemove",e=>{if(!tail||tail.hidden)return;const on=intro&&!pulling&&!receiptOpen()&&PrintReceipt.onTail(e.clientX,e.clientY,tailShown,tailFrom);document.documentElement.classList.toggle("over-tail",on)});
 $('#receiptDialog').addEventListener('close',()=>updateMeta());
 updateMeta();

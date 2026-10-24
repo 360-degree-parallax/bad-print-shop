@@ -110,7 +110,7 @@ window.PrintReceipt=(()=>{
  // The final print. The tail has gone back into the printer; now the whole roll comes up out of a slot at
  // the bottom centre of the screen, straight up: the old receipts quickly, yours at the pace of the head.
  // When the foot is out the cutter cuts it, the paper lifts clear of the slot and can be scrolled through.
- const UP_FAST=1200,UP_SLOW=210,MARGIN_TOP=72,MARGIN_FOOT=96;
+ const UP_SLOW=210,MARGIN_TOP=72,MARGIN_FOOT=96;
  function column(w,h){const sw=Math.min(SHOW_W,w-32);return {sw,sc:sw/DOTS,x0:Math.round((w-sw)/2),slot:h}}
  function bounds(st){const h=window.innerHeight,F=st.bmp.height*column(window.innerWidth,h).sc,low=h-MARGIN_FOOT-F;return {lo:Math.min(MARGIN_TOP,low),hi:Math.max(MARGIN_TOP,low),rest:low}}
  function teeth(x,x0,sw,y){x.save();x.globalCompositeOperation='destination-out';x.beginPath();const n=12,tw=sw/n;x.moveTo(x0-1,y+8);for(let i=0;i<n;i++){x.lineTo(x0+i*tw,y);x.lineTo(x0+i*tw+tw/2,y-5)}x.lineTo(x0+sw,y);x.lineTo(x0+sw+1,y+8);x.closePath();x.fill();x.restore()}
@@ -127,11 +127,11 @@ window.PrintReceipt=(()=>{
  function start(c,s,hooks={}){stop();const l=layout(s),seed=parseInt(s.id,16)||Date.now(),bmp=print(l,seed);
   const st=current={c,bmp,seed,P:0,cut:false,lift:0,top:0,progress:0,done:hooks.done};
   const sc=()=>column(window.innerWidth,window.innerHeight).sc,own=()=>l.ownStart*K*sc(),F=()=>bmp.height*sc();
-  const ownLen=F()-own(),slow=Math.max(UP_SLOW,ownLen/14);
+  const ownLen=F()-own(),slow=Math.max(UP_SLOW,ownLen/14),fast=Math.max(400,own()/(2+Math.random()*2.5));   // the old receipts: a random 2–4.5 s run
   if(hooks.begin)hooks.begin();let last=null,liftFrom=0,liftT=0;
   const tick=t=>{if(current!==st)return;const dt=last===null?0:Math.min(.05,(t-last)/1000);last=t;
    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches&&!st.cut)st.P=F();
-   if(!st.cut){st.P+=(st.P<own()?UP_FAST:slow)*dt;
+   if(!st.cut){st.P+=(st.P<own()?fast:slow)*dt;
     if(st.P>=F()){st.P=F();st.cut=true;st.top=window.innerHeight-F();liftFrom=st.top;liftT=t;if(st.done){const f=st.done;st.done=null;f()}}}
    else if(st.lift<1){st.lift=Math.min(1,(t-liftT)/700);const e=1-Math.pow(1-st.lift,3);st.top=liftFrom+(bounds(st).rest-liftFrom)*e;if(st.lift>=1){st.progress=1;c.closest('dialog')?.classList.add('scrollable')}}
    renderUp(st);if(st.progress<1)frame=requestAnimationFrame(tick)};frame=requestAnimationFrame(tick)}
