@@ -10,7 +10,7 @@ function nextPalette(){const pool=palettes.map((_,i)=>i).filter(i=>i!==paletteIn
 let items=[],history=[],receipt=null,flow=PrintFlow.create();
 const settings={size:32,width:396,intensity:.55};
 // Every sentence taken leaves its next, more damaged copy behind in the document (content-gen.js, built by tools/compress.mjs).
-const BUILD="202610180039";
+const BUILD="202610240627";
 // A new build may change what each sentence's saves are; takes stored by an older build are dropped.
 try{if(localStorage.getItem("bp-build")!==BUILD){localStorage.removeItem("bp-takes");localStorage.setItem("bp-build",BUILD)}}catch(e){}
 const TAKE_KEY="bp-takes";
@@ -91,24 +91,31 @@ function render(){const W=window.WikiDoc,prose=$('#prose');
  {const foot=document.querySelector('.wiki-foot');if(foot&&W.history){const box=el('div','doc-history');box.append(el('p','doc-history-title','문서 역사'));for(const [y,t] of W.history){const r=el('p');r.append(el('span','y',y),document.createTextNode(' '+t));box.append(r)}foot.prepend(box)}}
  updateMeta();
 }
-// The receipt has been printing since the first take: its tail grows out of the bottom edge of the
-// screen with every take (the real print, top first). From half a sheet the tail can be pulled to print.
+// The receipt is on screen from the start: the end of the last customer's receipt and your header stick out
+// of the bottom-right corner, and the tail grows with every take. It can be pulled at any time.
 // Near the end of the sheet the poster gets the hatched end-of-roll mark that thermal paper carries.
 const SHEET=14,SESSION_ID=crypto.randomUUID().slice(0,8).toUpperCase(),tail=document.getElementById("receiptTail");
 // where each take ended on the poster, in poster units, so the end-of-roll mark stays on the stretch it was printed on
 const takeEnds=[];
 // The receipt starts printing at the first take, so its date and time are that moment's and never change.
 let printedAt=null;
-function receiptState(){if(!printedAt)printedAt=new Date().toLocaleString("en-GB",{hour12:false});return {id:SESSION_ID,count:history.length,entries:history.map(h=>({...h})),date:printedAt,background}}
+// The people before you: two receipts already on the roll, from sentences that were in circulation before
+// you came (the ones that open as a 5th/10th/15th save), the same for the whole visit.
+const PRIOR=(()=>{let n=parseInt(SESSION_ID,16)>>>0||7;const r=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296};
+ const pool=Object.keys(window.BookGen?.start||{}).map(Number).filter(i=>i<overviewStart&&BookText[i]);const now=Date.now();
+ return [[.55,26+r()*60,8+Math.floor(r()*4)],[.3,1+r()*5,7+Math.floor(r()*4)]].map(([age,hours,count])=>{const entries=[];
+  for(let k=0;k<count&&pool.length;k++){const i=pool.splice(Math.floor(r()*pool.length),1)[0],v=versions(i);entries.push({text:withCount(v[Math.min(v.length-1,startOf(i)+Math.floor(r()*3))])})}
+  return {age,id:Math.floor(r()*4294967296).toString(16).toUpperCase().padStart(8,'0'),date:new Date(now-hours*3600000).toLocaleString("en-GB",{hour12:false}),entries,count:entries.length}})})();
+function receiptState(){if(!printedAt)printedAt=new Date().toLocaleString("en-GB",{hour12:false});return {id:SESSION_ID,count:history.length,entries:history.map(h=>({...h})),date:printedAt,background,prior:PRIOR}}
 // The tail is the receipt itself on its track, as far out as it has been printed so far. It slides out to
 // its new length over a moment after each take, the way the paper is pushed out of the printer.
-let tailBmp=null,tailShown=0,tailAnim=0;
-function updateMeta(){if(!tail)return;const used=history.length;tail.hidden=!used;if(!used)return;tail.classList.toggle("pullable",used>=SHEET/2);
+let tailBmp=null,tailShown=0,tailAnim=0,tailFrom=0;
+function updateMeta(){if(!tail)return;tail.hidden=false;
  const s=receiptState(),l=PrintReceipt.layout(s);tailBmp=PrintReceipt.print(l,parseInt(SESSION_ID,16)||1);
- tailLead=Math.round(PrintReceipt.cutOf(l));   // the foot (TOTAL) stays inside the printer until the receipt is pulled
- cancelAnimationFrame(tailAnim);const from=tailShown,to=tailLead,t0=performance.now(),dur=Math.max(300,(to-from)/150*1000);
- const step=t=>{const k=Math.min(1,(t-t0)/dur);tailShown=from+(to-from)*k;PrintReceipt.tail(tail,tailBmp,tailShown);if(k<1)tailAnim=requestAnimationFrame(step)};tailAnim=requestAnimationFrame(step)}
-window.addEventListener("resize",()=>{if(tailBmp&&!tail.hidden)PrintReceipt.tail(tail,tailBmp,tailShown)});
+ tailLead=Math.round(PrintReceipt.cutOf(l));tailFrom=PrintReceipt.tornAt(l);   // the foot (TOTAL) stays inside the printer until the receipt is pulled
+ cancelAnimationFrame(tailAnim);const from=tailShown||Math.max(tailFrom,tailLead-220),to=tailLead,t0=performance.now(),dur=Math.max(300,(to-from)/150*1000);
+ const step=t=>{const k=Math.min(1,(t-t0)/dur);tailShown=from+(to-from)*k;PrintReceipt.tail(tail,tailBmp,tailShown,tailFrom);if(k<1)tailAnim=requestAnimationFrame(step)};tailAnim=requestAnimationFrame(step)}
+window.addEventListener("resize",()=>{if(tailBmp&&!tail.hidden)PrintReceipt.tail(tail,tailBmp,tailShown,tailFrom)});
 let tailLead=0;
 function draw(follow=false){const viewport=Math.max(400,Math.ceil((posterScroller.clientHeight||622)*840/438));if(canvas.height!==viewport)canvas.height=viewport;const height=Math.max(viewport,PrintFlow.height(flow));posterSurface.style.height=(height*posterScale)+'px';if(follow)posterScroller.scrollTop=Math.max(0,(height-viewport)*posterScale);const offset=(posterScroller.scrollTop||0)/posterScale;ctx.fillStyle=background;ctx.fillRect(0,0,840,canvas.height);ctx.save();ctx.translate(0,-offset);PrintFlow.paint(ctx,flow,offset,viewport);ctx.restore();paintDefects(offset,canvas.height);paintEndMark(canvas.height)}
 // The poster's own print faults, fixed to the paper so they scroll with it: motor banding at a regular pitch
@@ -160,23 +167,36 @@ window.addEventListener('blur',()=>finishPress(false));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)finishPress(false)});
 document.addEventListener('keydown',e=>{if(e.key===','&&!document.querySelector('dialog[open]'))$('#settingsDialog').showModal()});
 for(const key of ['size','width','intensity']){const input=$('#'+key+'Input'),output=$('#'+key+'Value');input.addEventListener('input',()=>{settings[key]=Number(input.value)/(key==='intensity'?100:1);output.textContent=input.value+(key==='intensity'?'%':'px')})}
-function claim(){finishPress(true);if(tail)tail.hidden=true;receipt={lead:tailLead,id:SESSION_ID,count:history.length,printFlow:PrintFlow.clone(flow),ink:textInk,background,entries:history.map(h=>({...h})),date:receiptState().date};
+// Pulling (or reaching the end): the tail is drawn back into the printer down the diagonal, then the
+// whole roll is printed again from the slot at the bottom centre.
+let pulling=false;
+function claim(){if(pulling||receiptOpen())return;finishPress(true);pulling=true;cancelAnimationFrame(tailAnim);const from=tailShown,t0=performance.now();
+ const back=t=>{const k=Math.min(1,(t-t0)/600),e=k*k;tailShown=tailFrom+(from-tailFrom)*(1-e);if(tailBmp)PrintReceipt.tail(tail,tailBmp,tailShown,tailFrom);if(k<1)requestAnimationFrame(back);else{tail.hidden=true;tailShown=0;pulling=false;release()}};
+ if(tail&&!tail.hidden&&from>tailFrom&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)requestAnimationFrame(back);else{if(tail)tail.hidden=true;pulling=false;release()}}
+function release(){const st=receiptState();receipt={lead:0,id:SESSION_ID,count:history.length,printFlow:PrintFlow.clone(flow),ink:textInk,background,entries:history.map(h=>({...h})),date:st.date,prior:st.prior};
  receipt.printFlow.rows=receipt.printFlow.rows.map(row=>({...row,tokens:row.tokens.map(token=>({...token,tile:null,staticTile:null,ink:receipt.ink}))}));
  $('#receiptDialog').showModal();PrintReceipt.start($('#receiptRibbon'),receipt,{begin:startPrintLoop,done:stopPrintLoop});
 }
 
 // The receipt prints only when the reader reaches the end of the play.
 const receiptOpen=()=>$('#receiptDialog').open;
-function settleOnLeave(){if(history.length&&!receiptOpen())claim()}
+function settleOnLeave(){if(!receiptOpen())claim()}
 // The play ends: reaching the bottom of the document settles the account.
 new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting))settleOnLeave()},{threshold:.6}).observe(document.querySelector('.wiki-foot'));
 
 document.querySelectorAll('.close').forEach(b=>b.onclick=()=>b.closest('dialog').close());
-$('#receiptDialog').addEventListener('close',()=>PrintReceipt.stop());
+$('#receiptDialog').addEventListener('close',()=>{PrintReceipt.stop();$('#receiptDialog').classList.remove('scrollable')});
+// once cut, the receipt is read by scrolling it: wheel, drag or touch
+{const d=$('#receiptDialog');let drag=null;
+ d.addEventListener('wheel',e=>{e.preventDefault();PrintReceipt.scrollBy(e.deltaMode===1?e.deltaY*28:e.deltaY)},{passive:false});
+ d.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;drag={id:e.pointerId,y:e.clientY};d.setPointerCapture?.(e.pointerId);d.classList.add('dragging')});
+ d.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;PrintReceipt.scrollBy(drag.y-e.clientY);drag.y=e.clientY});
+ const end=()=>{drag=null;d.classList.remove('dragging')};d.addEventListener('pointerup',end);d.addEventListener('pointercancel',end);
+ d.addEventListener('keydown',e=>{const k={ArrowDown:60,ArrowUp:-60,PageDown:innerHeight*.8,PageUp:-innerHeight*.8,' ':innerHeight*.8}[e.key];if(k){e.preventDefault();PrintReceipt.scrollBy(k)}})}
 function download(url,name){const a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove()}$('#savePoster').onclick=async()=>{const button=$('#savePoster');button.disabled=true;try{const result=await PrintExport.make(receipt);const url=URL.createObjectURL(result.blob);download(url,`ST0L3N_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false;draw()}};$('#saveReceipt').onclick=async()=>{const button=$('#saveReceipt');button.disabled=true;try{const result=await PrintReceipt.export(receipt);const url=URL.createObjectURL(result.blob);download(url,`RECEIPT_${receipt.id}.${result.extension}`);setTimeout(()=>URL.revokeObjectURL(url),60000)}finally{button.disabled=false}};
 setPalette(0);render();draw();document.fonts.ready.then(()=>{for(const row of flow.rows)for(const token of row.tokens)delete token.tile;draw()});
 // the tail canvas lets pointer events through; the paper itself is hit-tested against its track
-document.addEventListener("click",e=>{if(!tail||tail.hidden||!tail.classList.contains("pullable")||receiptOpen())return;if(PrintReceipt.onTail(e.clientX,e.clientY,tailShown)){e.preventDefault();e.stopPropagation();claim()}},true);
-document.addEventListener("mousemove",e=>{if(!tail||tail.hidden)return;const on=tail.classList.contains("pullable")&&!receiptOpen()&&PrintReceipt.onTail(e.clientX,e.clientY,tailShown);document.documentElement.classList.toggle("over-tail",on)});
+document.addEventListener("click",e=>{if(!tail||tail.hidden||pulling||receiptOpen())return;if(PrintReceipt.onTail(e.clientX,e.clientY,tailShown,tailFrom)){e.preventDefault();e.stopPropagation();claim()}},true);
+document.addEventListener("mousemove",e=>{if(!tail||tail.hidden)return;const on=!pulling&&!receiptOpen()&&PrintReceipt.onTail(e.clientX,e.clientY,tailShown,tailFrom);document.documentElement.classList.toggle("over-tail",on)});
 $('#receiptDialog').addEventListener('close',()=>updateMeta());
 updateMeta();
